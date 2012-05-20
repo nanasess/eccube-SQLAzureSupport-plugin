@@ -24,4 +24,24 @@
 require_once CLASS_REALDIR . 'SC_Query.php';
 
 class SC_Query_Ex extends SC_Query {
+
+    /**
+     * 次のシーケンス値を取得する.
+     *
+     * @param string $seq_name 取得するシーケンス名
+     * @param integer 次のシーケンス値
+     */
+    function nextVal($seq_name) {
+        $dsn = array('phptype'  => DB_TYPE,
+                     'username' => DB_USER,
+                     'password' => DB_PASSWORD,
+                     'protocol' => 'tcp',
+                     'hostspec' => DB_SERVER,
+                     'port'     => DB_PORT,
+                     'database' => DB_NAME
+                     );
+        // SQL Azure では必ず新しいセッションを使用する
+        $_conn = MDB2::connect($dsn, $options);
+        return $_conn->nextID($seq_name, false);
+    }
 }

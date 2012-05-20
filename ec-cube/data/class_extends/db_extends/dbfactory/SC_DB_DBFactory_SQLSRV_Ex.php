@@ -22,29 +22,17 @@
  */
 
 // {{{ requires
-require_once CLASS_REALDIR . 'helper/SC_Helper_DB.php';
+require_once CLASS_REALDIR . 'db/dbfactory/SC_DB_DBFactory_SQLSRV.php';
 
 /**
- * DB関連のヘルパークラス(拡張).
+ * PostgreSQL 固有の処理をするクラス(拡張).
  *
- * LC_Helper_DB をカスタマイズする場合はこのクラスを編集する.
+ * SC_DB_DBFactory_PGSQL をカスタマイズする場合は, このクラスを使用する.
  *
- * @package Helper
+ * @package DB
  * @author LOCKON CO.,LTD.
- * @version $Id: SC_Helper_DB_Ex.php 21420 2012-01-22 19:49:37Z Seasoft $
+ * @version $Id: SC_DB_DBFactory_PGSQL_Ex.php 20764 2011-03-22 06:26:40Z nanasess $
  */
-class SC_Helper_DB_Ex extends SC_Helper_DB {
-    /**
-     * メーカー商品数数の登録を行う.
-     *
-     * @param SC_Query $objQuery SC_Query インスタンス
-     * @return void
-     */
-    function sfCountMaker($objQuery) {
-        if (DB_TYPE != 'sqlsrv') {
-            parent::sfCountMaker($objQuery);
-        } else {
-        /* TODO SQL Azure で INSERT INTO  SELECT をサポートしていないため未対応 */
-        }
-    }
+class SC_DB_DBFactory_SQLSRV_Ex extends SC_DB_DBFactory_SQLSRV {
 }
+?>

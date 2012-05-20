@@ -52,6 +52,9 @@ class SC_DB_DBFactory_Ex extends SC_DB_DBFactory {
             case 'pgsql':
                 return new SC_DB_DBFactory_PGSQL_Ex();
 
+            case 'sqlsrv':
+                return new SC_DB_DBFactory_SQLSRV_Ex();
+
             default:
                 return new SC_DB_DBFactory_Ex();
         }

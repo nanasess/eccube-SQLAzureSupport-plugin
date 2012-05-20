@@ -44,6 +44,9 @@ class SC_DB_DBFactory {
             case 'pgsql':
                 return new SC_DB_DBFactory_PGSQL();
 
+            case 'sqlsrv':
+                return new SC_DB_DBFactory_SQLSRV();
+
             default:
                 return new SC_DB_DBFactory();
         }

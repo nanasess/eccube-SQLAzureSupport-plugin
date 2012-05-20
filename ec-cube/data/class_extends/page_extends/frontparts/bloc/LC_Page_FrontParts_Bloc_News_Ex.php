@@ -64,4 +64,31 @@ class LC_Page_FrontParts_Bloc_News_Ex extends LC_Page_FrontParts_Bloc_News {
     function destroy() {
         parent::destroy();
     }
+
+    /**
+     * 新着情報を取得する.
+     *
+     * @return array $arrNewsList 新着情報の配列を返す
+     */
+    function lfGetNews(&$objQuery) {
+        if (DB_TYPE != 'sqlsrv') {
+            return parent::lfGetNews($objQuery);
+        } else {
+            $objQuery->setOrder('rank DESC ');
+            $arrNewsList = $objQuery->select("* ,convert(varchar(4), YEAR(news_date)) + '-' + convert(varchar(2), MONTH(news_date)) + '-' + convert(varchar(10), DAY(news_date)) as news_date_disp", 'dtb_news' ,'del_flg = 0');
+
+            // モバイルサイトのセッション保持 (#797)
+            if (SC_Display_Ex::detectDevice() == DEVICE_TYPE_MOBILE) {
+                foreach (array_keys($arrNewsList) as $key) {
+                    $arrRow =& $arrNewsList[$key];
+                    if (SC_Utils_Ex::isAppInnerUrl($arrRow['news_url'])) {
+                        $netUrl = new Net_URL($arrRow['news_url']);
+                        $netUrl->addQueryString(session_name(), session_id());
+                        $arrRow['news_url'] = $netUrl->getURL();
+                    }
+                }
+            }
+            return $arrNewsList;
+        }
+    }
 }
