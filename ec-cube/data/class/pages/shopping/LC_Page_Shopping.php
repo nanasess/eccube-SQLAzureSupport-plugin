@@ -2,7 +2,7 @@
 /*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2011 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -29,7 +29,7 @@ require_once CLASS_EX_REALDIR . 'page_extends/LC_Page_Ex.php';
  *
  * @package Page
  * @author LOCKON CO.,LTD.
- * @version $Id: LC_Page_Shopping.php 21743 2012-04-14 18:05:06Z AMUAMU $
+ * @version $Id: LC_Page_Shopping.php 21951 2012-07-02 12:04:24Z pineray $
  */
 class LC_Page_Shopping extends LC_Page_Ex {
 
@@ -44,7 +44,7 @@ class LC_Page_Shopping extends LC_Page_Ex {
     function init() {
         parent::init();
         $this->tpl_title = 'ログイン';
-        $masterData = new SC_DB_MasterData();
+        $masterData = new SC_DB_MasterData_Ex();
         $this->arrPref = $masterData->getMasterData('mtb_pref');
         $this->arrSex = $masterData->getMasterData('mtb_sex');
         $this->arrJob = $masterData->getMasterData('mtb_job');

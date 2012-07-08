@@ -2,7 +2,7 @@
 /*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2011 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -31,20 +31,7 @@ require_once CLASS_REALDIR . 'helper/SC_Helper_DB.php';
  *
  * @package Helper
  * @author LOCKON CO.,LTD.
- * @version $Id: SC_Helper_DB_Ex.php 21420 2012-01-22 19:49:37Z Seasoft $
+ * @version $Id: SC_Helper_DB_Ex.php 21867 2012-05-30 07:37:01Z nakanishi $
  */
 class SC_Helper_DB_Ex extends SC_Helper_DB {
-    /**
-     * メーカー商品数数の登録を行う.
-     *
-     * @param SC_Query $objQuery SC_Query インスタンス
-     * @return void
-     */
-    function sfCountMaker($objQuery) {
-        if (DB_TYPE != 'sqlsrv') {
-            parent::sfCountMaker($objQuery);
-        } else {
-        /* TODO SQL Azure で INSERT INTO  SELECT をサポートしていないため未対応 */
-        }
-    }
 }

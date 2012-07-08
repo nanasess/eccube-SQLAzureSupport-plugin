@@ -2,7 +2,7 @@
 /*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2011 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -27,7 +27,7 @@
  * 依存するクラスに構文エラーがあると、捕捉できない。よって、依存は最小に留めること。
  * 現状 GC_Utils_Ex(GC_Utils) に依存しているため、その中で構文エラーは捕捉できない。
  * @package Helper
- * @version $Id: SC_Helper_HandleError.php 21582 2012-03-03 19:20:00Z Seasoft $
+ * @version $Id: SC_Helper_HandleError.php 21927 2012-06-20 02:57:43Z pineray $
  */
 class SC_Helper_HandleError {
 
@@ -90,9 +90,6 @@ class SC_Helper_HandleError {
 
         $error_type_name = GC_Utils_Ex::getErrorTypeName($errno);
 
-        $now = date('Y/m/d H:i:s');
-        // 本来 realpath() で正規化したいところだが、NULL を返すケースがあるため避けている (#1618)
-        $log_file_path = DATA_REALDIR . 'logs/site.log';
         switch ($errno) {
             case E_USER_ERROR:
                 $message = "Fatal error($error_type_name): $errstr on [$errfile($errline)]";
@@ -129,10 +126,7 @@ class SC_Helper_HandleError {
      *                     エラーが捕捉されない場合は, 出力バッファリングの内容を返す
      */
     static function &_fatal_error_handler(&$buffer) {
-        if (preg_match('/<b>(Fatal error)<\/b>: +(.+) in <b>(.+)<\/b> on line <b>(\d+)<\/b><br \/>/i', $buffer, $matches)) {
-            $now = date('Y/m/d H:i:s');
-            // realpath() で正規化したいが、NULL を返すケースがあるため避けている (#1618)
-            $log_file_path = DATA_REALDIR . 'logs/site.log';
+        if (preg_match('/<b>(Fatal error)<\/b>: +(.+) in <b>(.+)<\/b> on line <b>(\d+)<\/b><br \/>/i', $buffer, $matches = array())) {
             $message = "$matches[1]: $matches[2] on [$matches[3]($matches[4])]";
             GC_Utils_Ex::gfPrintLog($message, ERROR_LOG_REALFILE, true);
             if (DEBUG_MODE !== true) {
@@ -180,8 +174,6 @@ class SC_Helper_HandleError {
         $error_type_name = GC_Utils_Ex::getErrorTypeName($arrError['type']);
         $errstr = "Fatal error($error_type_name): {$arrError[message]} on [{$arrError[file]}({$arrError[line]})]";
 
-        // 本来 realpath() で正規化したいところだが、NULL を返すケースがあるため避けている (#1618)
-        $log_file_path = DATA_REALDIR . 'logs/site.log';
         GC_Utils_Ex::gfPrintLog($errstr, ERROR_LOG_REALFILE, true);
 
         // エラー画面を表示する

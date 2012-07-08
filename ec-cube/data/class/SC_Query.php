@@ -2,7 +2,7 @@
 /*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2011 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -27,7 +27,7 @@
  * TODO エラーハンドリング, ロギング方法を見直す
  *
  * @author LOCKON CO.,LTD.
- * @version $Id: SC_Query.php 21832 2012-05-13 17:38:11Z nanasess $
+ * @version $Id: SC_Query.php 21914 2012-06-12 06:07:25Z Seasoft $
  */
 class SC_Query {
 
@@ -38,6 +38,8 @@ class SC_Query {
     var $groupby = '';
     var $order = '';
     var $force_run = false;
+    /** シングルトン動作のためのインスタンスプール配列。キーは DSN の識別情報。 */
+    static $arrPoolInstance = array();
 
     /**
      * コンストラクタ.
@@ -96,17 +98,18 @@ class SC_Query {
      * @param boolean $new 新規に接続を行うかどうか
      * @return SC_Query シングルトンの SC_Query インスタンス
      */
-    function getSingletonInstance($dsn = '', $force_run = false, $new = false) {
-        if (!isset($GLOBALS['_SC_Query_instance'])
-            || is_null($GLOBALS['_SC_Query_instance'])) {
-            $GLOBALS['_SC_Query_instance'] =& new SC_Query_Ex($dsn, $force_run, $new);
+    static function getSingletonInstance($dsn = '', $force_run = false, $new = false) {
+        $objThis = SC_Query_Ex::getPoolInstance($dsn);
+        if (is_null($objThis)) {
+            $objThis = SC_Query_Ex::setPoolInstance(new SC_Query_Ex($dsn, $force_run, $new), $dsn);
         }
-        $GLOBALS['_SC_Query_instance']->where = '';
-        $GLOBALS['_SC_Query_instance']->arrWhereVal = array();
-        $GLOBALS['_SC_Query_instance']->order = '';
-        $GLOBALS['_SC_Query_instance']->groupby = '';
-        $GLOBALS['_SC_Query_instance']->option = '';
-        return $GLOBALS['_SC_Query_instance'];
+        /*
+         * 歴史的な事情で、このメソッドの呼び出し元は参照で受け取る確率がある。
+         * 退避しているインスタンスをそのまま返すと、退避している SC_Query の
+         * プロパティを直接書き換えることになる。これを回避するため、クローンを返す。
+         * 厳密な意味でのシングルトンではないが、パフォーマンス的に大差は無い。
+         */
+        return clone $objThis;
     }
 
     /**
@@ -1102,5 +1105,30 @@ class SC_Query {
 
         $msg .= 'execution time: ' . sprintf('%.2f sec', $timeExecTime) . "\n";
         GC_Utils_Ex::gfPrintLog($msg, DB_LOG_REALFILE);
+    }
+
+    /**
+     * インスタンスをプールする
+     *
+     * @param SC_Query $objThis プールするインスタンス
+     * @param string $dsn データソース名
+     * @return SC_Query プールしたインスタンス
+     */
+    static function setPoolInstance(&$objThis, $dsn = '') {
+        $key_str = serialize($dsn);
+        return SC_Query_Ex::$arrPoolInstance[$key_str] = $objThis;
+    }
+
+    /**
+     * プールしているインスタンスを取得する
+     *
+     * @param string $dsn データソース名
+     * @return SC_Query|null
+     */
+    static function getPoolInstance($dsn = '') {
+        $key_str = serialize($dsn);
+        if (isset(SC_Query_Ex::$arrPoolInstance[$key_str])) {
+            return SC_Query_Ex::$arrPoolInstance[$key_str];
+        }
     }
 }

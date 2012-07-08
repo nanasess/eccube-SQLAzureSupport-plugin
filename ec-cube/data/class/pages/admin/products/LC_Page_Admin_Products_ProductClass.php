@@ -2,7 +2,7 @@
 /*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2011 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -29,7 +29,7 @@ require_once CLASS_EX_REALDIR . 'page_extends/admin/LC_Page_Admin_Ex.php';
  *
  * @package Page
  * @author LOCKON CO.,LTD.
- * @version $Id: LC_Page_Admin_Products_ProductClass.php 21743 2012-04-14 18:05:06Z AMUAMU $
+ * @version $Id: LC_Page_Admin_Products_ProductClass.php 21905 2012-06-11 03:45:48Z shutta $
  */
 class LC_Page_Admin_Products_ProductClass extends LC_Page_Admin_Ex {
 
@@ -638,8 +638,10 @@ class LC_Page_Admin_Products_ProductClass extends LC_Page_Admin_Ex {
     function doUploadComplete(&$objFormParam) {
         $objImage = new SC_Image_Ex(DOWN_TEMP_REALDIR);
         $arrRealFileName = $objFormParam->getValue('down_realfilename');
-        foreach ($arrRealFileName as $real_file_name) {
-            $objImage->moveTempImage($real_file_name, DOWN_SAVE_REALDIR);
+        if (is_array($arrRealFileName)) {
+            foreach ($arrRealFileName as $real_file_name) {
+                $objImage->moveTempImage($real_file_name, DOWN_SAVE_REALDIR);
+            }
         }
     }
 

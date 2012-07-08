@@ -2,7 +2,7 @@
 /*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2011 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -26,7 +26,7 @@
  *
  * @author LOCKON CO.,LTD.
  * @author Kentaro Ohkouchi
- * @version $Id: SC_Product.php 21834 2012-05-14 14:17:52Z nanasess $
+ * @version $Id: SC_Product.php 21935 2012-06-21 06:02:41Z pineray $
  */
 class SC_Product {
 
@@ -385,7 +385,7 @@ __EOS__;
                 ON dtb_classcategory2.class_id = dtb_class2.class_id
 __EOS__;
 
-        $objQuery->setOrder('T3.rank DESC'); // XXX
+        $objQuery->setOrder('T3.rank DESC, dtb_classcategory2.rank DESC'); // XXX
         $arrRet = $objQuery->select($col, $table, '', $params);
 
         return $arrRet;
@@ -547,7 +547,7 @@ __EOS__;
      * @return array 税込金額を設定した商品情報の配列
      */
     function setPriceTaxTo($arrProducts) {
-        foreach ($arrProducts as $key => $val) {
+        foreach ($arrProducts as $key => $value) {
             $arrProducts[$key]['price01_min_format'] = number_format($arrProducts[$key]['price01_min']);
             $arrProducts[$key]['price01_max_format'] = number_format($arrProducts[$key]['price01_max']);
             $arrProducts[$key]['price02_min_format'] = number_format($arrProducts[$key]['price02_min']);
@@ -598,7 +598,6 @@ __EOS__;
      * @return string 商品詳細の SQL
      */
     function alldtlSQL($where_products_class = '') {
-        $where_clause = '';
         if (!SC_Utils_Ex::isBlank($where_products_class)) {
             $where_products_class = 'AND (' . $where_products_class . ')';
         }

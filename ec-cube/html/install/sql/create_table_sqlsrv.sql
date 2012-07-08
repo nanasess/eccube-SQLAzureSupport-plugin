@@ -392,7 +392,7 @@ CREATE TABLE dtb_recommend_products (
     creator_id int NOT NULL,
     create_date datetimeoffset NOT NULL DEFAULT CURRENT_TIMESTAMP,
     update_date datetimeoffset NOT NULL,
-    PRIMARY KEY(product_id)
+    PRIMARY KEY(product_id, recommend_product_id)
 );
 
 CREATE TABLE dtb_review (
@@ -989,7 +989,14 @@ CREATE TABLE mtb_order_status (
 
 CREATE TABLE mtb_product_status_color (
     id smallint,
-    name nvarchar(max),
+    name varchar(max),
+    rank smallint NOT NULL DEFAULT 0,
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE mtb_customer_order_status (
+    id smallint,
+    name varchar(max),
     rank smallint NOT NULL DEFAULT 0,
     PRIMARY KEY (id)
 );

@@ -2,7 +2,7 @@
 /*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2011 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -39,4 +39,3 @@ if (!function_exists('hash_algos')) {
 if (!function_exists('hash_hmac')) {
     require_once DATA_REALDIR . 'module/Compat/Compat/Function/hash_hmac.php';
 }
-?>

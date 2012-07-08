@@ -2,7 +2,7 @@
 /*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2011 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -26,7 +26,7 @@
  *
  * @package Helper
  * @author LOCKON CO.,LTD.
- * @version $Id: SC_Helper_Mobile.php 21750 2012-04-16 10:53:39Z shutta $
+ * @version $Id: SC_Helper_Mobile.php 21935 2012-06-21 06:02:41Z pineray $
  */
 class SC_Helper_Mobile {
 
@@ -125,7 +125,7 @@ class SC_Helper_Mobile {
      *                     取得できなかった場合は null を返す。
      */
     function lfMobileGetExtSessionId() {
-        if (!preg_match('|^' . ROOT_URLPATH . '(.*)$|', $_SERVER['SCRIPT_NAME'], $matches)) {
+        if (!preg_match('|^' . ROOT_URLPATH . '(.*)$|', $_SERVER['SCRIPT_NAME'], $matches = array())) {
             return null;
         }
 

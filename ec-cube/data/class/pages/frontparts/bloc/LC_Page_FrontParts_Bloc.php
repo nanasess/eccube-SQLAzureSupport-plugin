@@ -2,7 +2,7 @@
 /*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2011 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -29,7 +29,7 @@ require_once CLASS_EX_REALDIR . 'page_extends/LC_Page_Ex.php';
  *
  * @package Page
  * @author LOCKON CO.,LTD.
- * @version $Id: LC_Page_FrontParts_Bloc.php 21583 2012-03-03 19:46:21Z Seasoft $
+ * @version $Id: LC_Page_FrontParts_Bloc.php 21867 2012-05-30 07:37:01Z nakanishi $
  */
 class LC_Page_FrontParts_Bloc extends LC_Page_Ex {
 
@@ -48,9 +48,13 @@ class LC_Page_FrontParts_Bloc extends LC_Page_Ex {
         $this->objDisplay = new SC_Display_Ex();
 
         $this->setTplMainpage($this->blocItems['tpl_path']);
-
+        
         // トランザクショントークンの検証と生成
         $this->setTokenTo();
+        
+        // ローカルフックポイントを実行.
+        $objPlugin = SC_Helper_Plugin_Ex::getSingletonInstance($this->plugin_activate_flg);
+        $this->doLocalHookpointBefore($objPlugin);
     }
 
     /**

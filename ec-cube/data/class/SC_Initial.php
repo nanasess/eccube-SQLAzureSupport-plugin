@@ -2,7 +2,7 @@
 /*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2011 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -25,7 +25,7 @@
  * アプリケーションの初期設定クラス.
  *
  * @author LOCKON CO.,LTD.
- * @version $Id: SC_Initial.php 21830 2012-05-13 16:11:58Z nanasess $
+ * @version $Id: SC_Initial.php 21959 2012-07-05 02:14:17Z h_yoshimoto $
  */
 class SC_Initial {
 
@@ -37,7 +37,7 @@ class SC_Initial {
     function __construct() {
 
         /** EC-CUBEのバージョン */
-        define('ECCUBE_VERSION', '2.12.0-beta2');
+        define('ECCUBE_VERSION', '2.12.1');
     }
 
     // }}}
@@ -139,6 +139,9 @@ class SC_Initial {
             // See also: http://php.net/manual/ja/function.setlocale.php
             setlocale(LC_ALL, '');
         }
+
+        // #1849 (文字エンコーディングの検出を制御する)
+        mb_detect_order(array('UTF-8', 'SJIS-win', 'eucJP-win'));
     }
 
     /**

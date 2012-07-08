@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright(c) 2000-2011 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  */
@@ -10,7 +10,7 @@
  *
  * @package Helper
  * @author LOCKON CO.,LTD.
- * @version $Id: SC_Helper_Session.php 21767 2012-04-18 08:10:53Z shutta $
+ * @version $Id: SC_Helper_Session.php 21867 2012-05-30 07:37:01Z nakanishi $
  */
 class SC_Helper_Session {
 

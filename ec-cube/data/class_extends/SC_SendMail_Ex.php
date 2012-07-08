@@ -2,7 +2,7 @@
 /*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2011 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -31,7 +31,7 @@ require_once CLASS_REALDIR . 'SC_SendMail.php';
  *
  * @package
  * @author LOCKON CO.,LTD.
- * @version $Id: SC_SendMail_Ex.php 21768 2012-04-18 08:13:31Z shutta $
+ * @version $Id: SC_SendMail_Ex.php 21867 2012-05-30 07:37:01Z nakanishi $
  */
 class SC_SendMail_Ex extends SC_SendMail {
 }

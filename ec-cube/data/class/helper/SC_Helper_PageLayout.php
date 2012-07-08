@@ -2,7 +2,7 @@
 /*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2011 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -67,14 +67,14 @@ class SC_Helper_PageLayout {
         }
 
         // 該当ページのブロックを取得し, 配置する
-        $masterData = new SC_DB_MasterData();
+        $masterData = new SC_DB_MasterData_Ex();
         $arrTarget = $masterData->getMasterData('mtb_target');
         $arrBlocs = $this->getBlocPositions($device_type_id, $objPage->arrPageLayout['page_id']);
         // 無効なプラグインのブロックを取り除く.
         $objPlugin = SC_Helper_Plugin_Ex::getSingletonInstance();
         $arrBlocs = $objPlugin->getEnableBlocs($arrBlocs);
         // php_path, tpl_path が存在するものを, 各ターゲットに配置
-        foreach (array_keys($arrTarget) as $target_id) {
+        foreach ($arrTarget as $target_id => $value) {
             foreach ($arrBlocs as $arrBloc) {
                 if ($arrBloc['target_id'] != $target_id) {
                     continue;
@@ -182,8 +182,6 @@ __EOF__;
      */
     function lfDelPageData($page_id, $device_type_id = DEVICE_TYPE_PC) {
         $objQuery =& SC_Query_Ex::getSingletonInstance();
-        $arrDelData = array();      // 抽出データ用
-
         // page_id が空でない場合にはdeleteを実行
         if ($page_id != '') {
             $arrPageData = $this->getPageProperties($device_type_id, $page_id);
@@ -324,8 +322,8 @@ __EOF__;
      * @param array $arrBlocs 設定するブロックの配列
      * @return void
      */
-    function setBlocPathTo($device_type_id = DEVICE_TYPE_PC, &$arrBlocs) {
-        foreach (array_keys($arrBlocs) as $key) {
+    function setBlocPathTo($device_type_id = DEVICE_TYPE_PC, &$arrBlocs = array()) {
+        foreach ($arrBlocs as $key => $value) {
             $arrBloc =& $arrBlocs[$key];
             $arrBloc['php_path'] = SC_Utils_Ex::isBlank($arrBloc['php_path']) ? '' : HTML_REALDIR . $arrBloc['php_path'];
             $bloc_dir = $this->getTemplatePath($device_type_id) . BLOC_DIR;

@@ -2,7 +2,7 @@
 /*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2011 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -61,7 +61,7 @@ class API_ItemSearch extends SC_Api_Abstract_Ex {
             $objQuery =& SC_Query_Ex::getSingletonInstance();
             $objQuery->setWhere($arrSearchCondition['where_for_count']);
             $objProduct = new SC_Product_Ex();
-            $linemax = $objProduct->findProductCount($objQuery, $searchCondition['arrval']);
+            $linemax = $objProduct->findProductCount($objQuery, $arrSearchCondition['arrval']);
             $objNavi = new SC_PageNavi_Ex($arrRequest['ItemPage'], $tpl_linemax, $disp_number);
             $arrProducts = $this->getProductsList($arrSearchCondition, $disp_number, $objNavi->start_row, $linemax, $objProduct);
 

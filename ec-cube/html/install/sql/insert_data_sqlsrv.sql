@@ -303,7 +303,7 @@ INSERT INTO dtb_csv (no, csv_id, col, disp_name, rank, rw_flg, status, create_da
 INSERT INTO dtb_csv (no, csv_id, col, disp_name, rank, rw_flg, status, create_date, update_date, mb_convert_kana_option, size_const_type, error_check_types) VALUES (67, 1, '(SELECT comment FROM dtb_recommend_products WHERE prdcls.product_id = dtb_recommend_products.product_id ORDER BY rank DESC, recommend_product_id DESC limit 1 offset 5) AS recommend_comment6', N'関連商品コメント(6)', 67, 1, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'KVa', 'LLTEXT_LEN', 'SPTAB_CHECK,MAX_LENGTH_CHECK');
 INSERT INTO dtb_csv (no, csv_id, col, disp_name, rank, rw_flg, status, create_date, update_date, mb_convert_kana_option, size_const_type, error_check_types) VALUES (68, 1, '(SELECT ARRAY_TO_STRING(ARRAY(SELECT product_status_id FROM dtb_product_status WHERE dtb_product_status.product_id = prdcls.product_id and del_flg = 0 ORDER BY dtb_product_status.product_status_id), '','')) as product_statuses', N'商品ステータス', 68, 1, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'KVa', 'STEXT_LEN', 'SPTAB_CHECK,MAX_LENGTH_CHECK');
 INSERT INTO dtb_csv (no, csv_id, col, disp_name, rank, rw_flg, status, create_date, update_date, mb_convert_kana_option, size_const_type, error_check_types) VALUES (69, 1, '(SELECT ARRAY_TO_STRING(ARRAY(SELECT name FROM dtb_product_status LEFT JOIN mtb_status ON  dtb_product_status.product_status_id = mtb_status.id  WHERE dtb_product_status.product_id = prdcls.product_id and del_flg = 0 ORDER BY dtb_product_status.product_status_id), '','')) as product_status_names', N'商品ステータス名', 69, 2, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'KVa', 'LTEXT_LEN', 'SPTAB_CHECK,MAX_LENGTH_CHECK');
-INSERT INTO dtb_csv (no, csv_id, col, disp_name, rank, rw_flg, status, create_date, update_date, mb_convert_kana_option, size_const_type, error_check_types) VALUES (70, 1, '(SELECT ARRAY_TO_STRING(ARRAY(SELECT category_id FROM dtb_product_categories WHERE dtb_product_categories.product_id = prdcls.product_id ORDER BY dtb_product_categories.rank), '','')) as category_ids', N'カテゴリID', 70, 1, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'KVa', 'STEXT_LEN', 'SPTAB_CHECK,MAX_LENGTH_CHECK');
+INSERT INTO dtb_csv (no, csv_id, col, disp_name, rank, rw_flg, status, create_date, update_date, mb_convert_kana_option, size_const_type, error_check_types) VALUES (70, 1, '(SELECT ARRAY_TO_STRING(ARRAY(SELECT category_id FROM dtb_product_categories WHERE dtb_product_categories.product_id = prdcls.product_id ORDER BY dtb_product_categories.rank), '','')) as category_ids', N'カテゴリID', 70, 1, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'KVa', 'LTEXT_LEN', 'SPTAB_CHECK,MAX_LENGTH_CHECK');
 INSERT INTO dtb_csv (no, csv_id, col, disp_name, rank, rw_flg, status, create_date, update_date, mb_convert_kana_option, size_const_type, error_check_types) VALUES (71, 1, '(SELECT ARRAY_TO_STRING(ARRAY(SELECT category_name FROM dtb_product_categories LEFT JOIN dtb_category ON dtb_product_categories.category_id = dtb_category.category_id WHERE dtb_product_categories.product_id = prdcls.product_id ORDER BY dtb_product_categories.rank), '','')) as category_names', N'カテゴリ名', 71, 2, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'KVa', 'LTEXT_LEN', 'SPTAB_CHECK,MAX_LENGTH_CHECK');
 INSERT INTO dtb_csv (no, csv_id, col, disp_name, rank, status, create_date, update_date) VALUES (72, 2, 'customer_id', N'会員ID', 1, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 INSERT INTO dtb_csv (no, csv_id, col, disp_name, rank, status, create_date, update_date) VALUES (73, 2, 'name01', N'お名前(姓)', 2, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
@@ -845,6 +845,14 @@ INSERT INTO mtb_order_status_color (id, name, rank) VALUES (5, '#BFDFFF', 4);
 INSERT INTO mtb_order_status_color (id, name, rank) VALUES (6, '#FFFFAB', 5);
 INSERT INTO mtb_order_status_color (id, name, rank) VALUES (7, '#FFCCCC', 6);
 
+INSERT INTO mtb_customer_order_status (id, name, rank) VALUES (7, N'注文未完了', 0);
+INSERT INTO mtb_customer_order_status (id, name, rank) VALUES (1, N'注文受付', 1);
+INSERT INTO mtb_customer_order_status (id, name, rank) VALUES (2, N'入金待ち', 2);
+INSERT INTO mtb_customer_order_status (id, name, rank) VALUES (6, N'注文受付', 3);
+INSERT INTO mtb_customer_order_status (id, name, rank) VALUES (3, N'キャンセル', 4);
+INSERT INTO mtb_customer_order_status (id, name, rank) VALUES (4, N'注文受付', 5);
+INSERT INTO mtb_customer_order_status (id, name, rank) VALUES (5, N'発送済み', 6);
+
 INSERT INTO mtb_ownersstore_err (id, name, rank) VALUES ('1000', N'不明なエラーが発生しました。', 0);
 INSERT INTO mtb_ownersstore_err (id, name, rank) VALUES ('1001', N'不正なパラメーターが送信されました。', 1);
 INSERT INTO mtb_ownersstore_err (id, name, rank) VALUES ('1002', N'認証に失敗しました。<br />・仮会員の方は、本会員登録を行ってください<br />・認証キーが正しく設定されているか確認してください', 2);
@@ -1024,7 +1032,7 @@ INSERT INTO mtb_constants (id, name, rank, remarks) VALUES ('MODULE_DIR', '"down
 INSERT INTO mtb_constants (id, name, rank, remarks) VALUES ('MODULE_REALDIR', 'DATA_REALDIR . MODULE_DIR', 23, N'ダウンロードモジュール保存ディレクトリ');
 INSERT INTO mtb_constants (id, name, rank, remarks) VALUES ('MAX_LIFETIME', '7200', 26, N'DBセッションの有効期限(秒)');
 INSERT INTO mtb_constants (id, name, rank, remarks) VALUES ('MASTER_DATA_REALDIR', 'DATA_REALDIR . "cache/"', 27, N'マスターデータキャッシュディレクトリ');
-INSERT INTO mtb_constants (id, name, rank, remarks) VALUES ('UPDATE_HTTP', '"http://sv01.ec-cube.net/info/index.php"', 28, N'アップデート管理用ファイル格納場所');
+INSERT INTO mtb_constants (id, name, rank, remarks) VALUES ('UPDATE_HTTP', '"http://www.ec-cube.net/info/index.php"', 28, N'アップデート管理用ファイル格納場所');
 INSERT INTO mtb_constants (id, name, rank, remarks) VALUES ('CHAR_CODE', '"UTF-8"', 39, N'文字コード');
 INSERT INTO mtb_constants (id, name, rank, remarks) VALUES ('LOCALE', '"ja_JP.UTF-8"', 40, N'ロケール設定');
 INSERT INTO mtb_constants (id, name, rank, remarks) VALUES ('ECCUBE_PAYMENT', '"EC-CUBE"', 41, N'決済モジュール付与文言');
@@ -1197,8 +1205,8 @@ INSERT INTO mtb_constants (id, name, rank, remarks) VALUES ('MOBILE_P_DETAIL_URL
 INSERT INTO mtb_constants (id, name, rank, remarks) VALUES ('MOBILE_SHOPPING_COMPLETE_URLPATH', 'ROOT_URLPATH . "shopping/complete.php"', 416, N'購入完了画面 (*モジュールで使用)');
 INSERT INTO mtb_constants (id, name, rank, remarks) VALUES ('SESSION_KEEP_METHOD', '"useCookie"', 418, N'セッション維持方法："useCookie"|"useRequest"');
 INSERT INTO mtb_constants (id, name, rank, remarks) VALUES ('SESSION_LIFETIME', '1800', 419, N'セッションの存続時間 (秒)');
-INSERT INTO mtb_constants (id, name, rank, remarks) VALUES ('OSTORE_URL', '"http://store.ec-cube.net/"', 500, N'オーナーズストアURL');
-INSERT INTO mtb_constants (id, name, rank, remarks) VALUES ('OSTORE_SSLURL', '"https://store.ec-cube.net/"', 501, N'オーナーズストアURL');
+INSERT INTO mtb_constants (id, name, rank, remarks) VALUES ('OSTORE_URL', '"http://www.ec-cube.net/"', 500, N'オーナーズストアURL');
+INSERT INTO mtb_constants (id, name, rank, remarks) VALUES ('OSTORE_SSLURL', '"https://www.ec-cube.net/"', 501, N'オーナーズストアURL');
 INSERT INTO mtb_constants (id, name, rank, remarks) VALUES ('OSTORE_LOG_REALFILE', 'DATA_REALDIR . "logs/ownersstore.log"', 502, N'オーナーズストアログパス');
 INSERT INTO mtb_constants (id, name, rank, remarks) VALUES ('OPTION_FAVORITE_PRODUCT', '1', 523, N'お気に入り商品登録(有効:1 無効:0)'); 
 INSERT INTO mtb_constants (id, name, rank, remarks) VALUES ('IMAGE_RENAME', 'true', 525, N'画像リネーム設定 (商品画像のみ) (true:リネームする、false:リネームしない)'); 
@@ -1241,8 +1249,12 @@ INSERT INTO mtb_constants (id, name, rank, remarks) VALUES ('DEVICE_TYPE_ADMIN',
 INSERT INTO mtb_constants (id, name, rank, remarks) VALUES ('ECCUBE_INFO', 'true', 1218, N'EC-CUBE更新情報取得 (true:取得する false:取得しない)');
 INSERT INTO mtb_constants (id, name, rank, remarks) VALUES ('HTTP_REQUEST_TIMEOUT', '"5"', 1219, N'外部サイトHTTP取得タイムアウト時間(秒)');
 INSERT INTO mtb_constants (id, name, rank, remarks) VALUES ('ZIP_DOWNLOAD_URL', '"http://www.post.japanpost.jp/zipcode/dl/kogaki/zip/ken_all.zip"', 1224, N'郵便番号CSVのZIPアーカイブファイルの取得元');
-INSERT INTO mtb_constants (id, name, rank, remarks) VALUES ('HOOK_POINT_PREPROCESS', 'LC_Page_preProcess', 1301, N'フックポイント(プレプロセス)');
-INSERT INTO mtb_constants (id, name, rank, remarks) VALUES ('HOOK_POINT_PROCESS', 'LC_Page_process', 1302, N'フックポイント(プロセス)');
+INSERT INTO mtb_constants (id, name, rank, remarks) VALUES ('HOOK_POINT_PREPROCESS', '"LC_Page_preProcess"', 1301, N'フックポイント(プレプロセス)');
+INSERT INTO mtb_constants (id, name, rank, remarks) VALUES ('HOOK_POINT_PROCESS', '"LC_Page_process"', 1302, N'フックポイント(プロセス)');
+INSERT INTO mtb_constants (id, name, rank, remarks) VALUES ('PLUGIN_ACTIVATE_FLAG', 'true', 1303, N'プラグインのロード可否フラグ)');
+INSERT INTO mtb_constants (id, name, rank, remarks) VALUES ('SMARTY_FORCE_COMPILE_MODE', 'false', 1401, N'SMARTYコンパイルモード');
+INSERT INTO mtb_constants (id, name, rank, remarks) VALUES ('LOGIN_RETRY_INTERVAL', '0', 1411, N'ログイン失敗時の遅延時間(秒)(ブルートフォースアタック対策)');
+INSERT INTO mtb_constants (id, name, rank, remarks) VALUES ('MYPAGE_ORDER_STATUS_DISP_FLAG', 'true', 1412, N'MYページ：ご注文状況表示フラグ');
 
 INSERT INTO dtb_index_list (table_name, column_name, recommend_flg, recommend_comment) VALUES ('dtb_customer', 'email_mobile', 0, N'会員数増加時のログイン処理速度を向上させたいときに試してみてください');
 INSERT INTO dtb_index_list (table_name, column_name, recommend_flg, recommend_comment) VALUES ('dtb_products', 'name', 2, N'商品名検索速度を向上させたいときに試してみてください');
@@ -1268,4 +1280,4 @@ INSERT INTO dtb_index_list (table_name, column_name, recommend_flg, recommend_co
 INSERT INTO dtb_index_list (table_name, column_name, recommend_flg, recommend_comment) VALUES ('dtb_product_categories', 'category_id', 2, N'カテゴリが多いときに試してみてください。');
 INSERT INTO dtb_index_list (table_name, column_name, recommend_flg, recommend_comment) VALUES ('mtb_zip', 'zipcode', 2, N'郵便番号検索が遅いときに試してみてください。郵便番号データの更新時には無効にしていることをおすすめします。');
 
-INSERT INTO dtb_plugin (plugin_id, plugin_name, class_name, plugin_code, author, author_site_url, plugin_site_url, plugin_version, compliant_version, plugin_description, priority, enable, create_date, update_date) VALUES (1, N'Microsoft Windows Azure プラグイン', 'SQLAzureSupport', 'SQLAzureSupport', N'Kentaro Ohkouchi (Loop AZ)', 'http://www.loop-az.co.jp/', null, '1.0', '2.12.0', N'Microsoft Windows Azure 対応プラグインです。インストーラのデータベースに SQL Azure が追加されます。PHP 5.3.0 以降対応。sqlsrv ドライバが必要です。', 1, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO dtb_plugin (plugin_id, plugin_name, class_name, plugin_code, author, author_site_url, plugin_site_url, plugin_version, compliant_version, plugin_description, priority, enable, create_date, update_date) VALUES (1, N'Microsoft Windows Azure プラグイン', 'SQLAzureSupport', 'SQLAzureSupport', N'Kentaro Ohkouchi (Loop AZ)', 'http://www.loop-az.co.jp/', null, '1.0.1', '2.12.1', N'Microsoft Windows Azure 対応プラグインです。インストーラのデータベースに SQL Azure が追加されます。PHP 5.3.0 以降対応。sqlsrv ドライバが必要です。', 1, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);

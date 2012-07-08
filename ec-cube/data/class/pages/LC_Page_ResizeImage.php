@@ -2,7 +2,7 @@
 /*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2011 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -29,7 +29,7 @@ require_once CLASS_EX_REALDIR . 'page_extends/LC_Page_Ex.php';
  *
  * @package Page
  * @author LOCKON CO.,LTD.
- * @version $Id: LC_Page_ResizeImage.php 21776 2012-04-24 11:44:23Z shutta $
+ * @version $Id: LC_Page_ResizeImage.php 21880 2012-06-01 13:31:17Z shutta $
  */
 class LC_Page_ResizeImage extends LC_Page_Ex {
 
@@ -96,7 +96,7 @@ class LC_Page_ResizeImage extends LC_Page_Ex {
     function lfInitParam(&$objFormParam) {
         $objFormParam->addParam('画像ファイル名', 'image', STEXT_LEN, 'a',  array('MAX_LENGTH_CHECK'));
         $objFormParam->addParam('画像の幅', 'width', STEXT_LEN, 'n',  array('NUM_CHECK'));
-        $objFormParam->addParam('画像の高さ', 'width', STEXT_LEN, 'n',  array('NUM_CHECK'));
+        $objFormParam->addParam('画像の高さ', 'height', STEXT_LEN, 'n',  array('NUM_CHECK'));
     }
 
     /**

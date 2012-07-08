@@ -2,7 +2,7 @@
 /*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2011 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -29,7 +29,7 @@ require_once CLASS_EX_REALDIR . 'page_extends/admin/products/LC_Page_Admin_Produ
  *
  * @package Page
  * @author LOCKON CO.,LTD.
- * @version $Id: LC_Page_Admin_Products_Product.php 21750 2012-04-16 10:53:39Z shutta $
+ * @version $Id: LC_Page_Admin_Products_Product.php 21961 2012-07-06 12:55:12Z yomoro $
  */
 class LC_Page_Admin_Products_Product extends LC_Page_Admin_Products_Ex {
 
@@ -458,7 +458,7 @@ class LC_Page_Admin_Products_Product extends LC_Page_Admin_Products_Ex {
         $arrErr = $objFormParam->checkError();
 
         // アップロードファイル必須チェック
-        $arrErr = array_merge((array)$arrErr, (array)$objUpFile->checkEXISTS());
+        $arrErr = array_merge((array)$arrErr, (array)$objUpFile->checkExists());
 
         // HTMLタグ許可チェック
         $objErr->doFunc(array('詳細-メインコメント', 'main_comment', $this->arrAllowedTag), array('HTML_TAG_CHECK'));
@@ -474,7 +474,7 @@ class LC_Page_Admin_Products_Product extends LC_Page_Admin_Products_Ex {
             }
             // ダウンロード商品ファイル必須チェック(ダウンロード商品の場合)
             if ($arrForm['product_type_id'] == PRODUCT_TYPE_DOWNLOAD) {
-                $arrErr = array_merge((array)$arrErr, (array)$objDownFile->checkEXISTS());
+                $arrErr = array_merge((array)$arrErr, (array)$objDownFile->checkExists());
                 $objErr->doFunc(array('ダウンロード商品ファイル名', 'down_filename'), array('EXIST_CHECK'));
             }
         }
@@ -496,7 +496,7 @@ class LC_Page_Admin_Products_Product extends LC_Page_Admin_Products_Ex {
         $select_recommend_no = $arrForm['select_recommend_no'];
         $select_recommend_id = $arrForm['recommend_id' . $select_recommend_no];
 
-        foreach (array_keys($arrForm) as $key) {
+        foreach ($arrForm as $key => $value) {
             if (preg_match('/^recommend_id/', $key)) {
                 if ($select_recommend_no == preg_replace('/^recommend_id/', '', $key)) {
                     continue;
@@ -988,7 +988,7 @@ __EOF__;
         $checkArray = array('name', 'status',
                             'main_list_comment', 'main_comment',
                             'deliv_fee', 'comment1', 'comment2', 'comment3',
-                            'comment4', 'comment5', 'comment6', 'main_list_comment',
+                            'comment4', 'comment5', 'comment6',
                             'sale_limit', 'deliv_date_id', 'maker_id', 'note');
         $arrList = SC_Utils_Ex::arrayDefineIndexes($arrList, $checkArray);
 
@@ -1003,7 +1003,6 @@ __EOF__;
         $sqlval['comment4'] = $arrList['comment4'];
         $sqlval['comment5'] = $arrList['comment5'];
         $sqlval['comment6'] = $arrList['comment6'];
-        $sqlval['main_list_comment'] = $arrList['main_list_comment'];
         $sqlval['deliv_date_id'] = $arrList['deliv_date_id'];
         $sqlval['maker_id'] = $arrList['maker_id'];
         $sqlval['note'] = $arrList['note'];

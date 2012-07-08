@@ -2,7 +2,7 @@
 /*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2011 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -29,7 +29,7 @@
  *
  * @package Helper
  * @author Kentaro Ohkouchi
- * @version $Id: SC_Helper_Purchase.php 21840 2012-05-18 08:31:13Z shutta $
+ * @version $Id: SC_Helper_Purchase.php 21951 2012-07-02 12:04:24Z pineray $
  */
 class SC_Helper_Purchase {
 
@@ -121,6 +121,7 @@ class SC_Helper_Purchase {
             $objQuery->begin();
         }
 
+        $arrParams = array();
         $arrParams['status'] = $orderStatus;
         if ($is_delete) {
             $arrParams['del_flg'] = 1;
@@ -254,15 +255,13 @@ class SC_Helper_Purchase {
      * 受注一時情報を保存する.
      *
      * 既存のデータが存在しない場合は新規保存. 存在する場合は更新する.
-     * 既存のデータが存在せず, ユーザーがログインしている場合は,
-     * 会員情報をコピーする.
      *
      * @param integer $uniqId 受注一時情報ID
      * @param array $params 登録する受注情報の配列
      * @param SC_Customer $objCustomer SC_Customer インスタンス
      * @return array void
      */
-    function saveOrderTemp($uniqId, $params, &$objCustomer) {
+    function saveOrderTemp($uniqId, $params, &$objCustomer = NULL) {
         if (SC_Utils_Ex::isBlank($uniqId)) {
             return;
         }
@@ -270,6 +269,7 @@ class SC_Helper_Purchase {
         $objQuery =& SC_Query_Ex::getSingletonInstance();
         // 存在するカラムのみを対象とする
         $cols = $objQuery->listTableFields('dtb_order_temp');
+        $sqlval = array();
         foreach ($params as $key => $val) {
             if (in_array($key, $cols)) {
                 $sqlval[$key] = $val;
@@ -277,9 +277,12 @@ class SC_Helper_Purchase {
         }
 
         $sqlval['session'] = serialize($_SESSION);
+        if (!empty($objCustomer)) {
+            // 注文者の情報を常に最新に保つ
+            $this->copyFromCustomer($sqlval, $objCustomer);
+        }
         $exists = $this->getOrderTemp($uniqId);
         if (SC_Utils_Ex::isBlank($exists)) {
-            $this->copyFromCustomer($sqlval, $objCustomer);
             $sqlval['order_temp_id'] = $uniqId;
             $sqlval['create_date'] = 'CURRENT_TIMESTAMP';
             $objQuery->insert('dtb_order_temp', $sqlval);
@@ -314,7 +317,7 @@ class SC_Helper_Purchase {
      */
     function clearShipmentItemTemp($shipping_id = null) {
         if (is_null($shipping_id)) {
-            foreach (array_keys($_SESSION['shipping']) as $key) {
+            foreach ($_SESSION['shipping'] as $key => $value) {
                 $this->clearShipmentItemTemp($key);
             }
         } else {
@@ -541,6 +544,7 @@ class SC_Helper_Purchase {
         $where = 'del_flg = 0 AND payment_id IN (' . SC_Utils_Ex::repeatStrWithSeparator('?', count($arrPaymentIds)) . ')';
         $objQuery->setOrder('rank DESC');
         $payments = $objQuery->select('payment_id, payment_method, rule_max, upper_rule, note, payment_image, charge', 'dtb_payment', $where, $arrPaymentIds);
+        $arrPayment = array();
         foreach ($payments as $data) {
             // 下限と上限が設定されている
             if (strlen($data['rule_max']) != 0 && strlen($data['upper_rule']) != 0) {
@@ -643,7 +647,7 @@ class SC_Helper_Purchase {
      * お届け可能日のスタート値から, お届け日の配列を取得する.
      */
     function getDateArray($start_day, $end_day) {
-        $masterData = new SC_DB_MasterData();
+        $masterData = new SC_DB_MasterData_Ex();
         $arrWDAY = $masterData->getMasterData('mtb_wday');
         //お届け可能日のスタート値がセットされていれば
         if ($start_day >= 1) {
@@ -841,6 +845,7 @@ class SC_Helper_Purchase {
         // 詳細情報を生成
         $objProduct = new SC_Product_Ex();
         $i = 0;
+        $arrDetail = array();
         foreach ($cartItems as $item) {
             $p =& $item['productsClass'];
             $arrDetail[$i]['order_id'] = $orderParams['order_id'];
@@ -1031,7 +1036,7 @@ __EOS__;
      * @return void
      */
     function setDownloadableFlgTo(&$arrOrderDetail) {
-        foreach (array_keys($arrOrderDetail) as $key) {
+        foreach ($arrOrderDetail as $key => $value) {
             // 販売価格が 0 円
             if ($arrOrderDetail[$key]['price'] == '0') {
                 $arrOrderDetail[$key]['is_downloadable'] = true;
@@ -1067,8 +1072,7 @@ __EOS__;
         }
 
         if ($has_items) {
-            $objProduct = new SC_Product_Ex();
-            foreach (array_keys($arrResults) as $shipping_id) {
+            foreach ($arrResults as $shipping_id => $value) {
                 $arrResults[$shipping_id]['shipment_item']
                         =& $this->getShipmentItems($order_id, $shipping_id);
             }
@@ -1135,7 +1139,7 @@ __EOS__;
      * @param array $sqlval 更新後の値をリファレンスさせるためのパラメーター
      * @return void
      */
-    function sfUpdateOrderStatus($orderId, $newStatus = null, $newAddPoint = null, $newUsePoint = null, &$sqlval) {
+    function sfUpdateOrderStatus($orderId, $newStatus = null, $newAddPoint = null, $newUsePoint = null, &$sqlval = array()) {
         $objQuery =& SC_Query_Ex::getSingletonInstance();
         $arrOrderOld = $objQuery->getRow('status, add_point, use_point, customer_id', 'dtb_order', 'order_id = ?', array($orderId));
 
@@ -1330,6 +1334,8 @@ __EOS__;
      * セッション情報を破棄しないカスタマイズを、モジュール側で
      * 加える機会を与える.
      *
+     * $orderId が使われていない。
+     * 
      * @param integer $orderId 注文番号
      * @param SC_CartSession $objCartSession カート情報のインスタンス
      * @param SC_Customer $objCustomer SC_Customer インスタンス

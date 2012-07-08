@@ -2,7 +2,7 @@
 /*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2011 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -29,7 +29,7 @@ require_once CLASS_EX_REALDIR . 'page_extends/LC_Page_Ex.php';
  *
  * @package Page
  * @author LOCKON CO.,LTD.
- * @version $Id: LC_Page_Shopping_Multiple.php 21743 2012-04-14 18:05:06Z AMUAMU $
+ * @version $Id: LC_Page_Shopping_Multiple.php 21951 2012-07-02 12:04:24Z pineray $
  */
 class LC_Page_Shopping_Multiple extends LC_Page_Ex {
 
@@ -159,7 +159,7 @@ class LC_Page_Shopping_Multiple extends LC_Page_Ex {
         $cartLists =& $objCartSess->getCartList($objCartSess->getKey());
         $arrItems = array();
         $index = 0;
-        foreach (array_keys($cartLists) as $key) {
+        foreach ($cartLists as $key => $value) {
             $arrProductsClass = $cartLists[$key]['productsClass'];
             $quantity = (int) $cartLists[$key]['quantity'];
             for ($i = 0; $i < $quantity; $i++) {
@@ -187,7 +187,7 @@ class LC_Page_Shopping_Multiple extends LC_Page_Ex {
      * @return array 配送住所のプルダウン用連想配列
      */
     function getDelivAddrs(&$objCustomer, &$objPurchase, $uniqid) {
-        $masterData = new SC_DB_MasterData();
+        $masterData = new SC_DB_MasterData_Ex();
         $arrPref = $masterData->getMasterData('mtb_pref');
 
         $arrResults = array('' => '選択してください');

@@ -2,7 +2,7 @@
 /*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2011 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -30,8 +30,6 @@ class SC_CustomerList extends SC_SelectSql_Ex {
 
     function __construct($array, $mode = '') {
         parent::__construct($array);
-
-        $masterData = new SC_DB_MasterData_Ex();
 
         $objDb = new SC_Helper_DB_Ex();
         $dbFactory = SC_DB_DBFactory_Ex::getInstance();

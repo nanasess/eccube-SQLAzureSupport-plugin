@@ -2,7 +2,7 @@
 /*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2011 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -30,7 +30,7 @@
  *
  * @package SC_SessionFactory
  * @author LOCKON CO.,LTD.
- * @version $Id: SC_SessionFactory_UseCookie.php 21771 2012-04-18 09:45:37Z shutta $
+ * @version $Id: SC_SessionFactory_UseCookie.php 21867 2012-05-30 07:37:01Z nakanishi $
  */
 class SC_SessionFactory_UseCookie extends SC_SessionFactory_Ex {
 

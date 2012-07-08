@@ -1,7 +1,7 @@
 <!--{*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2011 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -43,18 +43,22 @@
     }
     // カゴに入れる
     function fnInCart(productForm) {
-        var product_id = productForm["product_id"].value;
-        fnChangeAction("?#product" + product_id);
-        if (productForm["classcategory_id1"]) {
-            fnSetVal("classcategory_id1", productForm["classcategory_id1"].value);
-        }
-        if (productForm["classcategory_id2"]) {
-            fnSetVal("classcategory_id2", productForm["classcategory_id2"].value);
-        }
-        fnSetVal("quantity", productForm["quantity"].value);
-        fnSetVal("product_id", productForm["product_id"].value);
-        fnSetVal("product_class_id", productForm["product_class_id"].value);
-        fnSubmit();
+        var searchForm = $("#form1");
+        var cartForm = $(productForm);
+        // 検索条件を引き継ぐ
+        var hiddenValues = ['mode','category_id','maker_id','name','orderby','disp_number','pageno','rnd'];
+        $.each(hiddenValues, function(){
+            // 商品別のフォームに検索条件の値があれば上書き
+            if (cartForm.has('input[name='+this+']')) {
+                cartForm.find('input[name='+this+']').val(searchForm.find('input[name='+this+']').val());
+            }
+            // なければ追加
+            else {
+                cartForm.append($("<input/>").attr("name", this).val(searchForm.find('input[name='+this+']').val()));
+            }
+        });
+        // 商品別のフォームを送信
+        cartForm.submit();
     }
 //]]></script>
 

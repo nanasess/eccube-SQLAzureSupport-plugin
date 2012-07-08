@@ -2,7 +2,7 @@
 /*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2011 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -25,7 +25,7 @@
  * Http コンテンツ出力を制御するクラス.
  *
  * @author Ryuichi Tokugami
- * @version $Id: SC_Display.php 21767 2012-04-18 08:10:53Z shutta $
+ * @version $Id: SC_Display.php 21925 2012-06-19 07:15:24Z pineray $
  */
 class SC_Display{
 
@@ -141,7 +141,6 @@ class SC_Display{
     function detectDevice() {
         $nu = new Net_UserAgent_Mobile();
         $su = new SC_SmartphoneUserAgent_Ex();
-        $retDevice = 0;
         if ($nu->isMobile()) {
             return DEVICE_TYPE_MOBILE;
         } elseif ($su->isSmartphone()) {

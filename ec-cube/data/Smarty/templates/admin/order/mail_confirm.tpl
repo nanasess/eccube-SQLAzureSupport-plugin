@@ -2,7 +2,7 @@
 /*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2011 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -42,7 +42,7 @@
     <h2>メール配信</h2>
     
     
-    <!--{if $order_id_count != 1}-->
+    <!--{if $order_id_count > 1}-->
     <span class="red">※本文は1通分の例です。受注情報は各メールごとに異なります</span><br /><br />
     <!--{/if}-->
     <table class="form">

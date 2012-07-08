@@ -2,7 +2,7 @@
 /*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2011 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -29,7 +29,7 @@ require_once CLASS_EX_REALDIR . 'page_extends/mypage/LC_Page_AbstractMypage_Ex.p
  *
  * @package Page
  * @author LOCKON CO.,LTD.
- * @version $Id: LC_Page_Mypage_Change.php 21743 2012-04-14 18:05:06Z AMUAMU $
+ * @version $Id: LC_Page_Mypage_Change.php 21883 2012-06-02 14:43:27Z Yammy $
  */
 class LC_Page_Mypage_Change extends LC_Page_AbstractMypage_Ex {
 
@@ -94,7 +94,7 @@ class LC_Page_Mypage_Change extends LC_Page_AbstractMypage_Ex {
             case 'confirm':
                 if (isset($_POST['submit_address'])) {
                     // 入力エラーチェック
-                    $this->arrErr = $this->fnErrorCheck($_POST);
+                    $this->arrErr = $this->lfCheckError($_POST);
                     // 入力エラーの場合は終了
                     if (count($this->arrErr) == 0) {
                         // 郵便番号検索文作成
@@ -191,7 +191,7 @@ class LC_Page_Mypage_Change extends LC_Page_AbstractMypage_Ex {
      * @param array $arrRequest リクエスト値($_GET)
      * @return array $arrErr エラーメッセージ配列
      */
-    function fnErrorCheck($arrRequest) {
+    function lfCheckError($arrRequest) {
         // パラメーター管理クラス
         $objFormParam = new SC_FormParam_Ex();
         // パラメーター情報の初期化

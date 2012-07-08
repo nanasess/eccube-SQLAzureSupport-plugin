@@ -2,7 +2,7 @@
 /*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2011 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -55,8 +55,8 @@ class SC_MobileEmoji {
             return MOBILE_EMOJI_SUBSTITUTE;
         }
 
-        static $arrMap;
-        if (!isset($arrMap)) {
+        static $arrMap = array();
+        if (empty($arrMap)) {
             $arrMap = @include_once dirname(__FILE__) . "/../include/mobile_emoji_map_$carrier.inc";
         }
 

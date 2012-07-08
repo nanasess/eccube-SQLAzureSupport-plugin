@@ -2,7 +2,7 @@
 /*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2011 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -30,7 +30,7 @@ require_once CLASS_REALDIR . 'pages/error/LC_Page_Error.php';
  *
  * @package Page
  * @author LOCKON CO.,LTD.
- * @version $Id: LC_Page_Error_SystemError.php 21743 2012-04-14 18:05:06Z AMUAMU $
+ * @version $Id: LC_Page_Error_SystemError.php 21867 2012-05-30 07:37:01Z nakanishi $
  */
 class LC_Page_Error_SystemError extends LC_Page_Error {
 

@@ -29,7 +29,7 @@ require_once CLASS_EX_REALDIR . 'page_extends/LC_Page_Ex.php';
  *
  * @package Page
  * @author LOCKON CO.,LTD.
- * @version $Id: LC_Page_Products_List.php 21809 2012-05-06 15:21:54Z nanasess $
+ * @version $Id: LC_Page_Products_List.php 21957 2012-07-04 01:13:22Z pineray $
  */
 class LC_Page_Products_List extends LC_Page_Ex {
 
@@ -123,6 +123,11 @@ class LC_Page_Products_List extends LC_Page_Ex {
         $arrSearchCondition = $this->lfGetSearchCondition($this->arrSearchData);
         $this->tpl_linemax  = $this->lfGetProductAllNum($arrSearchCondition);
         $urlParam           = "category_id={$this->arrSearchData['category_id']}&pageno=#page#";
+        // モバイルの場合に検索条件をURLの引数に追加
+        if (SC_Display_Ex::detectDevice() === DEVICE_TYPE_MOBILE) {
+            $searchNameUrl = urlencode(mb_convert_encoding($this->arrSearchData['name'], 'SJIS-win', 'UTF-8'));
+            $urlParam .= "&mode={$this->mode}&name={$searchNameUrl}&orderby={$this->orderby}";
+        }
         $this->objNavi      = new SC_PageNavi_Ex($this->tpl_pageno, $this->tpl_linemax, $this->disp_number, 'fnNaviPage', NAVI_PMAX, $urlParam, SC_Display_Ex::detectDevice() !== DEVICE_TYPE_MOBILE);
         $this->arrProducts  = $this->lfGetProductsList($arrSearchCondition, $this->disp_number, $this->objNavi->start_row, $this->tpl_linemax, $objProduct);
 
@@ -460,7 +465,7 @@ __EOS__;
      */
     function lfSetSelectedData(&$arrProducts, $arrForm, $arrErr, $product_id) {
         $js_fnOnLoad = '';
-        foreach (array_keys($arrProducts) as $key) {
+        foreach ($arrProducts as $key => $value) {
             if ($arrProducts[$key]['product_id'] == $product_id) {
 
                 $arrProducts[$key]['product_class_id']  = $arrForm['product_class_id'];

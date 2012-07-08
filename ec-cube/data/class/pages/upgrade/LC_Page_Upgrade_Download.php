@@ -2,7 +2,7 @@
 /*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2011 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -31,7 +31,7 @@ require_once CLASS_REALDIR . 'pages/upgrade/LC_Page_Upgrade_Base.php';
  *
  * @package Page
  * @author LOCKON CO.,LTD.
- * @version $Id: LC_Page_Upgrade_Download.php 21750 2012-04-16 10:53:39Z shutta $
+ * @version $Id: LC_Page_Upgrade_Download.php 21867 2012-05-30 07:37:01Z nakanishi $
  */
 class LC_Page_Upgrade_Download extends LC_Page_Upgrade_Base {
 

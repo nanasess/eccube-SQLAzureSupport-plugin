@@ -2,7 +2,7 @@
 /*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2011 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -29,7 +29,7 @@ require_once CLASS_EX_REALDIR . 'page_extends/frontparts/bloc/LC_Page_FrontParts
  *
  * @package Page
  * @author LOCKON CO.,LTD.
- * @version $Id: LC_Page_FrontParts_Bloc_Category.php 21809 2012-05-06 15:21:54Z nanasess $
+ * @version $Id: LC_Page_FrontParts_Bloc_Category.php 21867 2012-05-30 07:37:01Z nakanishi $
  */
 class LC_Page_FrontParts_Bloc_Category extends LC_Page_FrontParts_Bloc_Ex {
 

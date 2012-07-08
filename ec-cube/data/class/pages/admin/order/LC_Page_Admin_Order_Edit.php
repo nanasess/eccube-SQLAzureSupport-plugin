@@ -2,7 +2,7 @@
 /*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2011 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -29,7 +29,7 @@ require_once CLASS_EX_REALDIR . 'page_extends/admin/order/LC_Page_Admin_Order_Ex
  *
  * @package Page
  * @author LOCKON CO.,LTD.
- * @version $Id: LC_Page_Admin_Order_Edit.php 21840 2012-05-18 08:31:13Z shutta $
+ * @version $Id: LC_Page_Admin_Order_Edit.php 21935 2012-06-21 06:02:41Z pineray $
  */
 class LC_Page_Admin_Order_Edit extends LC_Page_Admin_Order_Ex {
 
@@ -783,7 +783,7 @@ class LC_Page_Admin_Order_Edit extends LC_Page_Admin_Order_Ex {
         // 選択済みの商品であれば数量を1増やす
         $exists = false;
         $arrExistsProductClassIds = $objFormParam->getValue('product_class_id');
-        foreach (array_keys($arrExistsProductClassIds) as $key) {
+        foreach ($arrExistsProductClassIds as $key => $value) {
             $exists_product_class_id = $arrExistsProductClassIds[$key];
             if ($exists_product_class_id == $product_class_id) {
                 $exists = true;
@@ -808,7 +808,7 @@ class LC_Page_Admin_Order_Edit extends LC_Page_Admin_Order_Ex {
             $arrProduct['quantity'] = 1;
             $arrProduct['price'] = $arrProduct['price02'];
             $arrProduct['product_name'] = $arrProduct['name'];
-
+            
             $arrUpdateKeys = array(
                 'product_id', 'product_class_id', 'product_type_id', 'point_rate',
                 'product_code', 'product_name', 'classcategory_name1', 'classcategory_name2',
@@ -816,6 +816,11 @@ class LC_Page_Admin_Order_Edit extends LC_Page_Admin_Order_Ex {
             );
             foreach ($arrUpdateKeys as $key) {
                 $arrValues = $objFormParam->getValue($key);
+                // FIXME getValueで文字列が返る場合があるので配列であるかをチェック
+                if(!is_array($arrValues)) {
+                    $arrValues = array();
+                }
+                
                 if (isset($changed_no)) {
                     $arrValues[$changed_no] = $arrProduct[$key];
                 } else {

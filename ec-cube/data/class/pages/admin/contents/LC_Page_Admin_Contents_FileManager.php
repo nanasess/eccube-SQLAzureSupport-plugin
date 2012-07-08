@@ -2,7 +2,7 @@
 /*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2011 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -29,7 +29,7 @@ require_once CLASS_EX_REALDIR . 'page_extends/admin/LC_Page_Admin_Ex.php';
  *
  * @package Page
  * @author LOCKON CO.,LTD.
- * @version $Id: LC_Page_Admin_Contents_FileManager.php 21757 2012-04-17 08:43:10Z shutta $
+ * @version $Id: LC_Page_Admin_Contents_FileManager.php 21922 2012-06-15 04:59:22Z shutta $
  */
 class LC_Page_Admin_Contents_FileManager extends LC_Page_Admin_Ex {
 
@@ -283,11 +283,11 @@ class LC_Page_Admin_Contents_FileManager extends LC_Page_Admin_Ex {
     /**
      * テンプレートに渡す値を整形する
      *
-     * @param array $_POST $_POST
+     * @param array $arrVal $_POST
      * @return array $setParam テンプレートに渡す値
      */
-    function createSetParam($_POST) {
-        $setParam = $_POST;
+    function createSetParam($arrVal) {
+        $setParam = $arrVal;
         // Windowsの場合は, ディレクトリの区切り文字を\から/に変換する
         $setParam['top_dir'] = (strpos(PHP_OS, 'WIN') === false) ? USER_REALDIR : str_replace('\\', '/', USER_REALDIR);
         // 初期表示はルートディレクトリ(user_data/)を表示

@@ -2,7 +2,7 @@
 /*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2011 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -29,7 +29,7 @@ require_once CLASS_EX_REALDIR . 'page_extends/admin/LC_Page_Admin_Ex.php';
  *
  * @package Page
  * @author LOCKON CO.,LTD.
- * @version $Id: LC_Page_Admin_System_Input.php 21743 2012-04-14 18:05:06Z AMUAMU $
+ * @version $Id: LC_Page_Admin_System_Input.php 21867 2012-05-30 07:37:01Z nakanishi $
  */
 class LC_Page_Admin_System_Input extends LC_Page_Admin_Ex {
 
@@ -159,6 +159,7 @@ class LC_Page_Admin_System_Input extends LC_Page_Admin_Ex {
                         $this->tpl_onfocus   = 'fnClearText(this.name);';
                         $this->arrForm       = $this->getMemberData($clean_id);
                         $this->arrForm['password'] = DEFAULT_PASSWORD;
+                        $this->arrForm['password02'] = DEFAULT_PASSWORD;
                         $this->tpl_old_login_id    = $this->arrForm['login_id'];
                         break;
 

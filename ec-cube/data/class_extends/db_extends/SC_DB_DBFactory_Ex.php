@@ -2,7 +2,7 @@
 /*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2011 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -31,7 +31,7 @@ require_once CLASS_REALDIR . 'db/SC_DB_DBFactory.php';
  *
  * @package DB
  * @author LOCKON CO.,LTD.
- * @version $Id: SC_DB_DBFactory_Ex.php 21526 2012-02-16 15:50:05Z Seasoft $
+ * @version $Id: SC_DB_DBFactory_Ex.php 21867 2012-05-30 07:37:01Z nakanishi $
  */
 class SC_DB_DBFactory_Ex extends SC_DB_DBFactory {
 
@@ -51,9 +51,6 @@ class SC_DB_DBFactory_Ex extends SC_DB_DBFactory {
 
             case 'pgsql':
                 return new SC_DB_DBFactory_PGSQL_Ex();
-
-            case 'sqlsrv':
-                return new SC_DB_DBFactory_SQLSRV_Ex();
 
             default:
                 return new SC_DB_DBFactory_Ex();

@@ -2,7 +2,7 @@
 /*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2011 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -39,6 +39,10 @@
         <!--{foreach item=statusVal from=$item}-->
             <input type="hidden" name="<!--{$key}-->[]" value="<!--{$statusVal|h}-->" />
         <!--{/foreach}-->
+    <!--{elseif $key == 'arrCategoryId'}-->
+        <!--{* nop *}-->
+    <!--{elseif $key == 'arrFile'}-->
+        <!--{* nop *}-->
     <!--{else}-->
         <input type="hidden" name="<!--{$key}-->" value="<!--{$item|h}-->" />
     <!--{/if}-->

@@ -2,7 +2,7 @@
 /*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2011 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -27,8 +27,8 @@ define('HTML_REALDIR', rtrim(realpath(rtrim(realpath(dirname(__FILE__)), '/\\') 
 require_once HTML_REALDIR . 'define.php';
 define('INSTALL_FUNCTION', true);
 define('INSTALL_INFO_URL', 'http://www.ec-cube.net/install_info/index.php');
-while (ob_get_level() >= 1) {
-    ob_end_clean();
+if (ob_get_level() > 0) {
+    while (ob_end_clean());
 }
 require_once HTML_REALDIR . HTML2DATA_DIR . 'require_base.php';
 ob_start();
@@ -45,12 +45,10 @@ ini_set('max_execution_time', 300);
 
 $objPage = new StdClass;
 $objPage->arrDB_TYPE = array(
-    'sqlsrv' => 'SQL Azure',
     'pgsql' => 'PostgreSQL',
     'mysql' => 'MySQL',
 );
 $objPage->arrDB_PORT = array(
-    'sqlsrv' => '1433',
     'pgsql' => '',
     'mysql' => '',
 );
@@ -125,6 +123,7 @@ switch ($mode) {
     // テーブルの作成
     case 'step3':
         $arrDsn = getArrayDsn($objDBParam);
+
         if (count($objPage->arrErr) == 0) {
             // スキップする場合には次画面へ遷移
             $skip = $_POST['db_skip'];
@@ -144,11 +143,7 @@ switch ($mode) {
 
         // 初期データの作成
         if (count($objPage->arrErr) == 0) {
-            $insert_data_sql = './sql/insert_data_' . $arrDsn['phptype'] . '.sql';
-            if (!file_exists($insert_data_sql)) {
-                $insert_data_sql = './sql/insert_data.sql';
-            }
-            $objPage->arrErr = lfExecuteSQL($insert_data_sql, $arrDsn);
+            $objPage->arrErr = lfExecuteSQL('./sql/insert_data.sql', $arrDsn);
             if (count($objPage->arrErr) == 0) {
                 $objPage->tpl_message .= '○：初期データの作成に成功しました。<br />';
             } else {
@@ -378,6 +373,26 @@ function lfDispStep0($objPage) {
     else {
         $objPage->tpl_mode = 'step0';
         umask(0);
+        $path = DATA_REALDIR . 'downloads/plugin';
+        if (!file_exists($path)) {
+            mkdir($path);
+        }
+        $path = HTML_REALDIR . 'plugin';
+        if (!file_exists($path)) {
+            mkdir($path);
+        }
+        $path = HTML_REALDIR . 'upload/temp_plugin';
+        if (!file_exists($path)) {
+            mkdir($path);
+        }
+        $path = DATA_REALDIR . 'downloads/tmp';
+        if (!file_exists($path)) {
+            mkdir($path);
+        }
+        $path = DATA_REALDIR . 'downloads/tmp/plugin_install';
+        if (!file_exists($path)) {
+            mkdir($path);
+        }
         $path = HTML_REALDIR . 'upload/temp_template';
         if (!file_exists($path)) {
             mkdir($path);
@@ -607,15 +622,7 @@ function lfInitWebParam($objWebParam) {
 
     // 店名、管理者メールアドレスを取得する。(再インストール時)
     if (defined('DEFAULT_DSN')) {
-        $dsn = array('phptype'  => DB_TYPE,
-                     'username' => DB_USER,
-                     'password' => DB_PASSWORD,
-                     'protocol' => 'tcp',
-                     'hostspec' => DB_SERVER,
-                     'port'     => DB_PORT,
-                     'database' => DB_NAME
-                     );
-        $objQuery = new SC_Query($dsn);
+        $objQuery = new SC_Query();
         $tables = $objQuery->listTables();
 
         if (!PEAR::isError($tables) && in_array('dtb_baseinfo', $tables)) {
@@ -892,20 +899,15 @@ function lfCreateSequence($arrSequences, $arrDsn) {
 
     // Debugモード指定
     $options['debug'] = PEAR_DB_DEBUG;
+    $objDB = MDB2::connect($arrDsn, $options);
+    $objManager =& $objDB->loadModule('Manager');
 
     // 接続エラー
     if (!PEAR::isError($objDB)) {
 
-        $objDB = MDB2::connect($arrDsn, $options);
-        $objManager =& $objDB->loadModule('Manager');
         $exists = $objManager->listSequences();
-        $objDB->disconnect();
-
         foreach ($arrSequences as $seq) {
             SC_Utils::sfFlush(true);
-            $objDB = MDB2::connect($arrDsn, $options);
-            $objManager =& $objDB->loadModule('Manager');
-
             $res = $objDB->query('SELECT max(' . $seq[1] . ') FROM ' . $seq[0]);
             if (PEAR::isError($res)) {
                 $arrErr['all'] = '>> ' . $res->userinfo . '<br />';
@@ -922,7 +924,6 @@ function lfCreateSequence($arrSequences, $arrDsn) {
             } else {
                 GC_Utils_Ex::gfPrintLog('OK:' . $seq_name, INSTALL_LOG);
             }
-            $objDB->disconnect();
         }
     } else {
         $arrErr['all'] = '>> ' . $objDB->message;
@@ -1006,7 +1007,6 @@ function lfMakeConfigFile() {
                  . "define('ADMIN_ALLOW_HOSTS', '"     . serialize($allow_hosts) . "');\n"
                  . "define('AUTH_MAGIC', '"            . $auth_magic . "');\n"
                  . "define('PASSWORD_HASH_ALGOS', '"   . $algos . "');\n"
-                 . "define('RELEASE_YEAR', '"          . date('Y') . "');\n"
                  . "define('MAIL_BACKEND', '"          . $objWebParam->getValue('mail_backend') . "');\n"
                  . "define('SMTP_HOST', '"             . $objWebParam->getValue('smtp_host') . "');\n"
                  . "define('SMTP_PORT', '"             . $objWebParam->getValue('smtp_port') . "');\n"
@@ -1029,10 +1029,10 @@ function lfMakeConfigFile() {
 $alldirs = array();
 function listdirs($dir) {
     global $alldirs;
+    $alldirs[] = $dir;
     $dirs = glob($dir . '/*');
     if (is_array($dirs) && count($dirs) > 0) {
         foreach ($dirs as $d) {
-            $alldirs[] = $d;
             listdirs($d);
         }
     }
@@ -1120,7 +1120,6 @@ function getArrayDsn(SC_FormParam $objDBParam) {
         'password'  => $arrRet['db_password'],
         'database'  => $arrRet['db_name'],
         'port'      => $arrRet['db_port'],
-        'protocol' => 'tcp',
     );
 
     // 文字列形式の DSN との互換処理

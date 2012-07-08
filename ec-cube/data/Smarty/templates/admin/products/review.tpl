@@ -2,7 +2,7 @@
 /*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2011 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -109,7 +109,7 @@
 </form>
 
 
-<!--{if $smarty.post.mode == 'search'}-->
+<!--{if count($arrErr) == 0 and ($smarty.post.mode == 'search' or $smarty.post.mode == 'delete')}-->
 
 <!--★★検索結果一覧★★-->
 <form name="form1" id="form1" method="post" action="?">

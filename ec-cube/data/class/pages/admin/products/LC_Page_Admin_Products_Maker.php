@@ -2,7 +2,7 @@
 /*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2011 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -29,7 +29,7 @@ require_once CLASS_EX_REALDIR . 'page_extends/admin/LC_Page_Admin_Ex.php';
  *
  * @package Page
  * @author LOCKON CO.,LTD.
- * @version $Id: LC_Page_Admin_Products_Maker.php 21743 2012-04-14 18:05:06Z AMUAMU $
+ * @version $Id: LC_Page_Admin_Products_Maker.php 21883 2012-06-02 14:43:27Z Yammy $
  */
 class LC_Page_Admin_Products_Maker extends LC_Page_Admin_Ex {
 
@@ -92,7 +92,7 @@ class LC_Page_Admin_Products_Maker extends LC_Page_Admin_Ex {
             // 入力文字の変換
 
                 // エラーチェック
-                $this->arrErr = $this->lfErrorCheck($this->arrForm, $objFormParam);
+                $this->arrErr = $this->lfCheckError($this->arrForm, $objFormParam);
                 if (count($this->arrErr) <= 0) {
                     if ($this->arrForm['maker_id'] == '') {
                         // メーカー情報新規登録
@@ -279,7 +279,7 @@ class LC_Page_Admin_Products_Maker extends LC_Page_Admin_Ex {
      * @param  array $arrForm メーカー情報
      * @return array $objErr->arrErr エラー内容
      */
-    function lfErrorCheck(&$arrForm, &$objFormParam) {
+    function lfCheckError(&$arrForm, &$objFormParam) {
 
         $arrErr = $objFormParam->checkError();
         if (!empty($arrErr)) {

@@ -2,7 +2,7 @@
 /*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2011 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -29,7 +29,7 @@ require_once CLASS_EX_REALDIR . 'page_extends/LC_Page_Ex.php';
  *
  * @package Page
  * @author LOCKON CO.,LTD.
- * @version $Id: LC_Page_Shopping_Confirm.php 21829 2012-05-13 15:54:43Z Seasoft $
+ * @version $Id: LC_Page_Shopping_Confirm.php 21952 2012-07-02 12:24:12Z pineray $
  */
 class LC_Page_Shopping_Confirm extends LC_Page_Ex {
 
@@ -44,7 +44,7 @@ class LC_Page_Shopping_Confirm extends LC_Page_Ex {
     function init() {
         parent::init();
         $this->tpl_title = 'ご入力内容のご確認';
-        $masterData = new SC_DB_MasterData();
+        $masterData = new SC_DB_MasterData_Ex();
         $this->arrPref = $masterData->getMasterData('mtb_pref');
         $this->arrSex = $masterData->getMasterData('mtb_sex');
         $this->arrMAILMAGATYPE = $masterData->getMasterData('mtb_mail_magazine_type');
@@ -76,7 +76,7 @@ class LC_Page_Shopping_Confirm extends LC_Page_Ex {
         $objCustomer = new SC_Customer_Ex();
         $objQuery =& SC_Query_Ex::getSingletonInstance();
         $objPurchase = new SC_Helper_Purchase_Ex();
-        $objHelperMail = new SC_Helper_Mail();
+        $objHelperMail = new SC_Helper_Mail_Ex();
         $objHelperMail->setPage($this);
 
         $this->is_multiple = $objPurchase->isMultiple();

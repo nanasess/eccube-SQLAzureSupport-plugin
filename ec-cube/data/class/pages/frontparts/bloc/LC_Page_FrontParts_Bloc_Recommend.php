@@ -2,7 +2,7 @@
 /*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2011 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -110,7 +110,7 @@ class LC_Page_FrontParts_Bloc_Recommend extends LC_Page_FrontParts_Bloc_Ex {
             // 取得
             $arrProductList = $objProduct->getListByProductIds($objQuery, $arrProductId);
             // おすすめ商品情報にマージ
-            foreach (array_keys($arrBestProducts) as $key) {
+            foreach ($arrBestProducts as $key => $value) {
                 $arrRow =& $arrBestProducts[$key];
                 if (isset($arrProductList[$arrRow['product_id']])) {
                     $arrRow = array_merge($arrRow, $arrProductList[$arrRow['product_id']]);

@@ -1,6 +1,6 @@
 <?php
   /*
-   * Copyright(c) 2000-2011 LOCKON CO.,LTD. All Rights Reserved.
+   * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
    *
    * http://www.lockon.co.jp/
    */
@@ -10,7 +10,7 @@
    *
    * @package Page
    * @author LOCKON CO.,LTD.
-   * @version $Id: SC_Helper_CSV.php 21767 2012-04-18 08:10:53Z shutta $
+   * @version $Id: SC_Helper_CSV.php 21935 2012-06-21 06:02:41Z pineray $
    */
 class SC_Helper_CSV {
 
@@ -143,7 +143,7 @@ class SC_Helper_CSV {
      */
     function sfIsImportCSVFrame(&$arrCSVFrame) {
         $result = true;
-        foreach ($arrCSVFrame as $key => $val) {
+        foreach ($arrCSVFrame as $val) {
             if ($val['status'] != CSV_COLUMN_STATUS_FLG_ENABLE
                 && $val['rw_flg'] == CSV_COLUMN_RW_FLG_READ_WRITE
                 && $val['error_check_types'] != ''
@@ -164,7 +164,7 @@ class SC_Helper_CSV {
      */
     function sfIsUpdateCSVFrame(&$arrCSVFrame) {
         $result = true;
-        foreach ($arrCSVFrame as $key => $val) {
+        foreach ($arrCSVFrame as $val) {
             if ($val['status'] != CSV_COLUMN_STATUS_FLG_ENABLE
                 && $val['rw_flg'] == CSV_COLUMN_RW_FLG_KEY_FIELD
             ) {
@@ -276,7 +276,7 @@ class SC_Helper_CSV {
             return '';
         }
 
-        foreach (array_keys($fields) as $key) {
+        foreach ($fields as $key => $value) {
             $field =& $fields[$key];
 
             // 配列を「|」区切りの文字列に変換する
@@ -336,8 +336,8 @@ class SC_Helper_CSV {
         $file_name = $prefix . date('YmdHis') . '.csv';
 
         /* HTTPヘッダの出力 */
-        Header("Content-disposition: attachment; filename=${file_name}");
-        Header("Content-type: application/octet-stream; name=${file_name}");
+        Header("Content-disposition: attachment; filename={$file_name}");
+        Header("Content-type: application/octet-stream; name={$file_name}");
         Header('Cache-Control: ');
         Header('Pragma: ');
 

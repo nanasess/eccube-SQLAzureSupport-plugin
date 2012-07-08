@@ -33,7 +33,7 @@
  * @author     KUBO Atsuhiro <kubo@iteman.jp>
  * @copyright  2003-2009 KUBO Atsuhiro <kubo@iteman.jp>
  * @license    http://www.opensource.org/licenses/bsd-license.php  New BSD License
- * @version    CVS: $Id: Mobile.php 20116 2011-02-09 01:36:01Z nanasess $
+ * @version    CVS: $Id: Mobile.php 21846 2012-05-23 03:15:15Z h_yoshimoto $
  * @since      File available since Release 0.1
  */
 
@@ -424,7 +424,8 @@ class Net_UserAgent_Mobile
             'blackberry9800', // Torch
             'webOS',          // Palm Pre Experimental
             'incognito',      // Other iPhone browser
-            'webmate'         // Other iPhone browser
+            'webmate',         // Other iPhone browser
+            'Windows Phone OS' // Windows Phone
         );
 
         $pattern = implode("|", $useragents);

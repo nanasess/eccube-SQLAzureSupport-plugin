@@ -2,7 +2,7 @@
 /*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2011 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -29,7 +29,7 @@ require_once CLASS_EX_REALDIR . 'page_extends/LC_Page_Ex.php';
  *
  * @package Page
  * @author LOCKON CO.,LTD.
- * @version $Id: LC_Page_Shopping_Payment.php 21810 2012-05-06 16:27:10Z nanasess $
+ * @version $Id: LC_Page_Shopping_Payment.php 21951 2012-07-02 12:04:24Z pineray $
  */
 class LC_Page_Shopping_Payment extends LC_Page_Ex {
 
@@ -53,7 +53,7 @@ class LC_Page_Shopping_Payment extends LC_Page_Ex {
         parent::init();
         $this->tpl_onload = 'fnCheckInputPoint();';
         $this->tpl_title = 'お支払方法・お届け時間等の指定';
-        $masterData = new SC_DB_MasterData();
+        $masterData = new SC_DB_MasterData_Ex();
         $this->arrPref = $masterData->getMasterData('mtb_pref');
     }
 
@@ -347,7 +347,7 @@ class LC_Page_Shopping_Payment extends LC_Page_Ex {
          * SC_Purchase::getShippingTemp() で取得して,
          * リファレンスで代入すると, セッションに添字を追加できない？
          */
-        foreach (array_keys($_SESSION['shipping']) as $key) {
+        foreach ($_SESSION['shipping'] as $key => $value) {
             $shipping_id = $_SESSION['shipping'][$key]['shipping_id'];
             $time_id = $objFormParam->getValue('deliv_time_id' . $shipping_id);
             $_SESSION['shipping'][$key]['deliv_id'] = $deliv_id;

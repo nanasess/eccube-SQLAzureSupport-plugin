@@ -2,7 +2,7 @@
 /*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2011 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -29,7 +29,7 @@ require_once CLASS_EX_REALDIR . 'page_extends/LC_Page_Ex.php';
  *
  * @package Page
  * @author LOCKON CO.,LTD.
- * @version $Id: LC_Page_Rss.php 21743 2012-04-14 18:05:06Z AMUAMU $
+ * @version $Id: LC_Page_Rss.php 21935 2012-06-21 06:02:41Z pineray $
  */
 class LC_Page_RSS extends LC_Page_Ex {
 
@@ -116,7 +116,7 @@ class LC_Page_RSS extends LC_Page_Ex {
         $arrNews = $objQuery->select($col,$from,$where);
 
         // RSS用に変換
-        foreach (array_keys($arrNews) as $key) {
+        foreach ($arrNews as $key => $value) {
             $netUrlHttpUrl = new Net_URL(HTTP_URL);
 
             $row =& $arrNews[$key];

@@ -2,7 +2,7 @@
 /*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2011 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -26,7 +26,7 @@
  *
  * @package Helper
  * @author LOCKON CO.,LTD.
- * @version $Id: SC_Helper_Mail.php 21833 2012-05-14 09:02:34Z Seasoft $
+ * @version $Id: SC_Helper_Mail.php 21950 2012-07-02 11:42:51Z pineray $
  */
 class SC_Helper_Mail {
 
@@ -136,11 +136,11 @@ class SC_Helper_Mail {
         $objProduct = new SC_Product_Ex();
         $objQuery->setOrder('shipping_id');
         $arrRet = $objQuery->select('*', 'dtb_shipping', 'order_id = ?', array($order_id));
-        foreach (array_keys($arrRet) as $key) {
+        foreach ($arrRet as $key => $value) {
             $objQuery->setOrder('shipping_id');
             $arrItems = $objQuery->select('*', 'dtb_shipment_item', 'order_id = ? AND shipping_id = ?',
                                           array($order_id, $arrRet[$key]['shipping_id']));
-            foreach ($arrItems as $itemKey => $arrDetail) {
+            foreach ($arrItems as $arrDetail) {
                 foreach ($arrDetail as $detailKey => $detailVal) {
                     $arrRet[$key]['shipment_item'][$arrDetail['product_class_id']][$detailKey] = $detailVal;
                 }
@@ -265,6 +265,7 @@ class SC_Helper_Mail {
 
     // メール配信履歴への登録
     function sfSaveMailHistory($order_id, $template_id, $subject, $body) {
+        $sqlval = array();
         $sqlval['subject'] = $subject;
         $sqlval['order_id'] = $order_id;
         $sqlval['template_id'] = $template_id;
@@ -337,7 +338,7 @@ class SC_Helper_Mail {
             $toCustomerMail = $objMailText->fetch('mail_templates/customer_regist_mail.tpl');
         }
 
-        $objMail = new SC_SendMail();
+        $objMail = new SC_SendMail_Ex();
         $objMail->setItem(
             ''                    // 宛先
             , $subject              // サブジェクト

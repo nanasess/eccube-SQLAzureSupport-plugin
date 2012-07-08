@@ -2,7 +2,7 @@
 /*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2011 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -29,7 +29,7 @@ require_once CLASS_EX_REALDIR . 'page_extends/admin/LC_Page_Admin_Ex.php';
  *
  * @package Page
  * @author LOCKON CO.,LTD.
- * @version $Id: LC_Page_Admin_Products_Class.php 21743 2012-04-14 18:05:06Z AMUAMU $
+ * @version $Id: LC_Page_Admin_Products_Class.php 21909 2012-06-11 07:32:31Z shutta $
  */
 class LC_Page_Admin_Products_Class extends LC_Page_Admin_Ex {
 
@@ -156,10 +156,9 @@ class LC_Page_Admin_Products_Class extends LC_Page_Admin_Ex {
     /**
      * 有効な規格情報の取得
      *
-     * @param array $objFormParam フォームパラメータークラス
      * @return array 規格情報
      */
-    function lfGetClass($arrData) {
+    function lfGetClass() {
         $objQuery =& SC_Query_Ex::getSingletonInstance();
 
         $where = 'del_flg <> 1';

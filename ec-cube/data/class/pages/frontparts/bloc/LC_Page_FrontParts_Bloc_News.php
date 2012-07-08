@@ -2,7 +2,7 @@
 /*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2011 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -29,7 +29,7 @@ require_once CLASS_EX_REALDIR . 'page_extends/frontparts/bloc/LC_Page_FrontParts
  *
  * @package Page
  * @author LOCKON CO.,LTD.
- * @version $Id: LC_Page_FrontParts_Bloc_News.php 21771 2012-04-18 09:45:37Z shutta $
+ * @version $Id: LC_Page_FrontParts_Bloc_News.php 21935 2012-06-21 06:02:41Z pineray $
  */
 class LC_Page_FrontParts_Bloc_News extends LC_Page_FrontParts_Bloc_Ex {
 
@@ -134,7 +134,7 @@ class LC_Page_FrontParts_Bloc_News extends LC_Page_FrontParts_Bloc_Ex {
 
         // モバイルサイトのセッション保持 (#797)
         if (SC_Display_Ex::detectDevice() == DEVICE_TYPE_MOBILE) {
-            foreach (array_keys($arrNewsList) as $key) {
+            foreach ($arrNewsList as $key => $value) {
                 $arrRow =& $arrNewsList[$key];
                 if (SC_Utils_Ex::isAppInnerUrl($arrRow['news_url'])) {
                     $netUrl = new Net_URL($arrRow['news_url']);

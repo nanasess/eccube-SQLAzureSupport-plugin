@@ -2,7 +2,7 @@
 /*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2011 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -29,7 +29,7 @@ require_once CLASS_EX_REALDIR . 'page_extends/admin/LC_Page_Admin_Ex.php';
  *
  * @package Page
  * @author LOCKON CO.,LTD.
- * @version $Id: LC_Page_Admin_Products_Review.php 21743 2012-04-14 18:05:06Z AMUAMU $
+ * @version $Id: LC_Page_Admin_Products_Review.php 21954 2012-07-03 13:05:04Z h_yoshimoto $
  */
 class LC_Page_Admin_Products_Review extends LC_Page_Admin_Ex {
 
@@ -97,18 +97,23 @@ class LC_Page_Admin_Products_Review extends LC_Page_Admin_Ex {
 
         $this->arrForm = $objFormParam->getHashArray();
         $this->arrHidden = $this->lfSetHidden($this->arrForm);
+		
+		// 入力パラメーターチェック
+		$this->arrErr = $this->lfCheckError($objFormParam);
+		if(!SC_Utils_Ex::isBlank($this->arrErr)) {
+            return;
+        }
 
         switch ($this->getMode()) {
             case 'delete':
                 $this->lfDeleteReview($this->arrForm['review_id']);
             case 'search':
             case 'csv':
-                // エラーチェック
-                $this->arrErr = $this->lfCheckError($objFormParam);
-                if (!$this->arrErr) {
-                    // 検索条件を取得
-                    list($where, $arrWhereVal) = $this->lfGetWhere($this->arrForm);
-                }
+                
+				// 検索条件を取得
+				list($where, $arrWhereVal) = $this->lfGetWhere($this->arrForm);
+				// 検索結果を取得
+				$this->arrReview = $this->lfGetReview($this->arrForm, $where, $arrWhereVal);
 
                 //CSVダウンロード
                 if ($this->getMode() == 'csv') {
@@ -116,9 +121,7 @@ class LC_Page_Admin_Products_Review extends LC_Page_Admin_Ex {
 
                     SC_Response_Ex::actionExit();
                 }
-
-                // 検索条件を取得
-                $this->arrReview = $this->lfGetReview($this->arrForm, $where, $arrWhereVal);
+				
                 break;
             default:
                 break;
@@ -149,7 +152,6 @@ class LC_Page_Admin_Products_Review extends LC_Page_Admin_Ex {
 
         switch ($this->getMode()) {
             case 'search':
-                $objErr->doFunc(array('投稿者', 'search_startyear', 'search_startmonth', 'search_startday'), array('CHECK_DATE'));
                 $objErr->doFunc(array('開始日', 'search_startyear', 'search_startmonth', 'search_startday'), array('CHECK_DATE'));
                 $objErr->doFunc(array('終了日', 'search_endyear', 'search_endmonth', 'search_endday'), array('CHECK_DATE'));
                 $objErr->doFunc(array('開始日', '終了日', 'search_startyear', 'search_startmonth', 'search_startday', 'search_endyear', 'search_endmonth', 'search_endday'), array('CHECK_SET_TERM'));

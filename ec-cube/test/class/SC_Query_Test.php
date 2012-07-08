@@ -2,7 +2,7 @@
 /*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2011 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -30,7 +30,7 @@ require_once(realpath(dirname(__FILE__)) . "/../../data/class/SC_Query.php");
  * SC_Query のテストケース.
  *
  * @author Kentaro Ohkouchi
- * @version $Id: SC_Query_Test.php 21481 2012-02-10 20:48:00Z Seasoft $
+ * @version $Id: SC_Query_Test.php 21867 2012-05-30 07:37:01Z nakanishi $
  */
 class SC_Query_Test extends PHPUnit_Framework_TestCase {
 

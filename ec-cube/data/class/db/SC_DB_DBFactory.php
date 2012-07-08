@@ -2,7 +2,7 @@
 /*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2011 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -43,9 +43,6 @@ class SC_DB_DBFactory {
 
             case 'pgsql':
                 return new SC_DB_DBFactory_PGSQL();
-
-            case 'sqlsrv':
-                return new SC_DB_DBFactory_SQLSRV();
 
             default:
                 return new SC_DB_DBFactory();

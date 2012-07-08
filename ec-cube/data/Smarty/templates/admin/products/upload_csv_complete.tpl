@@ -2,7 +2,7 @@
 /*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2011 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -31,7 +31,7 @@
             <tr>
                 <td>
                     <!--{foreach item=err from=$arrRowErr}-->
-                        <span class="attention"><!--{$err}--></span>
+                        <span class="attention"><!--{$err}--></span><br/>
                     <!--{/foreach}-->
                 </td>
             </tr>

@@ -9,12 +9,12 @@ require_once CLASS_REALDIR . 'pages/upgrade/helper/LC_Upgrade_Helper_Json.php';
  *
  * @package Page
  * @author LOCKON CO.,LTD.
- * @version $Id: LC_Page_Upgrade_Base.php 21750 2012-04-16 10:53:39Z shutta $
+ * @version $Id: LC_Page_Upgrade_Base.php 21951 2012-07-02 12:04:24Z pineray $
  */
 class LC_Page_Upgrade_Base extends LC_Page_Ex {
     function isValidIP() {
         $objLog  = new LC_Upgrade_Helper_Log;
-        $masterData = new SC_DB_MasterData();
+        $masterData = new SC_DB_MasterData_Ex();
         $arrOstoreIPs = $masterData->getMasterData('mtb_ownersstore_ips');
 
         if (isset($_SERVER['REMOTE_ADDR'])

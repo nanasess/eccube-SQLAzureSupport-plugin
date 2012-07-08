@@ -2,7 +2,7 @@
 /*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2011 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -29,7 +29,7 @@ require_once CLASS_EX_REALDIR . 'page_extends/admin/LC_Page_Admin_Ex.php';
  *
  * @package Page
  * @author LOCKON CO.,LTD.
- * @version $Id: LC_Page_Admin_Order_Status.php 21750 2012-04-16 10:53:39Z shutta $
+ * @version $Id: LC_Page_Admin_Order_Status.php 21867 2012-05-30 07:37:01Z nakanishi $
  */
 class LC_Page_Admin_Order_Status extends LC_Page_Admin_Ex {
 

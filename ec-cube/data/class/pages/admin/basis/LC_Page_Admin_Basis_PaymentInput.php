@@ -2,7 +2,7 @@
 /*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2011 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -29,7 +29,7 @@ require_once CLASS_EX_REALDIR . 'page_extends/admin/LC_Page_Admin_Ex.php';
  *
  * @package Page
  * @author LOCKON CO.,LTD.
- * @version $Id: LC_Page_Admin_Basis_PaymentInput.php 21810 2012-05-06 16:27:10Z nanasess $
+ * @version $Id: LC_Page_Admin_Basis_PaymentInput.php 21894 2012-06-07 07:50:27Z Yammy $
  */
 class LC_Page_Admin_Basis_PaymentInput extends LC_Page_Admin_Ex {
 
@@ -103,7 +103,7 @@ class LC_Page_Admin_Basis_PaymentInput extends LC_Page_Admin_Ex {
                 $objFormParam->convParam();
                 $post = $objFormParam->getHashArray();
                 // ファイル存在チェック
-                $this->arrErr = $this->objUpFile->checkEXISTS($post['image_key']);
+                $this->arrErr = $this->objUpFile->checkExists($post['image_key']);
                 // 画像保存処理
                 $this->arrErr[$post['image_key']] = $this->objUpFile->makeTempFile($post['image_key']);
                 $this->tpl_payment_id = $post['payment_id'];

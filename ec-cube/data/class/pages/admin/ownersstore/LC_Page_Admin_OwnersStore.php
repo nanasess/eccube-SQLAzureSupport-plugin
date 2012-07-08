@@ -2,7 +2,7 @@
 /*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2011 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -29,7 +29,7 @@ require_once CLASS_EX_REALDIR . 'page_extends/admin/LC_Page_Admin_Ex.php';
  *
  * @package Page
  * @author LOCKON CO.,LTD.
- * @version $Id: LC_Page_Admin_OwnersStore.php 21843 2012-05-19 04:14:03Z h_yoshimoto $
+ * @version $Id: LC_Page_Admin_OwnersStore.php 21918 2012-06-12 12:59:12Z shutta $
  */
 class LC_Page_Admin_OwnersStore extends LC_Page_Admin_Ex {
 
@@ -190,8 +190,15 @@ class LC_Page_Admin_OwnersStore extends LC_Page_Admin_Ex {
         }
         // DBからプラグイン情報を取得
         $plugins = SC_Plugin_Util_Ex::getAllPlugin();
-
+        
         foreach ($plugins as $key => $plugin) {
+            // ロゴファイルへのパスを生成（ロゴが無い場合はNO_IMAGEを表示）
+            if(file_exists(PLUGIN_HTML_REALDIR . $plugins[$key]['plugin_code'] . "/logo.png") === true){
+                $plugins[$key]['logo'] = ROOT_URLPATH . "plugin/" . $plugins[$key]['plugin_code'] . "/logo.png";
+            } else {
+                $plugins[$key]['logo'] = IMAGE_SAVE_URLPATH . "noimage_plugin_list.gif";
+            }
+            
             // 設定ファイルがあるかを判定.
             $plugins[$key]['config_flg'] = $this->isContainsFile(PLUGIN_UPLOAD_REALDIR . $plugin['plugin_code'], 'config.php');
             if ($plugins[$key]['enable'] === PLUGIN_ENABLE_TRUE) {
@@ -330,8 +337,18 @@ class LC_Page_Admin_OwnersStore extends LC_Page_Admin_Ex {
      * @return array エラー情報を格納した連想配列.
      */
     function installPlugin($upload_file_file_name, $key) {
+        // インストール前に不要なファイルを消しておきます.
+        SC_Helper_FileManager_Ex::deleteFile(DOWNLOADS_TEMP_PLUGIN_INSTALL_DIR, false);
+        
+        //シンタックスエラーがあるtar.gzをアップ後、削除するとたまにディレクトリが消えるので追加
+        $this->makeDir(PLUGIN_UPLOAD_REALDIR);
 
         $arrErr = array();
+        // 必須拡張モジュールのチェック
+        $arrErr = SC_Plugin_Util_Ex::checkExtension();
+        if ($this->isError($arrErr) === true) {
+            return $arrErr;
+        }
         // ファイルをチェックし一時展開用ディレクトリに展開します.
         $arrErr = $this->unpackPluginFile($upload_file_file_name, DOWNLOADS_TEMP_PLUGIN_INSTALL_DIR, $key);
         if ($this->isError($arrErr) === true) {
@@ -399,7 +416,7 @@ class LC_Page_Admin_OwnersStore extends LC_Page_Admin_Ex {
         }
 
         // 不要なファイルの削除
-        SC_Helper_FileManager_EX::deleteFile(DOWNLOADS_TEMP_PLUGIN_INSTALL_DIR, false);
+        SC_Helper_FileManager_Ex::deleteFile(DOWNLOADS_TEMP_PLUGIN_INSTALL_DIR, false);
         return $arrErr;
     }
 
@@ -537,6 +554,9 @@ class LC_Page_Admin_OwnersStore extends LC_Page_Admin_Ex {
      * @return array エラー情報を格納した連想配列.
      */
     function updatePlugin($target_plugin, $upload_file_name) {
+        // アップデート前に不要なファイルを消しておきます.
+        SC_Helper_FileManager_Ex::deleteFile(DOWNLOADS_TEMP_PLUGIN_UPDATE_DIR, false);
+        
         $arrErr = array();
 
         // ファイルをチェックし展開します.
@@ -592,14 +612,14 @@ class LC_Page_Admin_OwnersStore extends LC_Page_Admin_Ex {
         }
 
         // 正常にアップロードされているかをチェック.
-        $arrErr = $objUpFile->checkEXISTS($file_key);
+        $arrErr = $objUpFile->checkExists($file_key);
         if ($this->isError($arrErr) === true) {
             return $arrErr;
         }
         $objUpFile->moveTempFile();
         // 解凍
         $update_plugin_file_path = $unpack_dir . $unpack_file_name;
-        if (!SC_Helper_FileManager_Ex::unpackFile($update_plugin_file_path)) {
+        if (!$this->unpackPluginArchive($update_plugin_file_path)) {
             $arrErr['plugin_file'] = '※ 解凍に失敗しました。<br/>';
             return $arrErr;
         }
@@ -616,10 +636,6 @@ class LC_Page_Admin_OwnersStore extends LC_Page_Admin_Ex {
         $arrErr = array();
         // プラグインファイルを読み込みます.
         $plugin_class_file_path = PLUGIN_UPLOAD_REALDIR . $plugin['plugin_code'] . '/' . $plugin['class_name'] . '.php';
-        $arrErr = $this->requirePluginFile($plugin_class_file_path, 'plugin_error');
-        if ($this->isError($arrErr) === true) {
-            return $arrErr;
-        }
         
         // プラグインが有効な場合に無効化処理を実行
         if($plugin['enable'] == PLUGIN_ENABLE_TRUE){
@@ -634,9 +650,6 @@ class LC_Page_Admin_OwnersStore extends LC_Page_Admin_Ex {
         
         // アンインストール処理を実行します.
         $arrErr = $this->execPlugin($plugin, $plugin['class_name'], 'uninstall');
-        if ($this->isError($arrErr) === true) {
-            return $arrErr;
-        }
         // プラグインの削除処理.
         $arrErr = $this->deletePlugin($plugin['plugin_id'], $plugin['plugin_code']);
 
@@ -733,7 +746,7 @@ class LC_Page_Admin_OwnersStore extends LC_Page_Admin_Ex {
         // AUTHOR_SITE_URLが定義されているか判定.
         $author_site_url = $arrPluginInfo['AUTHOR_SITE_URL'];
         if ($author_site_url !== null) {
-            $arr_sqlval_plugin['author_site_url'] = $arrPluginInfo['AUTHOR'];
+            $arr_sqlval_plugin['author_site_url'] = $arrPluginInfo['AUTHOR_SITE_URL'];
         }
         // PLUGIN_SITE_URLが定義されているか判定.
         $plugin_site_url = $arrPluginInfo['PLUGIN_SITE_URL'];
@@ -793,7 +806,14 @@ class LC_Page_Admin_OwnersStore extends LC_Page_Admin_Ex {
     function requirePluginFile($file_path, $key) {
         $arrErr = array();
         if (file_exists($file_path)) {
-            require_once $file_path;
+            //requireだとファイルの存在チェックしかできないのでexecで実行してみる(syntax errorが見られる)
+            $result = exec("php -l " . $file_path);
+            //Errors parsingがあったらエラーを投げる
+            if(strpos($result, 'Errors parsing') !== false){
+                $arrErr[$key] = '※ ' . $file_path .'のソース内にエラーが発見されました<br/>';
+            } else {
+                require_once $file_path;
+            }
         } else {
             $arrErr[$key] = '※ ' . $file_path .'の読み込みに失敗しました。<br/>';
         }
@@ -812,11 +832,37 @@ class LC_Page_Admin_OwnersStore extends LC_Page_Admin_Ex {
     function execPlugin($obj, $class_name, $exec_func) {
         $arrErr = array();
         if (method_exists($class_name, $exec_func) === true) {
-            call_user_func(array($class_name, $exec_func), $obj);
+            $ret = call_user_func(array($class_name, $exec_func), $obj);
+            if (!(is_null($ret) || $ret === true)) {
+                $arrErr[$obj['plugin_code']] = $ret;
+            }
         } else {
             $arrErr['plugin_error'] = '※ ' . $class_name . '.php に' . $exec_func . 'が見つかりません。<br/>';
         }
         return $arrErr;
+    }
+    
+    /**
+     * プラグインアーカイブを解凍する.
+     *
+     * @param string $path アーカイブパス
+     * @return boolean Archive_Tar::extractModify()のエラー
+     */
+    function unpackPluginArchive($path) {
+        // 圧縮フラグTRUEはgzip解凍をおこなう
+        $tar = new Archive_Tar($path, true);
+
+        $dir = dirname($path);
+        $file_name = basename($path);
+
+        // 拡張子を切り取る
+        $unpacking_name = preg_replace("/(\.tar|\.tar\.gz)$/", '', $file_name);
+
+        // 指定されたフォルダ内に解凍する
+        $result = $tar->extractModify($dir. '/', $unpacking_name);
+        GC_Utils_Ex::gfPrintLog('解凍：' . $dir.'/'.$file_name.'->'.$dir.'/'.$unpacking_name);
+
+        return $result;
     }
 
     /**

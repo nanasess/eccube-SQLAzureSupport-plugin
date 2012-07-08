@@ -25,7 +25,7 @@
  * プラグインのヘルパークラス.
  *
  * @package Helper
- * @version $Id: SC_Helper_Plugin.php 21754 2012-04-17 05:35:01Z h_yoshimoto $
+ * @version $Id: SC_Helper_Plugin.php 21956 2012-07-04 00:20:43Z pineray $
  */
 class SC_Helper_Plugin {
     // プラグインのインスタンスの配列.
@@ -77,8 +77,15 @@ class SC_Helper_Plugin {
      *
      * @return object SC_Helper_Pluginオブジェクト
      */
-    function getSingletonInstance($plugin_activate_flg = true) {
+    static function getSingletonInstance($plugin_activate_flg = true) {
         if (!isset($GLOBALS['_SC_Helper_Plugin_instance']) || is_null($GLOBALS['_SC_Helper_Plugin_instance'])) {
+            // プラグインのローダーがDB接続を必要とするため、
+            // SC_Queryインスタンス生成後のみオブジェクトを生成する。
+            require_once CLASS_EX_REALDIR . 'SC_Query_Ex.php';
+            if (is_null(SC_Query_Ex::getPoolInstance())) {
+                return false;
+            }
+
             $GLOBALS['_SC_Helper_Plugin_instance'] = new SC_Helper_Plugin_Ex();
             $GLOBALS['_SC_Helper_Plugin_instance']->load($plugin_activate_flg);
         }
@@ -101,7 +108,7 @@ class SC_Helper_Plugin {
             && is_array($this->arrRegistedPluginActions[$hook_point])) {
 
             krsort($this->arrRegistedPluginActions[$hook_point]);
-            foreach ($this->arrRegistedPluginActions[$hook_point] as $priority => $arrFuncs) {
+            foreach ($this->arrRegistedPluginActions[$hook_point] as $arrFuncs) {
 
                 foreach ($arrFuncs as $func) {
                     if (!is_null($func['function'])) {
@@ -244,5 +251,18 @@ class SC_Helper_Plugin {
                 'php_path' => $key
             );
         }
+    }
+
+    /**
+     * Utility function to set a hook point.
+     *
+     * @param string    $hook_point  hook point
+     * @param array     $arrArgs     argument passing to callback function
+     * @param boolean   $plugin_activate_flg 
+     * @return void
+     */
+    public static function hook($hook_point, $arrArgs = array(), $plugin_activate_flg = PLUGIN_ACTIVATE_FLAG) {
+        $objPlugin = SC_Helper_Plugin::getSingletonInstance($plugin_activate_flg);
+        $objPlugin->doAction($hook_point, $arrArgs);
     }
 }

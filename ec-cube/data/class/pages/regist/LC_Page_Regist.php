@@ -2,7 +2,7 @@
 /*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2011 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -29,7 +29,7 @@ require_once CLASS_EX_REALDIR . 'page_extends/LC_Page_Ex.php';
  *
  * @package Page
  * @author LOCKON CO.,LTD.
- * @version $Id: LC_Page_Regist.php 21820 2012-05-10 08:57:04Z adachi $
+ * @version $Id: LC_Page_Regist.php 21950 2012-07-02 11:42:51Z pineray $
  */
 class LC_Page_Regist extends LC_Page_Ex {
 
@@ -69,7 +69,7 @@ class LC_Page_Regist extends LC_Page_Ex {
             case 'regist':
             //--　本登録完了のためにメールから接続した場合
                 //-- 入力チェック
-                $this->arrErr       = $this->lfErrorCheck($_GET);
+                $this->arrErr       = $this->lfCheckError($_GET);
                 if ($this->arrErr) SC_Utils_Ex::sfDispSiteError(FREE_ERROR_MSG, '', true, $this->arrErr['id']);
 
                 $registSecretKey    = $this->lfRegistData($_GET);   //本会員登録（フラグ変更）
@@ -122,7 +122,7 @@ class LC_Page_Regist extends LC_Page_Ex {
      * @access private
      * @return array エラーの配列
      */
-    function lfErrorCheck($array) {
+    function lfCheckError($array) {
         $objErr     = new SC_CheckError_Ex($array);
 
         if (preg_match("/^[[:alnum:]]+$/", $array['id'])) {
@@ -164,7 +164,7 @@ class LC_Page_Regist extends LC_Page_Ex {
         $objMailText->assign('name02', $data['name02']);
         $toCustomerMail = $objMailText->fetch('mail_templates/customer_regist_mail.tpl');
         $subject = $objHelperMail->sfMakesubject('会員登録が完了しました。');
-        $objMail = new SC_SendMail();
+        $objMail = new SC_SendMail_Ex();
 
         $objMail->setItem(
                               ''                                // 宛先

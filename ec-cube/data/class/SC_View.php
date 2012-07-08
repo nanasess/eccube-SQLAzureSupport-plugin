@@ -2,7 +2,7 @@
 /*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2011 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -77,7 +77,7 @@ class SC_View {
     }
 
     // テンプレートの処理結果を取得
-    function fetch($template, $no_error=false) {
+    function fetch($template) {
         return $this->_smarty->fetch($template);
     }
 
@@ -111,7 +111,7 @@ class SC_View {
      * @param LC_Page_Ex $objPage 
      * @return void
      */
-    function setPage(LC_Page_Ex $objPage) {
+    function setPage($objPage) {
        $this->objPage = $objPage;
     }
 
@@ -191,7 +191,7 @@ class SC_View {
 
     /* サイト初期設定 */
     function initpath() {
-
+        $array = array();
         $array['tpl_mainnavi'] = realpath(dirname(__FILE__)) . '/../Smarty/templates/frontparts/mainnavi.tpl';
 
         $objDb = new SC_Helper_DB_Ex();

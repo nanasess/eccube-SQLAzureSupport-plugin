@@ -2,7 +2,7 @@
 /*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2011 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -28,7 +28,7 @@
  * よって、このファイルで構文エラーが発生すると、EC-CUBE はエラーを捕捉できない。
  * @package Util
  * @author LOCKON CO.,LTD.
- * @version $Id: GC_Utils.php 21704 2012-04-03 09:31:27Z Seasoft $
+ * @version $Id: GC_Utils.php 21927 2012-06-20 02:57:43Z pineray $
  */
 class GC_Utils {
 
@@ -272,6 +272,7 @@ class GC_Utils {
 
     function gfMailHeaderAddr($str) {
         $addrs = explode(',', $str); //アドレスを配列に入れる
+        $mailaddrs = array();
         foreach ($addrs as $addr) {
             if (preg_match("/^(.+)<(.+)>$/", $addr, $matches)) {
                 //引数が「名前<メールアドレス>」の場合

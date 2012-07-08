@@ -2,7 +2,7 @@
 /*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2011 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -31,7 +31,7 @@ require_once CLASS_REALDIR . 'pages/admin/customer/LC_Page_Admin_Customer_Search
  *
  * @package Page
  * @author LOCKON CO.,LTD.
- * @version $Id: LC_Page_Admin_Customer_SearchCustomer_Ex.php 21479 2012-02-10 19:20:07Z Seasoft $
+ * @version $Id: LC_Page_Admin_Customer_SearchCustomer_Ex.php 21867 2012-05-30 07:37:01Z nakanishi $
  */
 class LC_Page_Admin_Customer_SearchCustomer_Ex extends LC_Page_Admin_Customer_SearchCustomer
 {

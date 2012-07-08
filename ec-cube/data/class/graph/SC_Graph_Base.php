@@ -2,7 +2,7 @@
 /*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2011 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -128,7 +128,7 @@ define('LEGEND_RIGHT', 10);
  *
  * @package Graph
  * @author LOCKON CO.,LTD.
- * @version $Id: SC_Graph_Base.php 21767 2012-04-18 08:10:53Z shutta $
+ * @version $Id: SC_Graph_Base.php 21867 2012-05-30 07:37:01Z nakanishi $
  */
 class SC_Graph_Base {
 

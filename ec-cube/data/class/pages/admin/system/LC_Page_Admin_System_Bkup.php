@@ -2,7 +2,7 @@
 /*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2011 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -29,7 +29,7 @@ require_once CLASS_EX_REALDIR . 'page_extends/admin/LC_Page_Admin_Ex.php';
  *
  * @package Page
  * @author LOCKON CO.,LTD.
- * @version $Id: LC_Page_Admin_System_Bkup.php 21825 2012-05-12 01:49:42Z Seasoft $
+ * @version $Id: LC_Page_Admin_System_Bkup.php 21935 2012-06-21 06:02:41Z pineray $
  */
 class LC_Page_Admin_System_Bkup extends LC_Page_Admin_Ex {
 
@@ -423,7 +423,7 @@ class LC_Page_Admin_System_Bkup extends LC_Page_Admin_Ex {
     /**
      * バックアップの一覧を取得する
      */
-    function lfGetBkupData($sql_option = '', $filter_bkup_name) {
+    function lfGetBkupData($sql_option = '', $filter_bkup_name = '') {
         $objQuery =& SC_Query_Ex::getSingletonInstance();
 
         // テーブルから取得
@@ -449,7 +449,7 @@ class LC_Page_Admin_System_Bkup extends LC_Page_Admin_Ex {
                     continue 1;
                 }
                 unset($row);
-                foreach (array_keys($ret) as $key) {
+                foreach ($ret as $key => $value) {
                     if ($ret[$key]['bkup_name'] == $bkup_name) {
                         $row =& $ret[$key];
                     }
