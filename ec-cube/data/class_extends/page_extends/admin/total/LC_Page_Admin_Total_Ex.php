@@ -188,6 +188,97 @@ class LC_Page_Admin_Total_Ex extends LC_Page_Admin_Total
         }
     }
 
+    /** 年代別集計 **/
+    public function lfGetOrderAge($type, $sdate, $edate)
+    {
+        if (DB_TYPE != 'sqlsrv') {
+            return parent::lfGetOrderTerm($type, $sdate, $edate);
+        }
+
+        $objQuery = SC_Query_Ex::getSingletonInstance();
+
+        list($where, $arrWhereVal) = $this->lfGetWhereMember('create_date', $sdate, $edate, $type);
+
+        $dbFactory = SC_DB_DBFactory_Ex::getInstance();
+        $col = "age" ;
+        $col .= ',COUNT(order_id) AS order_count';
+        $col .= ',SUM(total) AS total';
+        $col .= ',AVG(total) AS total_average';
+
+        $from   = "(" . $dbFactory->getOrderTotalAgeColSql() . ") as t1";
+
+        $where .= ' AND del_flg = 0 AND status <> ?';
+        $arrWhereVal[] = ORDER_CANCEL;
+
+        $objQuery->setGroupBy('age');
+        $objQuery->setOrder('age DESC');
+        $arrTotalResults = $objQuery->select($col, $from, $where, $arrWhereVal);
+
+        foreach ($arrTotalResults as $key => $value) {
+            $arrResult =& $arrTotalResults[$key];
+            $age_key = $arrResult['age'];
+            if ($age_key != '') {
+                $arrResult['age_name'] = $arrResult['age'] . '代';
+            } else {
+                $arrResult['age_name'] = '未回答';
+            }
+
+        }
+        $tpl_image = $this->lfGetGraphBar($arrTotalResults, 'age_name', 'age_' . $type, '(年齢)', '(売上合計)', $sdate, $edate);
+
+        return array($arrTotalResults, $tpl_image);
+    }
+
+    /** 会員別集計 **/
+    public function lfGetOrderMember($type, $sdate, $edate)
+    {
+        if (DB_TYPE != 'sqlsrv') {
+            return parent::lfGetOrderTerm($type, $sdate, $edate);
+        }
+
+        $objQuery = SC_Query_Ex::getSingletonInstance();
+
+        list($where, $arrWhereVal) = $this->lfGetWhereMember('create_date', $sdate, $edate, $type);
+        $where .= ' AND del_flg = 0 AND status <> ?';
+        $arrWhereVal[] = ORDER_CANCEL;
+
+        // 会員集計の取得
+        $col = <<< __EOS__
+            COUNT(order_id) AS order_count,
+            SUM(total) AS total,
+            AVG(total) AS total_average,
+            member,
+            order_sex
+__EOS__;
+
+        $from       = '(
+    SELECT order_id,total,order_sex,create_date,del_flg,status,
+    CASE
+        WHEN customer_id <> 0 THEN 1
+    ELSE 0
+    END AS member
+        FROM dtb_order
+    ) as t1';
+
+        $objQuery->setGroupBy('member, order_sex');
+
+        $arrTotalResults = $objQuery->select($col, $from, $where, $arrWhereVal);
+
+        foreach ($arrTotalResults as $key => $value) {
+            $arrResult =& $arrTotalResults[$key];
+            $member_key = $arrResult['order_sex'];
+            if ($member_key != '') {
+                $arrResult['member_name'] = (($arrResult['member']) ? '会員' : '非会員') . $this->arrSex[$member_key];
+            } else {
+                $arrResult['member_name'] = '未回答';
+            }
+        }
+
+        $tpl_image = $this->lfGetGraphPie($arrTotalResults, 'member_name', 'member', '(売上比率)', $sdate, $edate);
+
+        return array($arrTotalResults, $tpl_image);
+    }
+
     /*
      * 日付の配列を作成する
      *
