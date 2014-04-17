@@ -192,7 +192,7 @@ class LC_Page_Admin_Total_Ex extends LC_Page_Admin_Total
     public function lfGetOrderAge($type, $sdate, $edate)
     {
         if (DB_TYPE != 'sqlsrv') {
-            return parent::lfGetOrderTerm($type, $sdate, $edate);
+            return parent::lfGetOrderAge($type, $sdate, $edate);
         }
 
         $objQuery = SC_Query_Ex::getSingletonInstance();
@@ -233,7 +233,7 @@ class LC_Page_Admin_Total_Ex extends LC_Page_Admin_Total
     public function lfGetOrderMember($type, $sdate, $edate)
     {
         if (DB_TYPE != 'sqlsrv') {
-            return parent::lfGetOrderTerm($type, $sdate, $edate);
+            return parent::lfGetOrderMember($type, $sdate, $edate);
         }
 
         $objQuery = SC_Query_Ex::getSingletonInstance();
