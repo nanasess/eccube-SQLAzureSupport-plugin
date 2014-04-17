@@ -64,23 +64,21 @@ class LC_Page_Products_List_Ex extends LC_Page_Products_List
         parent::destroy();
     }
 
+    // 2.13.2 向けにコミットの予定
     /* 商品一覧の表示 */
     public function lfGetProductsList($searchCondition, $disp_number, $startno, &$objProduct)
     {
-        if (DB_TYPE != 'sqlsrv') {
-            return parent::lfGetProductsList($searchCondition, $disp_number, $startno, $objProduct);
-        } else {
-            $arrOrderVal = array();
+        $arrOrderVal = array();
 
-            $objQuery =& SC_Query_Ex::getSingletonInstance();
-            // 表示順序
-            switch ($this->orderby) {
-                // 販売価格が安い順
+        $objQuery =& SC_Query_Ex::getSingletonInstance();
+        // 表示順序
+        switch ($this->orderby) {
+            // 販売価格が安い順
             case 'price':
                 $objProduct->setProductsOrder('price02', 'dtb_products_class', 'ASC');
                 break;
 
-                // 新着順
+            // 新着順
             case 'date':
                 $objProduct->setProductsOrder('create_date', 'dtb_products', 'DESC');
                 break;
@@ -92,37 +90,31 @@ class LC_Page_Products_List_Ex extends LC_Page_Products_List
                 } else {
                     $dtb_product_categories = 'dtb_product_categories';
                 }
-                $order = <<< __EOS__
-                    (
-                        SELECT TOP 1
-                            T3.rank * 2147483648 + T2.rank
-                        FROM
-                            $dtb_product_categories T2
-                            JOIN dtb_category T3
-                              ON T2.category_id = T3.category_id
-                        WHERE T2.product_id = alldtl.product_id
-                        ORDER BY T3.rank DESC, T2.rank DESC
-                    ) DESC
-                    ,product_id DESC
-__EOS__;
-                $objQuery->setOrder($order);
+                $col = 'T3.rank * 2147483648 + T2.rank';
+                $from = "$dtb_product_categories T2 JOIN dtb_category T3 ON T2.category_id = T3.category_id";
+                $where = 'T2.product_id = alldtl.product_id';
+                $objQuery->setOrder('T3.rank DESC, T2.rank DESC');
+                $objQuery->setLimit(1);
+                $sub_sql = $objQuery->getSqlWithLimit($col, $from, $where);
+
+                $objQuery->setOrder("($sub_sql) DESC ,product_id DESC");
                 break;
-            }
-            // 取得範囲の指定(開始行番号、行数のセット)
-            $objQuery->setLimitOffset($disp_number, $startno);
-            $objQuery->setWhere($searchCondition['where']);
-
-            // 表示すべきIDとそのIDの並び順を一気に取得
-            $arrProductId = $objProduct->findProductIdsOrder($objQuery, array_merge($searchCondition['arrval'], $arrOrderVal));
-
-            $objQuery =& SC_Query_Ex::getSingletonInstance();
-            $arrProducts = $objProduct->getListByProductIds($objQuery, $arrProductId);
-
-            // 規格を設定
-            $objProduct->setProductsClassByProductIds($arrProductId);
-            $arrProducts['productStatus'] = $objProduct->getProductStatus($arrProductId);
-            return $arrProducts;
         }
+        // 取得範囲の指定(開始行番号、行数のセット)
+        $objQuery->setLimitOffset($disp_number, $startno);
+        $objQuery->setWhere($searchCondition['where']);
+
+        // 表示すべきIDとそのIDの並び順を一気に取得
+        $arrProductId = $objProduct->findProductIdsOrder($objQuery, array_merge($searchCondition['arrval'], $arrOrderVal));
+
+        $objQuery =& SC_Query_Ex::getSingletonInstance();
+        $arrProducts = $objProduct->getListByProductIds($objQuery, $arrProductId);
+
+        // 規格を設定
+        $objProduct->setProductsClassByProductIds($arrProductId);
+        $arrProducts['productStatus'] = $objProduct->getProductStatus($arrProductId);
+
+        return $arrProducts;
     }
 
 }

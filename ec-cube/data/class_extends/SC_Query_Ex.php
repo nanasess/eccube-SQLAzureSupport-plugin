@@ -46,4 +46,23 @@ class SC_Query_Ex extends SC_Query
         $_conn = MDB2::connect($dsn, $options);
         return $_conn->nextID($seq_name, false);
     }
+
+    // 2.13.2 向けにコミットの予定
+    /**
+     * 構築した SELECT 文を LIMIT OFFSET も含め取得する.
+     *
+     * @param  string SELECT 文に含めるカラム名
+     * @param  string SELECT 文に含めるテーブル名
+     * @param  string SELECT 文に含める WHERE 句
+     * @return string 構築済みの SELECT 文
+     */
+    function getSqlWithLimit($cols, $from = '', $where = '')
+    {
+        $sql = $this->getSql($cols, $from, $where);
+        $offset = $this->conn->offset;
+        $limit = $this->conn->limit;
+        $this->setLimitOffset(0, 0);
+
+        return $this->conn->_modifyQuery($sql, false, $limit, $offset);
+    }
 }

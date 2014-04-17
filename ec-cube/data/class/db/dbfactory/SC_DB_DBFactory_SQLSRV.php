@@ -61,7 +61,7 @@ class SC_DB_DBFactory_SQLSRV extends SC_DB_DBFactory {
     function sfChangeMySQL($sql){
         $sql = $this->sfChangeILIKE($sql);
         $sql = $this->sfChangeArrayToString($sql);
-        $sql = $this->sfChangeLimitOffset($sql);
+
         return $sql;
     }
 
@@ -243,64 +243,5 @@ class SC_DB_DBFactory_SQLSRV extends SC_DB_DBFactory {
     function sfChangeILIKE($sql) {
         $changesql = preg_replace('/(^|[^\w])ILIKE([^\w]|$)/i', '$1LIKE$2', $sql);
         return $changesql;
-    }
-
-    /**
-     * LIMIT, OFFSET を TOP へ置換する.
-     *
-     * TODO LIMIT, OFFSET を *_Ex クラスで置換しているものは, こちらに移行したい
-     *
-     * @access private
-     * @param string $sql SQL 文
-     * @return string 変換後の SQL 文
-     */
-    function sfChangeLimitOffset($sql) {
-        // LC_Page_Admin_Home::lfGetNewOrder()
-        $pattern = '/AS ord$/';
-        $matched = preg_match($pattern, $sql, $limit_matches);
-        if ($matched === 1) {
-            $sql = <<< __EOF__
-            SELECT
-                ord.order_id,
-                ord.customer_id,
-                ord.order_name01 AS name01,
-                ord.order_name02 AS name02,
-                ord.total,
-                ord.create_date,
-                (SELECT TOP 1
-                    det.product_name
-                FROM
-                    dtb_order_detail AS det
-                WHERE
-                    ord.order_id = det.order_id
-                ORDER BY det.order_detail_id
-                ) AS product_name,
-                (SELECT
-                    pay.payment_method
-                FROM
-                    dtb_payment AS pay
-                WHERE
-                    ord.payment_id = pay.payment_id
-                ) AS payment_method
-            FROM (
-                SELECT TOP 10
-                    order_id,
-                    customer_id,
-                    order_name01,
-                    order_name02,
-                    total,
-                    create_date,
-                    payment_id
-                FROM
-                    dtb_order AS ord
-                WHERE
-                    del_flg = 0 AND status <> ?
-                ORDER BY
-                    create_date DESC
-            ) AS ord
-__EOF__;
-            return $sql;
-        }
-        return $sql;
     }
 }
