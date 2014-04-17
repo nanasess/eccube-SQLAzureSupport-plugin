@@ -43,8 +43,11 @@ class SC_Helper_DB_Ex extends SC_Helper_DB
     function sfCountMaker($objQuery) {
         if (DB_TYPE != 'sqlsrv') {
             parent::sfCountMaker($objQuery);
-        } else {
-        /* TODO SQL Azure で INSERT INTO  SELECT をサポートしていないため未対応 */
         }
+
+        /* TODO SQL Azure で INSERT INTO  SELECT をサポートしていないため未対応 */
+        /* メソッド自体がいらないけど、歴史上のながれでのこしておく */
+        parent::sfCountMaker($objQuery);
+
     }
 }
