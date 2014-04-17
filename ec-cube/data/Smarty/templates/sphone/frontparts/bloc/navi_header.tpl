@@ -1,7 +1,7 @@
 <!--{*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2013 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -30,20 +30,20 @@
 <div class="popup_mypage">
     <!--{if $tpl_login}-->
         <p><span class="mini">ようこそ</span><br />
-        <a href="<!--{$smarty.const.HTTPS_URL|sfTrimURL}-->/mypage/login.php" rel="external"><!--{$tpl_name1|h}--> <!--{$tpl_name2|h}-->さん</a></p>
+        <a href="<!--{$smarty.const.HTTPS_URL}-->mypage/login.php" rel="external"><!--{$tpl_name1|h}--> <!--{$tpl_name2|h}-->さん</a></p>
         <!--{if $smarty.const.USE_POINT !== false}-->
             <p>所持ポイント<!--{$tpl_user_point|number_format|default:0}-->pt</p>
         <!--{/if}-->
     <!--{else}-->
         <p>ようこそ<br />
             ゲストさん</p>
-        <p><a href="<!--{$smarty.const.HTTPS_URL|sfTrimURL}-->/mypage/login.php" rel="external">ログイン</a></p>
+        <p><a href="<!--{$smarty.const.HTTPS_URL}-->mypage/login.php" rel="external">ログイン</a></p>
     <!--{/if}-->
 </div>
 
 <div class="popup_cart">
     <!--{if count($arrCartList) > 0}-->
-        <h2><a rel="external" href="<!--{$smarty.const.CART_URLPATH|h}-->">カートの中</a></h2>
+        <h2><a rel="external" href="<!--{$smarty.const.CART_URL|h}-->">カートの中</a></h2>
         <!--{foreach from=$arrCartList item=key}-->
             <div class="product_type">
                 <!--{if count($arrCartList) > 1}-->

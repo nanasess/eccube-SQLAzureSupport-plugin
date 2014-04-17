@@ -1,7 +1,7 @@
 <!--{*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2013 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -62,25 +62,18 @@
             <dt>メールアドレス</dt>
             <dd><a href="mailto:<!--{$arrForm.email.value|escape:'hex'}-->"><!--{$arrForm.email.value|escape:'hexentity'}--></a></dd>
 
-            <dt>お問い合わせ内容<br /><span class="mini">（全角1000字以下）</span></dt>
+            <dt>お問い合わせ内容</dt>
             <dd><!--{$arrForm.contents.value|h|nl2br}--></dd>
         </dl>
 
         <div class="btn_area">
             <ul class="btn_btm">
                 <li><input type="submit" value="送信" class="btn data-role-none" name="send" id="send" /></li>
-                <li><a class="btn_back" href="?" onClick="fnModeSubmit('return', '', ''); return false;">戻る</a></li>
+                <li><a class="btn_back" href="?" onClick="eccube.setModeAndSubmit('return', '', ''); return false;">戻る</a></li>
             </ul>
         </div>
     </form>
 </section>
 
-<!--▼検索バー -->
-<section id="search_area">
-    <form method="get" action="<!--{$smarty.const.ROOT_URLPATH}-->products/list.php">
-        <input type="hidden" name="<!--{$smarty.const.TRANSACTION_ID_NAME}-->" value="<!--{$transactionid}-->" />
-        <input type="hidden" name="mode" value="search" />
-        <input type="search" name="name" id="search" value="" placeholder="キーワードを入力" class="searchbox" >
-    </form>
-</section>
-<!--▲検索バー -->
+<!--{include file= 'frontparts/search_area.tpl'}-->
+

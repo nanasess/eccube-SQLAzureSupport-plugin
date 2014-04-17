@@ -2,7 +2,7 @@
 /*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2013 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -21,8 +21,10 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-class SC_InstallView extends SC_View_Ex {
-    function __construct($template_dir, $compile_dir = COMPILE_REALDIR) {
+class SC_InstallView extends SC_View_Ex
+{
+    public function __construct($template_dir, $compile_dir = COMPILE_REALDIR)
+    {
         parent::__construct();
 
         $this->_smarty->template_dir = $template_dir;

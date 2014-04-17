@@ -2,7 +2,7 @@
 /*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2013 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -21,7 +21,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-// {{{ requires
 require_once CLASS_EX_REALDIR . 'page_extends/admin/LC_Page_Admin_Ex.php';
 
 /**
@@ -29,19 +28,17 @@ require_once CLASS_EX_REALDIR . 'page_extends/admin/LC_Page_Admin_Ex.php';
  *
  * @package Page
  * @author LOCKON CO.,LTD.
- * @version $Id: LC_Page_Admin_OwnersStore_Log.php 21867 2012-05-30 07:37:01Z nakanishi $
+ * @version $Id: LC_Page_Admin_OwnersStore_Log.php 23124 2013-08-24 14:33:52Z kimoto $
  */
-class LC_Page_Admin_OwnersStore_Log extends LC_Page_Admin_Ex {
-
-    // }}}
-    // {{{ functions
-
+class LC_Page_Admin_OwnersStore_Log extends LC_Page_Admin_Ex
+{
     /**
      * Page を初期化する.
      *
      * @return void
      */
-    function init() {
+    public function init()
+    {
         parent::init();
 
         $this->tpl_mainpage = 'ownersstore/log.tpl';
@@ -56,7 +53,8 @@ class LC_Page_Admin_OwnersStore_Log extends LC_Page_Admin_Ex {
      *
      * @return void
      */
-    function process() {
+    public function process()
+    {
         $this->action();
         $this->sendResponse();
     }
@@ -66,7 +64,8 @@ class LC_Page_Admin_OwnersStore_Log extends LC_Page_Admin_Ex {
      *
      * @return void
      */
-    function action() {
+    public function action()
+    {
         switch ($this->getMode()) {
             case 'detail':
                 $objForm = $this->initParam();
@@ -85,16 +84,8 @@ class LC_Page_Admin_OwnersStore_Log extends LC_Page_Admin_Ex {
         $this->arrInstallLogs = $this->getLogs();
     }
 
-    /**
-     * デストラクタ.
-     *
-     * @return void
-     */
-    function destroy() {
-        parent::destroy();
-    }
-
-    function getLogs() {
+    public function getLogs()
+    {
         $sql =<<<END
 SELECT
     *
@@ -110,17 +101,21 @@ ORDER BY update_date DESC
 END;
         $objQuery =& SC_Query_Ex::getSingletonInstance();
         $arrRet = $objQuery->getAll($sql);
+
         return isset($arrRet) ? $arrRet : array();
     }
 
-    function initParam() {
+    public function initParam()
+    {
         $objForm = new SC_FormParam_Ex();
         $objForm->addParam('log_id', 'log_id', INT_LEN, '', array('EXIST_CHECK', 'NUM_CHECK', 'MAX_LENGTH_CHECK'));
         $objForm->setParam($_GET);
+
         return $objForm;
     }
 
-    function getLogDetail($log_id) {
+    public function getLogDetail($log_id)
+    {
             $sql =<<<END
 SELECT
     *
@@ -137,6 +132,7 @@ WHERE
 END;
         $objQuery =& SC_Query_Ex::getSingletonInstance();
         $arrRet = $objQuery->getAll($sql, array($log_id));
+
         return isset($arrRet[0]) ? $arrRet[0] : array();
     }
 }

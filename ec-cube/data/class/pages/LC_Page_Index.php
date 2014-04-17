@@ -2,7 +2,7 @@
 /*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2013 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -21,7 +21,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-// {{{ requires
 require_once CLASS_EX_REALDIR . 'page_extends/LC_Page_Ex.php';
 
 /**
@@ -29,19 +28,17 @@ require_once CLASS_EX_REALDIR . 'page_extends/LC_Page_Ex.php';
  *
  * @package Page
  * @author LOCKON CO.,LTD.
- * @version $Id: LC_Page_Index.php 21867 2012-05-30 07:37:01Z nakanishi $
+ * @version $Id: LC_Page_Index.php 23230 2013-09-19 02:49:03Z m_uehara $
  */
-class LC_Page_Index extends LC_Page_Ex {
-
-    // }}}
-    // {{{ functions
-
+class LC_Page_Index extends LC_Page_Ex
+{
     /**
      * Page を初期化する.
      *
      * @return void
      */
-    function init() {
+    public function init()
+    {
         parent::init();
     }
 
@@ -50,7 +47,8 @@ class LC_Page_Index extends LC_Page_Ex {
      *
      * @return void
      */
-    function process() {
+    public function process()
+    {
         parent::process();
         $this->action();
         $this->sendResponse();
@@ -61,18 +59,14 @@ class LC_Page_Index extends LC_Page_Ex {
      *
      * @return void
      */
-    function action() {
+    public function action()
+    {
+        //決済処理中ステータスのロールバック
+        $objPurchase = new SC_Helper_Purchase_Ex();
+        $objPurchase->cancelPendingOrder(PENDING_ORDER_CANCEL_FLAG);
+
         $this->tpl_title = '';
         $objCustomer = new SC_Customer_Ex();
         $this->isLogin = $objCustomer->isLoginSuccess(true);
-    }
-
-    /**
-     * デストラクタ.
-     *
-     * @return void
-     */
-    function destroy() {
-        parent::destroy();
     }
 }

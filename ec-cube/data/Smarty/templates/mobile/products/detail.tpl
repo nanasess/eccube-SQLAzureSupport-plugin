@@ -2,7 +2,7 @@
 /*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2013 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -30,11 +30,12 @@
         <!--{assign var=key value="main_image"}-->
     <!--{/if}-->
     <center><img src="<!--{$arrFile[$key].filepath}-->"></center>
+    <br>
 
     <!--★商品サブ画像★-->
-    <center>
-        <!--{if $subImageFlag == true}-->
-            <br>画像
+    <!--{if $subImageFlag == true}-->
+        <center>
+            画像
             <!--{if ($smarty.get.image == "" || $smarty.get.image == "main_image")}-->
                 [1]
             <!--{else}-->
@@ -53,19 +54,23 @@
                     <!--{assign var=num value="`$num+1`"}-->
                 <!--{/if}-->
             <!--{/section}-->
-            <br>
-        <!--{/if}-->
+        </center>
         <br>
-    </center>
-
-    <!--{* オペビルダー用 *}-->
-    <!--{if "sfViewDetailOpe"|function_exists === TRUE}-->
-        <!--{include file=`$smarty.const.MODULE_REALDIR`mdl_opebuilder/detail_ope_mb_view.tpl}-->
     <!--{/if}-->
 
     <!--★詳細メインコメント★-->
     [emoji:76]<!--{$arrProduct.main_comment|nl2br_html}--><br>
     <br>
+
+    <!--▼商品ステータス-->
+    <!--{assign var=ps value=$productStatus[$tpl_product_id]}-->
+    <!--{if count($ps) > 0}-->
+        <!--{foreach from=$ps item=status}-->
+            ★<!--{$arrSTATUS[$status]}--><br>
+        <!--{/foreach}-->
+        <br>
+    <!--{/if}-->
+    <!--▲商品ステータス-->
 
     <!--★商品コード★-->
     商品コード：
@@ -79,9 +84,9 @@
     <!--★販売価格★-->
     <font color="#FF0000"><!--{$smarty.const.SALE_PRICE_TITLE}-->(税込)：
         <!--{if $arrProduct.price02_min_inctax == $arrProduct.price02_max_inctax}-->
-        	<!--{$arrProduct.price02_min_inctax|number_format}-->
+            <!--{$arrProduct.price02_min_inctax|number_format}-->
         <!--{else}-->
-        	<!--{$arrProduct.price02_min_inctax|number_format}-->～<!--{$arrProduct.price02_max_inctax|number_format}-->
+            <!--{$arrProduct.price02_min_inctax|number_format}-->～<!--{$arrProduct.price02_max_inctax|number_format}-->
         <!--{/if}-->
         円</font>
     <br>
@@ -114,6 +119,16 @@
     <!--{/if}-->
     <br>
 
+    <!--★メーカー★-->
+    <!--{if $arrProduct.maker_name|strlen >= 1}-->
+        メーカー：<!--{$arrProduct.maker_name|h}--><br>
+    <!--{/if}-->
+
+    <!--★メーカーURL★-->
+    <!--{if $arrProduct.comment1|strlen >= 1}-->
+        メーカーURL：<a href="<!--{$arrProduct.comment1|h}-->"><!--{$arrProduct.comment1|h}--></a><br>
+    <!--{/if}-->
+
     <!--★関連カテゴリ★-->
     関連カテゴリ：<br>
     <!--{section name=r loop=$arrRelativeCat}-->
@@ -125,16 +140,16 @@
     <!--{/section}-->
     <br>
 
-    <form name="form1" method="post" action="?">
-    	<input type="hidden" name="mode" value="select">
+    <form name="form1" id="form1" method="post" action="?">
+        <input type="hidden" name="mode" value="select">
         <input type="hidden" name="<!--{$smarty.const.TRANSACTION_ID_NAME}-->" value="<!--{$transactionid}-->">
 
-    	<input type="hidden" name="product_id" value="<!--{$tpl_product_id}-->">
+        <input type="hidden" name="product_id" value="<!--{$tpl_product_id}-->">
         <!--{if $tpl_stock_find}-->
-        	<!--★商品を選ぶ★-->
-        	<center><input type="submit" name="select" id="cart" value="この商品を選ぶ"></center>
+            <!--★商品を選ぶ★-->
+            <center><input type="submit" name="select" id="cart" value="この商品を選ぶ"></center>
         <!--{else}-->
-        	<font color="#FF0000">申し訳ございませんが､只今品切れ中です｡</font>
+            <font color="#FF0000">申し訳ございませんが､只今品切れ中です｡</font>
         <!--{/if}-->
     </form>
 <!--{/strip}-->

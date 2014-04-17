@@ -2,7 +2,7 @@
 /*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2013 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -27,4 +27,4 @@
  * @deprecated
  */
 
-trigger_error('従来互換用の HTTP_Request が読み込まれました。', E_WARNING);
+trigger_error('従来互換用の HTTP_Request が読み込まれました。', E_USER_WARNING);

@@ -2,7 +2,7 @@
 /*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2013 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -21,7 +21,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-// {{{ requires
 require_once CLASS_EX_REALDIR . 'page_extends/admin/LC_Page_Admin_Ex.php';
 
 /**
@@ -29,18 +28,19 @@ require_once CLASS_EX_REALDIR . 'page_extends/admin/LC_Page_Admin_Ex.php';
  *
  * @package Page
  * @author Seasoft 塚田将久
- * @version $Id: LC_Page_Admin_System_Log.php 21867 2012-05-30 07:37:01Z nakanishi $
+ * @version $Id: LC_Page_Admin_System_Log.php 23124 2013-08-24 14:33:52Z kimoto $
  */
-class LC_Page_Admin_System_Log extends LC_Page_Admin_Ex {
-
-    var $arrLogList = array();
+class LC_Page_Admin_System_Log extends LC_Page_Admin_Ex
+{
+    public $arrLogList = array();
 
     /**
      * Page を初期化する.
      *
      * @return void
      */
-    function init() {
+    public function init()
+    {
         parent::init();
         $this->tpl_mainpage = 'system/log.tpl';
         $this->tpl_subno    = 'log';
@@ -55,7 +55,8 @@ class LC_Page_Admin_System_Log extends LC_Page_Admin_Ex {
      *
      * @return void
      */
-    function process() {
+    public function process()
+    {
         $this->action();
         $this->sendResponse();
     }
@@ -65,9 +66,9 @@ class LC_Page_Admin_System_Log extends LC_Page_Admin_Ex {
      *
      * @return void
      */
-    function action() {
-
-        $objFormParam = new SC_FormParam;
+    public function action()
+    {
+        $objFormParam = new SC_FormParam_Ex;
 
         // パラメーター情報初期化
         $this->lfInitParam($objFormParam);
@@ -89,20 +90,12 @@ class LC_Page_Admin_System_Log extends LC_Page_Admin_Ex {
     }
 
     /**
-     * デストラクタ.
-     *
-     * @return void
-     */
-    function destroy() {
-        parent::destroy();
-    }
-
-    /**
      * パラメーターの初期化.
      *
      * @return void
      */
-    function lfInitParam(&$objFormParam) {
+    public function lfInitParam(&$objFormParam)
+    {
         $objFormParam->addParam('ファイル', 'log', null, '', array());
         $objFormParam->addParam('行数', 'line_max', INT_LEN, '', array('NUM_CHECK', 'MAX_LENGTH_CHECK'), 50);
     }
@@ -112,8 +105,8 @@ class LC_Page_Admin_System_Log extends LC_Page_Admin_Ex {
      *
      * @return array $arrLogs 取得したログ
      */
-    function getEccubeLog($log_path_base) {
-
+    public function getEccubeLog($log_path_base)
+    {
         $index = 0;
         $arrLogs = array();
         for ($gen = 0 ; $gen <= MAX_LOG_QUANTITY; $gen++) {
@@ -151,6 +144,7 @@ class LC_Page_Admin_System_Log extends LC_Page_Admin_Ex {
                 }
             }
         }
+
         return $arrLogs;
     }
 
@@ -159,7 +153,8 @@ class LC_Page_Admin_System_Log extends LC_Page_Admin_Ex {
      *
      * セキュリティ面をカバーする役割もある。
      */
-    function getLogPath($log_name) {
+    public function getLogPath($log_name)
+    {
         if (strlen($log_name) === 0) {
             return LOG_REALFILE;
         }
@@ -175,7 +170,8 @@ class LC_Page_Admin_System_Log extends LC_Page_Admin_Ex {
      * TODO mtb_constants から動的生成したい。
      * @return void
      */
-    function loadLogList() {
+    public function loadLogList()
+    {
         $this->arrLogList[''] = '標準ログファイル';
         $this->arrLogList['CUSTOMER'] = '会員ログイン ログファイル';
         $this->arrLogList['ADMIN'] = '管理機能ログファイル';
@@ -190,6 +186,9 @@ class LC_Page_Admin_System_Log extends LC_Page_Admin_Ex {
 
         if (defined('DB_LOG_REALFILE') && strlen(DB_LOG_REALFILE) >= 1) {
             $this->arrLogList['DB'] = 'DBログファイル';
+        }
+        if (defined('PLUGIN_LOG_REALFILE') && strlen(PLUGIN_LOG_REALFILE) >= 1) {
+            $this->arrLogList['PLUGIN'] = 'プラグインログファイル';
         }
     }
 }

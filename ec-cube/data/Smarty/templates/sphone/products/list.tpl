@@ -1,7 +1,7 @@
 <!--{*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2013 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -20,19 +20,18 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *}-->
 
-<script type="text/javascript" src="<!--{$smarty.const.ROOT_URLPATH}-->js/products.js"></script>
 <script type="text/javascript">//<![CDATA[
     // 並び順を変更
     function fnChangeOrderby(orderby) {
-        fnSetVal('orderby', orderby);
-        fnSetVal('pageno', 1);
-        fnSubmit();
+        eccube.setValue('orderby', orderby);
+        eccube.setValue('pageno', 1);
+        eccube.submitForm();
     }
     // 表示件数を変更
     function fnChangeDispNumber(dispNumber) {
-        fnSetVal('disp_number', dispNumber);
-        fnSetVal('pageno', 1);
-        fnSubmit();
+        eccube.setValue('disp_number', dispNumber);
+        eccube.setValue('pageno', 1);
+        eccube.submitForm();
     }
 //]]></script>
 
@@ -46,11 +45,6 @@
         <input type="hidden" name="orderby" value="<!--{$orderby|h}-->" />
         <input type="hidden" name="disp_number" value="<!--{$disp_number|h}-->" />
         <input type="hidden" name="pageno" value="<!--{$tpl_pageno|h}-->" />
-        <input type="hidden" name="product_id" value="" />
-        <input type="hidden" name="classcategory_id1" value="" />
-        <input type="hidden" name="classcategory_id2" value="" />
-        <input type="hidden" name="product_class_id" value="" />
-        <input type="hidden" name="quantity" value="" />
         <input type="hidden" name="rnd" value="<!--{$tpl_rnd|h}-->" />
     </form>
 
@@ -80,8 +74,7 @@
         <!--▼商品-->
         <div class="list_area clearfix">
             <!--★画像★-->
-            <p class="listphoto"><img src="<!--{$smarty.const.ROOT_URLPATH}-->resize_image.php?image=<!--{$arrProduct.main_list_image|sfNoImageMainList|h}-->&amp;width=80&amp;height=80"  alt="<!--{$arrProduct.name|h}-->" /></p>
-
+            <p class="listphoto"><img src="<!--{$smarty.const.IMAGE_SAVE_URLPATH}--><!--{$arrProduct.main_list_image|sfNoImageMainList|h}-->" style="max-width: 80px;max-height: 80px;" alt="<!--{$arrProduct.name|h}-->" /></p>
             <div class="listrightblock">
                 <div class="statusArea">
                     <!--▼商品ステータス-->
@@ -99,7 +92,7 @@
 
                 <!--★商品価格★-->
                 <p>
-                    <span class="pricebox sale_price"><span class="mini">販売価格(税込):</span></span>
+                    <span class="pricebox sale_price"><span class="mini"><!--{$smarty.const.SALE_PRICE_TITLE|h}-->(税込):</span></span>
                     <span class="price">
                         <span id="price02_default_<!--{$id}-->">
                             <!--{if $arrProduct.price02_min_inctax == $arrProduct.price02_max_inctax}-->
@@ -129,20 +122,12 @@
     <!--{/if}-->
 </section>
 
-<!--▼検索バー -->
-<section id="search_area">
-    <form method="get" action="<!--{$smarty.const.ROOT_URLPATH}-->products/list.php">
-        <input type="hidden" name="<!--{$smarty.const.TRANSACTION_ID_NAME}-->" value="<!--{$transactionid}-->" />
-        <input type="hidden" name="mode" value="search" />
-        <input type="search" name="name" id="search" value="" placeholder="キーワードを入力" class="searchbox" >
-    </form>
-</section>
-<!--▲検索バー -->
+<!--{include file= 'frontparts/search_area.tpl'}-->
 
 <script>
     var pageNo = 2;
     var url = "<!--{$smarty.const.P_DETAIL_URLPATH}-->";
-    var imagePath = "<!--{$smarty.const.IMAGE_SAVE_URLPATH|sfTrimURL}-->/";
+    var imagePath = "<!--{$smarty.const.IMAGE_SAVE_URLPATH}-->";
     var statusImagePath = "<!--{$TPL_URLPATH}-->";
 
     function getProducts(limit) {
@@ -179,7 +164,7 @@
 
                     //商品写真をセット
                     $($(".list_area .listphoto img").get(maxCnt)).attr({
-                        src: "<!--{$smarty.const.ROOT_URLPATH}-->resize_image.php?image=" + product.main_list_image + '&width=80&height=80',
+                        src: "<!--{$smarty.const.IMAGE_SAVE_URLPATH}-->" + product.main_list_image,
                         alt: product.name
                     });
 
@@ -211,9 +196,9 @@
                     var priceVale = "";
                     //販売価格が範囲か判定
                     if (product.price02_min == product.price02_max) {
-                        priceVale = product.price02_min_tax_format + '円';
+                        priceVale = product.price02_min_inctax_format + '円';
                     } else {
-                        priceVale = product.price02_min_tax_format + '～' + product.price02_max_tax_format + '円';
+                        priceVale = product.price02_min_inctax_format + '～' + product.price02_max_inctax_format + '円';
                     }
                     price.append(priceVale);
 
@@ -222,7 +207,7 @@
                 }
                 pageNo++;
 
-                //すべての商品を表示したか判定
+                //全ての商品を表示したか判定
                 if (parseInt($("#productscount").text()) <= $(".list_area").length) {
                     $("#btn_more_product").hide();
                 }

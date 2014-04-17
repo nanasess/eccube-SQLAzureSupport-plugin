@@ -2,7 +2,7 @@
 /*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2013 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -35,9 +35,9 @@
         【ご注文内容】<br>
         <!--{foreach from=$arrCartItems item=item}-->
             ◎<!--{$item.productsClass.name|h}--><br>
-            <!--{if $item.productsClass.classcategory_name1 != ""}--><!--{$item.productsClass.class_name1}-->：<!--{$item.productsClass.classcategory_name1}--><br><!--{/if}-->
-            <!--{if $item.productsClass.classcategory_name2 != ""}--><!--{$item.productsClass.class_name2}-->：<!--{$item.productsClass.classcategory_name2}--><br><!--{/if}-->
-            &nbsp;単価：<!--{$item.price|sfCalcIncTax|number_format}-->円<br>
+            <!--{if $item.productsClass.classcategory_name1 != ""}--><!--{$item.productsClass.class_name1|h}-->：<!--{$item.productsClass.classcategory_name1|h}--><br><!--{/if}-->
+            <!--{if $item.productsClass.classcategory_name2 != ""}--><!--{$item.productsClass.class_name2|h}-->：<!--{$item.productsClass.classcategory_name2|h}--><br><!--{/if}-->
+            &nbsp;単価：<!--{$item.price_inctax|number_format}-->円<br>
             &nbsp;数量：<!--{$item.quantity|number_format}--><br>
             &nbsp;小計：<!--{$item.total_inctax|number_format}-->円<br>
             <br>
@@ -68,8 +68,21 @@
             <br>
         <!--{/if}-->
 
-        <!--{* 販売方法判定（ダウンロード販売のみの場合はお届け先を表示しない） *}-->
-        <!--{if $cartKey != $smarty.const.PRODUCT_TYPE_DOWNLOAD}-->
+        【ご注文者】<br>
+        〒<!--{$arrForm.order_zip01|h}-->-<!--{$arrForm.order_zip02|h}--><br>
+        <!--{$arrPref[$arrForm.order_pref]}--><!--{$arrForm.order_addr01|h}--><!--{$arrForm.order_addr02|h}--><br>
+        <!--{$arrForm.order_name01|h}--> <!--{$arrForm.order_name02|h}--><br>
+        <!--{$arrForm.order_tel01}-->-<!--{$arrForm.order_tel02}-->-<!--{$arrForm.order_tel03}--><br>
+        <!--{if $arrForm.order_fax01 > 0}-->
+            <!--{$arrForm.order_fax01}-->-<!--{$arrForm.order_fax02}-->-<!--{$arrForm.order_fax03}--><br>
+        <!--{/if}-->
+        <!--{$arrForm.order_email|h}--><br>
+        性別：<!--{$arrSex[$arrForm.order_sex]|h}--><br>
+        職業：<!--{$arrJob[$arrForm.order_job]|default:'(未登録)'|h}--><br>
+        生年月日：<!--{$arrForm.order_birth|regex_replace:"/ .+/":""|regex_replace:"/-/":"/"|default:'(未登録)'|h}--><br>
+        <br>
+
+        <!--{if $arrShipping}-->
             【お届け先】<br>
             <!--{foreach item=shippingItem from=$arrShipping name=shippingItem}-->
                 <!--{if $is_multiple}-->

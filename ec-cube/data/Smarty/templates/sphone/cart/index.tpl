@@ -1,7 +1,7 @@
 <!--{*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2013 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -80,7 +80,7 @@
                     <!--{/if}-->
                 <!--{/if}-->
 
-                <form name="form<!--{$key}-->" id="form<!--{$key}-->" method="post" action="<!--{$smarty.const.CART_URLPATH|h}-->">
+                <form name="form<!--{$key}-->" id="form<!--{$key}-->" method="post" action="<!--{$smarty.const.CART_URL|h}-->">
                     <input type="hidden" name="<!--{$smarty.const.TRANSACTION_ID_NAME}-->" value="<!--{$transactionid}-->" />
                     <!--{if 'sfGMOCartDisplay'|function_exists}-->
                         <!--{'sfGMOCartDisplay'|call_user_func}-->
@@ -88,7 +88,7 @@
 
                     <input type="hidden" name="mode" value="confirm" />
                     <input type="hidden" name="cart_no" value="" />
-                    <input type="hidden" name="cartKey" value="<!--{$key}-->" />
+                    <input type="hidden" name="cartKey" value="<!--{$key|h}-->" />
 
                     <div class="formBox">
 
@@ -106,7 +106,7 @@
                             <!--{foreach from=$cartItems[$key] item=arrItem}-->
                                 <!--▼商品 -->
                                 <div class="cartitemBox">
-                                    <img src="<!--{$smarty.const.ROOT_URLPATH}-->resize_image.php?image=<!--{$arrItem.productsClass.main_list_image|sfNoImageMainList|h}-->&amp;width=80&amp;height=80" alt="<!--{$arrItem.productsClass.name|h}-->" class="photoL" />
+                                    <img src="<!--{$smarty.const.IMAGE_SAVE_URLPATH}--><!--{$arrItem.productsClass.main_list_image|sfNoImageMainList|h}-->" style="max-width: 80px;max-height: 80px;" alt="<!--{$arrItem.productsClass.name|h}-->" class="photoL" />
                                     <div class="cartinContents">
                                         <div>
                                             <p><em><!--{$arrItem.productsClass.name|h}--></em><br />
@@ -116,15 +116,17 @@
                                                 <!--{if $arrItem.productsClass.classcategory_name2 != ""}-->
                                                     <span class="mini"><!--{$arrItem.productsClass.class_name2}-->：<!--{$arrItem.productsClass.classcategory_name2}--></span><br />
                                                 <!--{/if}-->
-                                                <span class="mini">価格:</span><!--{$arrItem.price|sfCalcIncTax|number_format}-->円
+                                                <span class="mini">価格:</span><!--{$arrItem.price_inctax|number_format}-->円
                                             </p>
                                             <p class="btn_delete">
-                                                <img src="<!--{$TPL_URLPATH}-->img/button/btn_delete.png" onClick="fnFormModeSubmit('form<!--{$key}-->', 'delete', 'cart_no', '<!--{$arrItem.cart_no}-->');" class="pointer" width="21" height="20" alt="削除" /></p>
+                                                <img src="<!--{$TPL_URLPATH}-->img/button/btn_delete.png" onClick="eccube.fnFormModeSubmit('form<!--{$key}-->', 'delete', 'cart_no', '<!--{$arrItem.cart_no}-->');" class="pointer" width="21" height="20" alt="削除" /></p>
                                         </div>
                                         <ul>
                                             <li class="quantity"><span class="mini">数量:</span><!--{$arrItem.quantity|number_format}--></li>
-                                            <li class="quantity_btn"><img src="<!--{$TPL_URLPATH}-->img/button/btn_plus.png" width="22" height="21" alt="＋" onclick="fnFormModeSubmit('form<!--{$key}-->', 'up','cart_no','<!--{$arrItem.cart_no}-->'); return false" /></li>
-                                            <li class="quantity_btn"><img src="<!--{$TPL_URLPATH}-->img/button/btn_minus.png" width="22" height="21" alt="-" onclick="fnFormModeSubmit('form<!--{$key}-->', 'down','cart_no','<!--{$arrItem.cart_no}-->'); return false" /></a></li>
+                                            <li class="quantity_btn"><img src="<!--{$TPL_URLPATH}-->img/button/btn_plus.png" width="22" height="21" alt="＋" onclick="eccube.fnFormModeSubmit('form<!--{$key}-->', 'up','cart_no','<!--{$arrItem.cart_no}-->'); return false" /></li>
+                                            <!--{if $arrItem.quantity > 1}-->
+                                                <li class="quantity_btn"><img src="<!--{$TPL_URLPATH}-->img/button/btn_minus.png" width="22" height="21" alt="-" onclick="eccube.fnFormModeSubmit('form<!--{$key}-->', 'down','cart_no','<!--{$arrItem.cart_no}-->'); return false" /></li>
+                                            <!--{/if}-->
                                             <li class="result"><span class="mini">小計：</span><!--{$arrItem.total_inctax|number_format}-->円</li>
                                         </ul>
                                     </div>
@@ -145,7 +147,6 @@
                         </div>
                         <!--{if strlen($tpl_error) == 0}-->
                             <div class="btn_area_btm">
-                                <input type="hidden" name="cartKey" value="<!--{$key}-->" />
                                 <input type="submit" value="ご購入手続きへ" name="confirm" class="btn data-role-none" />
                             </div>
                         <!--{/if}-->
@@ -156,19 +157,12 @@
             <p class="empty"><em>※ 現在カート内に商品はございません。</em></p>
         <!--{/if}-->
 
-        <p><a rel="external" href="<!--{$smarty.const.ROOT_URLPATH}-->" class="btn_sub">お買い物を続ける</a></p>
+        <p><a rel="external" href="<!--{$smarty.const.TOP_URL}-->" class="btn_sub">お買い物を続ける</a></p>
 
     </div><!-- /.form_area -->
 
 </section>
 
-<!--▼検索バー -->
-<section id="search_area">
-    <form method="get" action="<!--{$smarty.const.ROOT_URLPATH}-->products/list.php">
-        <input type="hidden" name="<!--{$smarty.const.TRANSACTION_ID_NAME}-->" value="<!--{$transactionid}-->" />
-        <input type="hidden" name="mode" value="search" />
-        <input type="search" name="name" id="search" value="" placeholder="キーワードを入力" class="searchbox" >
-    </form>
-</section>
-<!--▲検索バー -->
+<!--{include file= 'frontparts/search_area.tpl'}-->
+
 <!--▲コンテンツここまで -->

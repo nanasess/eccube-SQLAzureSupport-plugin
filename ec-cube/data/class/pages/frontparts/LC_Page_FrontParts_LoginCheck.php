@@ -2,7 +2,7 @@
 /*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2013 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -21,7 +21,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-// {{{ requires
 require_once CLASS_EX_REALDIR . 'page_extends/LC_Page_Ex.php';
 
 /**
@@ -33,19 +32,17 @@ require_once CLASS_EX_REALDIR . 'page_extends/LC_Page_Ex.php';
  * @author LOCKON CO.,LTD.
  * @version $Id:LC_Page_FrontParts_LoginCheck.php 15532 2007-08-31 14:39:46Z nanasess $
  */
-class LC_Page_FrontParts_LoginCheck extends LC_Page_Ex {
-
-    // }}}
-    // {{{ functions
-
+class LC_Page_FrontParts_LoginCheck extends LC_Page_Ex
+{
     /**
      * Page を初期化する.
      *
      * @return void
      */
-    function init() {
+    public function init()
+    {
+        $this->skip_load_page_layout = true;
         parent::init();
-
     }
 
     /**
@@ -53,7 +50,8 @@ class LC_Page_FrontParts_LoginCheck extends LC_Page_Ex {
      *
      * @return void
      */
-    function process() {
+    public function process()
+    {
         $this->action();
         $this->sendResponse();
     }
@@ -63,12 +61,16 @@ class LC_Page_FrontParts_LoginCheck extends LC_Page_Ex {
      *
      * @return void
      */
-    function action() {
+    public function action()
+    {
+        //決済処理中ステータスのロールバック
+        $objPurchase = new SC_Helper_Purchase_Ex();
+        $objPurchase->cancelPendingOrder(PENDING_ORDER_CANCEL_FLAG);
 
         // 会員管理クラス
         $objCustomer = new SC_Customer_Ex();
         // クッキー管理クラス
-        $objCookie = new SC_Cookie_Ex(COOKIE_EXPIRE);
+        $objCookie = new SC_Cookie_Ex();
         // パラメーター管理クラス
         $objFormParam = new SC_FormParam_Ex();
 
@@ -113,24 +115,8 @@ class LC_Page_FrontParts_LoginCheck extends LC_Page_Ex {
 
                 // 遷移先の制御
                 if (count($arrErr) == 0) {
-                    // ログイン判定
-                    $loginFailFlag = false;
-                    if (SC_Display_Ex::detectDevice() === DEVICE_TYPE_MOBILE) {
-                        // モバイルサイト
-                        if (!$objCustomer->getCustomerDataFromMobilePhoneIdPass($arrForm['login_pass']) &&
-                            !$objCustomer->getCustomerDataFromEmailPass($arrForm['login_pass'], $arrForm['login_email'], true)
-                        ) {
-                            $loginFailFlag = true;
-                        }
-                    } else {
-                        // モバイルサイト以外
-                        if (!$objCustomer->getCustomerDataFromEmailPass($arrForm['login_pass'], $arrForm['login_email'])) {
-                            $loginFailFlag = true;
-                        }
-                    }
-
                     // ログイン処理
-                    if ($loginFailFlag == false) {
+                    if ($objCustomer->doLogin($arrForm['login_email'], $arrForm['login_pass'])) {
                         if (SC_Display_Ex::detectDevice() === DEVICE_TYPE_MOBILE) {
                             // ログインが成功した場合は携帯端末IDを保存する。
                             $objCustomer->updateMobilePhoneId();
@@ -142,7 +128,6 @@ class LC_Page_FrontParts_LoginCheck extends LC_Page_Ex {
                             $objMobile = new SC_Helper_Mobile_Ex();
                             if (!$objMobile->gfIsMobileMailAddress($objCustomer->getValue('email'))) {
                                 if (!$objCustomer->hasValue('email_mobile')) {
-
                                     SC_Response_Ex::sendRedirectFromUrlPath('entry/email_mobile.php');
                                     SC_Response_Ex::actionExit();
                                 }
@@ -154,7 +139,7 @@ class LC_Page_FrontParts_LoginCheck extends LC_Page_Ex {
                             echo SC_Utils_Ex::jsonEncode(array('success' => $url));
                         } else {
                             SC_Response_Ex::sendRedirect($url);
-                        }                        
+                        }
                         SC_Response_Ex::actionExit();
                     } else {
                         // --- ログインに失敗した場合
@@ -202,13 +187,11 @@ class LC_Page_FrontParts_LoginCheck extends LC_Page_Ex {
                 // 画面遷移の制御
                 $mypage_url_search = strpos('.'.$url, 'mypage');
                 if ($mypage_url_search == 2) {
-
                     // マイページログイン中はログイン画面へ移行
                     SC_Response_Ex::sendRedirectFromUrlPath('mypage/login.php');
                 } else {
-
                     // 上記以外の場合、トップへ遷移
-                    SC_Response_Ex::sendRedirect(HTTP_URL);
+                    SC_Response_Ex::sendRedirect(TOP_URL);
                 }
                 SC_Response_Ex::actionExit();
 
@@ -220,21 +203,13 @@ class LC_Page_FrontParts_LoginCheck extends LC_Page_Ex {
     }
 
     /**
-     * デストラクタ.
-     *
-     * @return void
-     */
-    function destroy() {
-        parent::destroy();
-    }
-
-    /**
      * パラメーター情報の初期化.
      *
-     * @param SC_FormParam $objFormParam パラメーター管理クラス
+     * @param  SC_FormParam $objFormParam パラメーター管理クラス
      * @return void
      */
-    function lfInitParam(&$objFormParam) {
+    public function lfInitParam(&$objFormParam)
+    {
         $objFormParam->addParam('記憶する', 'login_memory', INT_LEN, 'n', array('MAX_LENGTH_CHECK', 'NUM_CHECK'));
         $objFormParam->addParam('メールアドレス', 'login_email', MTEXT_LEN, 'a', array('EXIST_CHECK', 'MAX_LENGTH_CHECK'));
         $objFormParam->addParam('パスワード', 'login_pass', PASSWORD_MAX_LEN, '', array('EXIST_CHECK', 'MAX_LENGTH_CHECK'));
@@ -250,7 +225,8 @@ class LC_Page_FrontParts_LoginCheck extends LC_Page_Ex {
      * @return string JSON 形式のエラーメッセージ
      * @see LC_PageError
      */
-    function lfGetErrorMessage($error) {
+    public function lfGetErrorMessage($error)
+    {
         switch ($error) {
             case TEMP_LOGIN_ERROR:
                 $msg = "メールアドレスもしくはパスワードが正しくありません。\n本登録がお済みでない場合は、仮登録メールに記載されているURLより本登録を行ってください。";
@@ -259,6 +235,7 @@ class LC_Page_FrontParts_LoginCheck extends LC_Page_Ex {
             default:
                 $msg = 'メールアドレスもしくはパスワードが正しくありません。';
         }
+
         return SC_Utils_Ex::jsonEncode(array('login_error' => $msg));
     }
 }

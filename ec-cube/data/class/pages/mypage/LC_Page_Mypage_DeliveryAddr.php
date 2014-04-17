@@ -2,7 +2,7 @@
 /*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2013 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -21,7 +21,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-// {{{ requires
 require_once CLASS_EX_REALDIR . 'page_extends/LC_Page_Ex.php';
 
 /**
@@ -29,23 +28,23 @@ require_once CLASS_EX_REALDIR . 'page_extends/LC_Page_Ex.php';
  *
  * @package Page
  * @author LOCKON CO.,LTD.
- * @version $Id: LC_Page_Mypage_DeliveryAddr.php 21867 2012-05-30 07:37:01Z nakanishi $
+ * @version $Id: LC_Page_Mypage_DeliveryAddr.php 23278 2013-11-18 04:09:44Z m_uehara $
  */
-class LC_Page_Mypage_DeliveryAddr extends LC_Page_Ex {
-
-    // }}}
-    // {{{ functions
-
+class LC_Page_Mypage_DeliveryAddr extends LC_Page_Ex
+{
     /**
      * Page を初期化する.
      *
      * @return void
      */
-    function init() {
+    public function init()
+    {
+        $this->skip_load_page_layout = true;
         parent::init();
         $this->tpl_title    = 'お届け先の追加･変更';
         $masterData         = new SC_DB_MasterData_Ex();
         $this->arrPref      = $masterData->getMasterData('mtb_pref');
+        $this->arrCountry   = $masterData->getMasterData('mtb_country');
         $this->httpCacheControl('nocache');
         $this->validUrl = array(MYPAGE_DELIVADDR_URLPATH,
                                 DELIV_URLPATH,
@@ -57,7 +56,8 @@ class LC_Page_Mypage_DeliveryAddr extends LC_Page_Ex {
      *
      * @return void
      */
-    function process() {
+    public function process()
+    {
         parent::process();
         $this->action();
         $this->sendResponse();
@@ -68,17 +68,26 @@ class LC_Page_Mypage_DeliveryAddr extends LC_Page_Ex {
      *
      * @return void
      */
-    function action() {
-
+    public function action()
+    {
         $objCustomer = new SC_Customer_Ex();
+        $objAddress  = new SC_Helper_Address_Ex();
         $ParentPage  = MYPAGE_DELIVADDR_URLPATH;
 
         // GETでページを指定されている場合には指定ページに戻す
         if (isset($_GET['page'])) {
             $ParentPage = htmlspecialchars($_GET['page'], ENT_QUOTES);
-        } else if (isset($_POST['ParentPage'])) {
+        } elseif (isset($_POST['ParentPage'])) {
             $ParentPage = htmlspecialchars($_POST['ParentPage'], ENT_QUOTES);
         }
+
+        // 正しい遷移かをチェック
+        $arrParentPageList = array(DELIV_URLPATH, MYPAGE_DELIVADDR_URLPATH, MULTIPLE_URLPATH);
+        if(!SC_Utils_Ex::isBlank($ParentPage) && !in_array($ParentPage, $arrParentPageList)) {
+            // 遷移が正しくない場合、デフォルトであるマイページの配送先追加の画面を設定する
+            $ParentPage  = MYPAGE_DELIVADDR_URLPATH;
+        }
+
         $this->ParentPage = $ParentPage;
 
         /*
@@ -88,7 +97,7 @@ class LC_Page_Mypage_DeliveryAddr extends LC_Page_Ex {
          * TODO 購入遷移とMyPageで別クラスにすべき
          */
         if (!$objCustomer->isLoginSuccess(true) && $ParentPage != MULTIPLE_URLPATH) {
-            $this->tpl_onload = "fnUpdateParent('". $this->getLocation($_POST['ParentPage']) ."'); window.close();";
+            $this->tpl_onload = "eccube.changeParentUrl('". $ParentPage ."'); window.close();";
         }
 
         // other_deliv_id のあるなしで追加か編集か判定しているらしい
@@ -96,32 +105,29 @@ class LC_Page_Mypage_DeliveryAddr extends LC_Page_Ex {
 
         // パラメーター管理クラス,パラメーター情報の初期化
         $objFormParam   = new SC_FormParam_Ex();
-        SC_Helper_Customer_Ex::sfCustomerOtherDelivParam($objFormParam);
+        $objAddress->setFormParam($objFormParam);
         $objFormParam->setParam($_POST);
-        $this->arrForm  = $objFormParam->getHashArray();
 
         switch ($this->getMode()) {
             // 入力は必ずedit
             case 'edit':
-                $this->arrErr = SC_Helper_Customer_Ex::sfCustomerOtherDelivErrorCheck($objFormParam);
+                $this->arrErr = $objAddress->errorCheck($objFormParam);
                 // 入力エラーなし
                 if (empty($this->arrErr)) {
-
                     // TODO ここでやるべきではない
                     if (in_array($_POST['ParentPage'], $this->validUrl)) {
-                        $this->tpl_onload = "fnUpdateParent('". $this->getLocation($_POST['ParentPage']) ."'); window.close();";
+                        $this->tpl_onload = "eccube.changeParentUrl('". $this->getLocation($_POST['ParentPage']) ."'); window.close();";
                     } else {
                         SC_Utils_Ex::sfDispSiteError(CUSTOMER_ERROR);
                     }
 
                     if ($objCustomer->isLoginSuccess(true)) {
-                        $this->lfRegistData($objFormParam, $objCustomer->getValue('customer_id'));
+                        $this->lfRegistData($objAddress, $objFormParam, $objCustomer->getValue('customer_id'));
                     } else {
                         $this->lfRegistDataNonMember($objFormParam);
                     }
 
                     if (SC_Display_Ex::detectDevice() === DEVICE_TYPE_MOBILE) {
-
                         // モバイルの場合、元のページに遷移
                         SC_Response_Ex::sendRedirect($this->getLocation($_POST['ParentPage']));
                         SC_Response_Ex::actionExit();
@@ -134,19 +140,20 @@ class LC_Page_Mypage_DeliveryAddr extends LC_Page_Ex {
             default :
 
                 if ($_GET['other_deliv_id'] != '') {
-                    $arrOtherDeliv = $this->lfGetOtherDeliv($objCustomer->getValue('customer_id'), $_SESSION['other_deliv_id']);
+                    $arrOtherDeliv = $objAddress->getAddress($_SESSION['other_deliv_id']);
 
                     //不正アクセス判定
-                    if (!$objCustomer->isLoginSuccess(true) || count($arrOtherDeliv) == 0) {
+                    if (!$objCustomer->isLoginSuccess(true) || !$arrOtherDeliv) {
                         SC_Utils_Ex::sfDispSiteError(CUSTOMER_ERROR);
                     }
 
                     //別のお届け先情報取得
-                    $this->arrForm = $arrOtherDeliv[0];
+                    $objFormParam->setParam($arrOtherDeliv);
                 }
                 break;
         }
 
+        $this->arrForm = $objFormParam->getFormParamList();
         if (SC_Display_Ex::detectDevice() === DEVICE_TYPE_MOBILE) {
             $this->tpl_mainpage = 'mypage/delivery_addr.tpl';
         } else {
@@ -155,63 +162,20 @@ class LC_Page_Mypage_DeliveryAddr extends LC_Page_Ex {
 
     }
 
-    /**
-     * デストラクタ.
-     *
-     * @return void
-     */
-    function destroy() {
-        parent::destroy();
-    }
-
-    /**
-     * ほかのお届け先を取得する
-     *
-     * @param mixed $customer_id
-     * @param mixed $other_deliv_id
-     * @access private
-     * @return array()
-     */
-    function lfGetOtherDeliv($customer_id, $other_deliv_id) {
-        $objQuery =& SC_Query_Ex::getSingletonInstance();
-        return $objQuery->select('*', 'dtb_other_deliv', 'customer_id = ? AND other_deliv_id = ?', array($customer_id, $other_deliv_id));
-    }
-
     /* 登録実行 */
-    function lfRegistData($objFormParam, $customer_id) {
-        $objQuery   =& SC_Query_Ex::getSingletonInstance();
-
+    public function lfRegistData($objAddress, $objFormParam, $customer_id)
+    {
         $arrRet     = $objFormParam->getHashArray();
         $sqlval     = $objFormParam->getDbArray();
 
+        $sqlval['other_deliv_id'] = $arrRet['other_deliv_id'];
         $sqlval['customer_id'] = $customer_id;
 
-        // 追加
-        if (strlen($arrRet['other_deliv_id'] == 0)) {
-            // 別のお届け先登録数の取得
-            $deliv_count = $objQuery->count('dtb_other_deliv', 'customer_id = ?', array($customer_id));
-            // 別のお届け先最大登録数に達している場合、エラー
-            if ($deliv_count >= DELIV_ADDR_MAX) {
-                SC_Utils_Ex::sfDispSiteError(FREE_ERROR_MSG, '', false, '別のお届け先最大登録数に達しています。');
-            }
-
-            // 実行
-            $sqlval['other_deliv_id'] = $objQuery->nextVal('dtb_other_deliv_other_deliv_id');
-            $objQuery->insert('dtb_other_deliv', $sqlval);
-
-        // 変更
-        } else {
-            $deliv_count = $objQuery->count('dtb_other_deliv','customer_id = ? AND other_deliv_id = ?' ,array($customer_id, $arrRet['other_deliv_id']));
-            if ($deliv_count != 1) {
-                SC_Utils_Ex::sfDispSiteError(FREE_ERROR_MSG, '', false, '一致する別のお届け先がありません。');
-            }
-
-            // 実行
-            $objQuery->update('dtb_other_deliv', $sqlval, 'other_deliv_id = ?', array($arrRet['other_deliv_id']));
-        }
+        $objAddress->registAddress($sqlval);
     }
 
-    function lfRegistDataNonMember($objFormParam) {
+    public function lfRegistDataNonMember($objFormParam)
+    {
         $arrRegistColumn = $objFormParam->getDbArray();
         foreach ($arrRegistColumn as $key => $val) {
             $arrRegist['shipping_' . $key ] = $val;

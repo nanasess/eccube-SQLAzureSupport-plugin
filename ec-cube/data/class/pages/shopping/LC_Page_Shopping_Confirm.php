@@ -2,7 +2,7 @@
 /*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2013 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -21,7 +21,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-// {{{ requires
 require_once CLASS_EX_REALDIR . 'page_extends/LC_Page_Ex.php';
 
 /**
@@ -29,27 +28,27 @@ require_once CLASS_EX_REALDIR . 'page_extends/LC_Page_Ex.php';
  *
  * @package Page
  * @author LOCKON CO.,LTD.
- * @version $Id: LC_Page_Shopping_Confirm.php 21952 2012-07-02 12:24:12Z pineray $
+ * @version $Id: LC_Page_Shopping_Confirm.php 23256 2013-10-28 00:17:34Z Seasoft $
  */
-class LC_Page_Shopping_Confirm extends LC_Page_Ex {
-
-    // }}}
-    // {{{ functions
-
+class LC_Page_Shopping_Confirm extends LC_Page_Ex
+{
     /**
      * Page を初期化する.
      *
      * @return void
      */
-    function init() {
+    public function init()
+    {
         parent::init();
-        $this->tpl_title = 'ご入力内容のご確認';
+        $this->tpl_title = '入力内容のご確認';
         $masterData = new SC_DB_MasterData_Ex();
         $this->arrPref = $masterData->getMasterData('mtb_pref');
+        $this->arrCountry = $masterData->getMasterData('mtb_country');
         $this->arrSex = $masterData->getMasterData('mtb_sex');
+        $this->arrJob = $masterData->getMasterData('mtb_job');
         $this->arrMAILMAGATYPE = $masterData->getMasterData('mtb_mail_magazine_type');
         $this->arrReminder = $masterData->getMasterData('mtb_reminder');
-        $this->arrDeliv = SC_Helper_DB_Ex::sfGetIDValueList('dtb_deliv', 'deliv_id', 'service_name');
+        $this->arrDeliv = SC_Helper_Delivery_Ex::getIDValueList('service_name');
         $this->httpCacheControl('nocache');
     }
 
@@ -58,7 +57,8 @@ class LC_Page_Shopping_Confirm extends LC_Page_Ex {
      *
      * @return void
      */
-    function process() {
+    public function process()
+    {
         parent::process();
         $this->action();
         $this->sendResponse();
@@ -69,15 +69,15 @@ class LC_Page_Shopping_Confirm extends LC_Page_Ex {
      *
      * @return void
      */
-    function action() {
+    public function action()
+    {
+        //決済処理中ステータスのロールバック
+        $objPurchase = new SC_Helper_Purchase_Ex();
+        $objPurchase->cancelPendingOrder(PENDING_ORDER_CANCEL_FLAG);
 
         $objCartSess = new SC_CartSession_Ex();
         $objSiteSess = new SC_SiteSession_Ex();
         $objCustomer = new SC_Customer_Ex();
-        $objQuery =& SC_Query_Ex::getSingletonInstance();
-        $objPurchase = new SC_Helper_Purchase_Ex();
-        $objHelperMail = new SC_Helper_Mail_Ex();
-        $objHelperMail->setPage($this);
 
         $this->is_multiple = $objPurchase->isMultiple();
 
@@ -95,8 +95,7 @@ class LC_Page_Shopping_Confirm extends LC_Page_Ex {
         // カート内商品のチェック
         $this->tpl_message = $objCartSess->checkProducts($this->cartKey);
         if (!SC_Utils_Ex::isBlank($this->tpl_message)) {
-
-            SC_Response_Ex::sendRedirect(CART_URLPATH);
+            SC_Response_Ex::sendRedirect(CART_URL);
             SC_Response_Ex::actionExit();
         }
 
@@ -112,14 +111,17 @@ class LC_Page_Shopping_Confirm extends LC_Page_Ex {
 
         // 一時受注テーブルの読込
         $arrOrderTemp = $objPurchase->getOrderTemp($this->tpl_uniqid);
-
         // カート集計を元に最終計算
         $arrCalcResults = $objCartSess->calculate($this->cartKey, $objCustomer,
                                                   $arrOrderTemp['use_point'],
                                                   $objPurchase->getShippingPref($this->is_multiple),
                                                   $arrOrderTemp['charge'],
                                                   $arrOrderTemp['discount'],
-                                                  $arrOrderTemp['deliv_id']);
+                                                  $arrOrderTemp['deliv_id'],
+                                                  $arrOrderTemp['order_pref'],  // 税金計算の為に追加　注文者基準
+                                                  $arrOrderTemp['order_country_id'] // 税金計算の為に追加　注文者基準
+                                                  );
+
         $this->arrForm = array_merge($arrOrderTemp, $arrCalcResults);
 
         // 会員ログインチェック
@@ -129,14 +131,13 @@ class LC_Page_Shopping_Confirm extends LC_Page_Ex {
         }
 
         // 決済モジュールを使用するかどうか
-        $this->use_module = $this->useModule($this->arrForm['payment_id']);
+        $this->use_module = SC_Helper_Payment_Ex::useModule($this->arrForm['payment_id']);
 
         switch ($this->getMode()) {
             // 前のページに戻る
             case 'return':
                 // 正常な推移であることを記録しておく
                 $objSiteSess->setRegistFlag();
-
 
                 SC_Response_Ex::sendRedirect(SHOPPING_PAYMENT_URLPATH);
                 SC_Response_Ex::actionExit();
@@ -145,7 +146,7 @@ class LC_Page_Shopping_Confirm extends LC_Page_Ex {
                 /*
                  * 決済モジュールで必要なため, 受注番号を取得
                  */
-                $this->arrForm['order_id'] = $objQuery->nextval('dtb_order_order_id');
+                $this->arrForm['order_id'] = $objPurchase->getNextOrderID();
                 $_SESSION['order_id'] = $this->arrForm['order_id'];
 
                 // 集計結果を受注一時テーブルに反映
@@ -159,16 +160,12 @@ class LC_Page_Shopping_Confirm extends LC_Page_Ex {
                 if ($this->use_module) {
                     $objPurchase->completeOrder(ORDER_PENDING);
 
-
                     SC_Response_Ex::sendRedirect(SHOPPING_MODULE_URLPATH);
                 }
                 // 購入完了ページ
                 else {
                     $objPurchase->completeOrder(ORDER_NEW);
-                    $template_id = SC_Display_Ex::detectDevice() == DEVICE_TYPE_MOBILE ? 2 : 1;
-                    $objHelperMail->sfSendOrderMail(
-                            $this->arrForm['order_id'],
-                            $template_id);
+                    SC_Helper_Purchase_Ex::sendOrderMail($this->arrForm['order_id'], $this);
 
                     SC_Response_Ex::sendRedirect(SHOPPING_COMPLETE_URLPATH);
                 }
@@ -178,28 +175,5 @@ class LC_Page_Shopping_Confirm extends LC_Page_Ex {
                 break;
         }
 
-    }
-
-    /**
-     * デストラクタ.
-     *
-     * @return void
-     */
-    function destroy() {
-        parent::destroy();
-    }
-
-    /**
-     * 決済モジュールを使用するかどうか.
-     *
-     * dtb_payment.memo03 に値が入っている場合は決済モジュールと見なす.
-     *
-     * @param integer $payment_id 支払い方法ID
-     * @return boolean 決済モジュールを使用する支払い方法の場合 true
-     */
-    function useModule($payment_id) {
-        $objQuery =& SC_Query_Ex::getSingletonInstance();
-        $memo03 = $objQuery->get('memo03', 'dtb_payment', 'payment_id = ?', array($payment_id));
-        return !SC_Utils_Ex::isBlank($memo03);
     }
 }

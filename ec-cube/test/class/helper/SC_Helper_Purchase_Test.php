@@ -2,7 +2,7 @@
 /*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2013 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -30,9 +30,10 @@ require_once(realpath(dirname(__FILE__)) . "/../../../data/class_extends/helper_
  *
  * @package Helper
  * @author LOCKON CO.,LTD.
- * @version $Id: SC_Helper_Purchase_Test.php 21867 2012-05-30 07:37:01Z nakanishi $
+ * @version $Id: SC_Helper_Purchase_Test.php 22567 2013-02-18 10:09:54Z shutta $
  */
-class SC_Helper_Purchase_Test extends PHPUnit_Framework_TestCase {
+class SC_Helper_Purchase_Test extends PHPUnit_Framework_TestCase 
+{
     /**
      * @var SC_Helper_Purchase
      */

@@ -1,7 +1,7 @@
 <!--{*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2013 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -20,8 +20,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *}-->
 
-<script src="<!--{$smarty.const.ROOT_URLPATH}-->js/products.js"></script>
-<script src="<!--{$TPL_URLPATH}-->js/jquery.facebox/facebox.js"></script>
 <script>//<![CDATA[
     // 規格2に選択肢を割り当てる。
     function fnSetClassCategories(form, classcat_id2_selected) {
@@ -29,7 +27,7 @@
         var product_id = $form.find('input[name=product_id]').val();
         var $sele1 = $form.find('select[name=classcategory_id1]');
         var $sele2 = $form.find('select[name=classcategory_id2]');
-        setClassCategories($form, product_id, $sele1, $sele2, classcat_id2_selected);
+        eccube.setClassCategories($form, product_id, $sele1, $sele2, classcat_id2_selected);
     }
     $(function(){
         $('#detailphotoblock ul li').flickSlide({target:'#detailphotoblock>ul', duration:5000, parentArea:'#detailphotoblock', height: 200});
@@ -37,11 +35,6 @@
 
         //お勧め商品のリンクを張り直し(フリックスライドによるエレメント生成後)
         $('#whobought_area li').biggerlink();
-        //商品画像の拡大
-        $('a.expansion').facebox({
-            loadingImage : '<!--{$TPL_URLPATH}-->js/jquery.facebox/loading.gif',
-            closeImage   : '<!--{$TPL_URLPATH}-->js/jquery.facebox/closelabel.png'
-        });
     });
     //サブエリアの表示/非表示
     var speed = 500;
@@ -209,6 +202,16 @@
                         </p>
                     <!--{/if}-->
 
+                    <!--▼メーカー-->
+                    <!--{if $arrProduct.maker_name|strlen >= 1}-->
+                        <p class="maker">
+                            <span class="mini">メーカー：</span><span>
+                                <!--{$arrProduct.maker_name|h}-->
+                            </span>
+                        </p>
+                    <!--{/if}-->
+                    <!--▲メーカー-->
+
                     <!--▼メーカーURL-->
                     <!--{if $arrProduct.comment1|strlen >= 1}-->
                         <p class="sale_price">
@@ -269,7 +272,7 @@
                         <dl>
                             <dt>数量</dt>
                             <dd>
-                                <input type="number" name="quantity" class="quantitybox" value="<!--{$arrForm.quantity.value|default:1|h}-->" max="<!--{$smarty.const.INT_LEN}-->" style="<!--{$arrErr.quantity|sfGetErrorColor}-->" />
+                                <input type="number" name="quantity" class="quantitybox" value="<!--{$arrForm.quantity.value|default:1|h}-->" max="<!--{9|str_repeat:$smarty.const.INT_LEN}-->" style="<!--{$arrErr.quantity|sfGetErrorColor}-->" />
                                 <!--{if $arrErr.quantity != ""}-->
                                     <br /><span class="attention"><!--{$arrErr.quantity}--></span>
                                 <!--{/if}-->
@@ -292,7 +295,7 @@
                 <!--{if $tpl_login}-->
                     <!--{if !$is_favorite}-->
                         <div class="btn_favorite">
-                            <p><a rel="external" href="javascript:void(0);" onclick="fnAddFavoriteSphone(<!--{$arrProduct.product_id|h}-->); return false;" class="btn_sub">お気に入りに追加</a></p>
+                            <p><a rel="external" href="javascript:void(0);" onclick="eccube.addFavoriteSphone(<!--{$arrProduct.product_id|h}-->); return false;" class="btn_sub">お気に入りに追加</a></p>
                         </div>
                     <!--{else}-->
                         <div class="btn_favorite">
@@ -359,7 +362,7 @@
             <div class="review_btn">
                 <!--{if count($arrReview) < $smarty.const.REVIEW_REGIST_MAX}-->
                     <!--★新規コメントを書き込む★-->
-                    <a href="./review.php?product_id=<!--{$arrProduct.product_id}-->" target="_blank" class="btn_sub" />新規コメントを書き込む</a>
+                    <a href="./review.php?product_id=<!--{$arrProduct.product_id}-->" target="_blank" class="btn_sub">新規コメントを書き込む</a>
                 <!--{/if}-->
             </div>
             </div>
@@ -376,7 +379,7 @@
             </ul>
             <!--{/if}-->
         </div>
-    </div>
+
     <!--お客様の声ここまで-->
 
 
@@ -392,7 +395,7 @@
                 <!--{section name=cnt loop=$arrRecommend}-->
                     <!--{if $arrRecommend[cnt].product_id}-->
                         <li id="mainImage1<!--{$smarty.section.cnt.index}-->">
-                            <img src="<!--{$smarty.const.ROOT_URLPATH}-->resize_image.php?image=<!--{$arrRecommend[cnt].main_list_image|sfNoImageMainList|h}-->&amp;width=65&amp;height=65" alt="<!--{$arrRecommend[cnt].name|h}-->" />
+                            <img src="<!--{$smarty.const.IMAGE_SAVE_URLPATH}--><!--{$arrRecommend[cnt].main_list_image|sfNoImageMainList|h}-->" style="max-width: 65px;max-height: 65px;" alt="!--{$arrRecommend[cnt].name|h}-->" />
                             <!--{assign var=price02_min value=`$arrRecommend[cnt].price02_min_inctax`}-->
                             <!--{assign var=price02_max value=`$arrRecommend[cnt].price02_max_inctax`}-->
                             <h3><a rel="external" href="<!--{$smarty.const.P_DETAIL_URLPATH}--><!--{$arrRecommend[cnt].product_id|u}-->"><!--{$arrRecommend[cnt].name|h}--></a></h3>
@@ -413,16 +416,9 @@
     <!--▲その他おすすめ商品-->
 
     <div class="btn_area">
-        <p><a href="javascript:void(0);" class="btn_more" data-rel="back">商品一覧に戻る</a></p>
+        <p><a href="javascript:void(0);" class="btn_more" data-rel="back">戻る</a></p>
     </div>
 </section>
 
-<!--▼検索バー -->
-<section id="search_area">
-    <form method="get" action="<!--{$smarty.const.ROOT_URLPATH}-->products/list.php">
-        <input type="hidden" name="<!--{$smarty.const.TRANSACTION_ID_NAME}-->" value="<!--{$transactionid}-->" />
-        <input type="hidden" name="mode" value="search" />
-        <input type="search" name="name" id="search" value="" placeholder="キーワードを入力" class="searchbox" >
-    </form>
-</section>
-<!--▲検索バー -->
+<!--{include file= 'frontparts/search_area.tpl'}-->
+

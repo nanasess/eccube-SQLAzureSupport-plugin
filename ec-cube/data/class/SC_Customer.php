@@ -2,7 +2,7 @@
 /*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2013 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -24,12 +24,13 @@
 /*  [名称] SC_Customer
  *  [概要] 会員管理クラス
  */
-class SC_Customer {
-
+class SC_Customer
+{
     /** 会員情報 */
-    var $customer_data;
+    public $customer_data;
 
-    function getCustomerDataFromEmailPass($pass, $email, $mobile = false) {
+    public function getCustomerDataFromEmailPass($pass, $email, $mobile = false)
+    {
         // 小文字に変換
         $email = strtolower($email);
         $sql_mobile = $mobile ? ' OR email_mobile = ?' : '';
@@ -51,54 +52,11 @@ class SC_Customer {
         if (SC_Utils_Ex::sfIsMatchHashPassword($pass, $data['password'], $data['salt'])) {
             $this->customer_data = $data;
             $this->startSession();
+
             return true;
         }
+
         return false;
-    }
-
-    /**
-     * 会員の登録住所を取得する.
-     *
-     * 配列の1番目に会員登録住所, 追加登録住所が存在する場合は2番目以降に
-     * 設定される.
-     *
-     * @param integer $customer_id 会員ID
-     * @return array 会員登録住所, 追加登録住所の配列
-     */
-    function getCustomerAddress($customer_id) {
-        $objQuery =& SC_Query_Ex::getSingletonInstance();
-
-        $from = <<< __EOS__
-            (
-                SELECT NULL AS other_deliv_id,
-                    customer_id,
-                    name01, name02,
-                    kana01, kana02,
-                    zip01, zip02,
-                    pref,
-                    addr01, addr02,
-                    email, email_mobile,
-                    tel01, tel02, tel03,
-                    fax01, fax02, fax03
-                FROM dtb_customer
-                WHERE customer_id = ?
-                UNION ALL
-                SELECT other_deliv_id,
-                    customer_id,
-                    name01, name02,
-                    kana01, kana02,
-                    zip01, zip02,
-                    pref,
-                    addr01, addr02,
-                    NULL AS email, NULL AS email_mobile,
-                    tel01, tel02, tel03,
-                    NULL AS fax01, NULL AS fax02, NULL AS fax03
-                FROM dtb_other_deliv
-                WHERE customer_id = ?
-            ) AS addrs
-__EOS__;
-        $objQuery->setOrder('other_deliv_id IS NULL DESC, other_deliv_id DESC');
-        return $objQuery->select('*', $from, '', array($customer_id, $customer_id));
     }
 
     /**
@@ -107,7 +65,8 @@ __EOS__;
      * @return boolean 該当する会員が存在する場合は true、それ以外の場合
      *                 は false を返す。
      */
-    function checkMobilePhoneId() {
+    public function checkMobilePhoneId()
+    {
         //docomo用にデータを取り出す。
         if (SC_MobileUserAgent_Ex::getCarrier() == 'docomo') {
             if ($_SESSION['mobile']['phone_id'] == '' && strlen($_SESSION['mobile']['phone_id']) == 0) {
@@ -121,6 +80,7 @@ __EOS__;
         // 携帯端末IDが一致し、本登録された会員を検索する。
         $objQuery =& SC_Query_Ex::getSingletonInstance();
         $exists = $objQuery->exists('dtb_customer', 'mobile_phone_id = ? AND del_flg = 0 AND status = 2', array($_SESSION['mobile']['phone_id']));
+
         return $exists;
     }
 
@@ -128,11 +88,12 @@ __EOS__;
      * 携帯端末IDを使用して会員を検索し、パスワードの照合を行う。
      * パスワードが合っている場合は会員情報を取得する。
      *
-     * @param string $pass パスワード
+     * @param  string  $pass パスワード
      * @return boolean 該当する会員が存在し、パスワードが合っている場合は true、
      *                 それ以外の場合は false を返す。
      */
-    function getCustomerDataFromMobilePhoneIdPass($pass) {
+    public function getCustomerDataFromMobilePhoneIdPass($pass)
+    {
         //docomo用にデータを取り出す。
         if (SC_MobileUserAgent_Ex::getCarrier() == 'docomo') {
             if ($_SESSION['mobile']['phone_id'] == '' && strlen($_SESSION['mobile']['phone_id']) == 0) {
@@ -152,8 +113,10 @@ __EOS__;
         if (SC_Utils_Ex::sfIsMatchHashPassword($pass, $data['password'], $data['salt'])) {
             $this->customer_data = $data;
             $this->startSession();
+
             return true;
         }
+
         return false;
     }
 
@@ -162,7 +125,8 @@ __EOS__;
      *
      * @return void
      */
-    function updateMobilePhoneId() {
+    public function updateMobilePhoneId()
+    {
         if (!isset($_SESSION['mobile']['phone_id']) || $_SESSION['mobile']['phone_id'] === false) {
             return;
         }
@@ -180,7 +144,8 @@ __EOS__;
     }
 
     // パスワードを確認せずにログイン
-    function setLogin($email) {
+    public function setLogin($email)
+    {
         // 本登録された会員のみ
         $sql = 'SELECT * FROM dtb_customer WHERE (email = ? OR email_mobile = ?) AND del_flg = 0 AND status = 2';
         $objQuery =& SC_Query_Ex::getSingletonInstance();
@@ -191,7 +156,8 @@ __EOS__;
     }
 
     // セッション情報を最新の情報に更新する
-    function updateSession() {
+    public function updateSession()
+    {
         $sql = 'SELECT * FROM dtb_customer WHERE customer_id = ? AND del_flg = 0';
         $customer_id = $this->getValue('customer_id');
         $objQuery =& SC_Query_Ex::getSingletonInstance();
@@ -201,14 +167,19 @@ __EOS__;
     }
 
     // ログイン情報をセッションに登録し、ログに書き込む
-    function startSession() {
+    public function startSession()
+    {
         $_SESSION['customer'] = $this->customer_data;
         // セッション情報の保存
         GC_Utils_Ex::gfPrintLog('access : user='.$this->customer_data['customer_id'] ."\t".'ip='. $this->getRemoteHost(), CUSTOMER_LOG_REALFILE, false);
     }
 
     // ログアウト　$_SESSION['customer']を解放し、ログに書き込む
-    function EndSession() {
+    public function EndSession()
+    {
+        // セッション情報破棄の前にcustomer_idを保存
+        $customer_id = $_SESSION['customer']['customer_id'];
+
         // $_SESSION['customer']の解放
         unset($_SESSION['customer']);
         // セッションの配送情報を全て破棄する
@@ -217,12 +188,16 @@ __EOS__;
         SC_Helper_Session_Ex::destroyToken();
         $objSiteSess = new SC_SiteSession_Ex();
         $objSiteSess->unsetUniqId();
+
         // ログに記録する
-        GC_Utils_Ex::gfPrintLog('logout : user='.$this->customer_data['customer_id'] ."\t".'ip='. $this->getRemoteHost(), CUSTOMER_LOG_REALFILE, false);
+        $log = sprintf("logout : user=%d\tip=%s",
+            $customer_id, $this->getRemoteHost());
+        GC_Utils_Ex::gfPrintLog($log, CUSTOMER_LOG_REALFILE, false);
     }
 
     // ログインに成功しているか判定する。
-    function isLoginSuccess($dont_check_email_mobile = false) {
+    public function isLoginSuccess($dont_check_email_mobile = false)
+    {
         // ログイン時のメールアドレスとDBのメールアドレスが一致している場合
         if (isset($_SESSION['customer']['customer_id'])
             && SC_Utils_Ex::sfIsInt($_SESSION['customer']['customer_id'])
@@ -234,21 +209,26 @@ __EOS__;
                 // ただし $dont_check_email_mobile が true の場合はチェックしない。
                 if (SC_Display_Ex::detectDevice() == DEVICE_TYPE_MOBILE && !$dont_check_email_mobile) {
                     $email_mobile = $objQuery->get('email_mobile', 'dtb_customer', 'customer_id = ?', array($_SESSION['customer']['customer_id']));
+
                     return isset($email_mobile);
                 }
+
                 return true;
             }
         }
+
         return false;
     }
 
     // パラメーターの取得
-    function getValue($keyname) {
+    public function getValue($keyname)
+    {
         // ポイントはリアルタイム表示
         if ($keyname == 'point') {
             $objQuery =& SC_Query_Ex::getSingletonInstance();
             $point = $objQuery->get('point', 'dtb_customer', 'customer_id = ?', array($_SESSION['customer']['customer_id']));
             $_SESSION['customer']['point'] = $point;
+
             return $point;
         } else {
             return isset($_SESSION['customer'][$keyname]) ? $_SESSION['customer'][$keyname] : '';
@@ -256,20 +236,24 @@ __EOS__;
     }
 
     // パラメーターのセット
-    function setValue($keyname, $val) {
+    public function setValue($keyname, $val)
+    {
         $_SESSION['customer'][$keyname] = $val;
     }
 
     // パラメーターがNULLかどうかの判定
-    function hasValue($keyname) {
+    public function hasValue($keyname)
+    {
         if (isset($_SESSION['customer'][$keyname])) {
             return !SC_Utils_Ex::isBlank($_SESSION['customer'][$keyname]);
         }
+
         return false;
     }
 
     // 誕生日月であるかどうかの判定
-    function isBirthMonth() {
+    public function isBirthMonth()
+    {
         if (isset($_SESSION['customer']['birth'])) {
             $arrRet = preg_split('|[- :/]|', $_SESSION['customer']['birth']);
             $birth_month = intval($arrRet[1]);
@@ -279,6 +263,7 @@ __EOS__;
                 return true;
             }
         }
+
         return false;
     }
 
@@ -290,8 +275,8 @@ __EOS__;
      *
      * @return string $_SERVER['REMOTE_HOST'] 又は $_SERVER['REMOTE_ADDR']の文字列
      */
-    function getRemoteHost() {
-
+    public function getRemoteHost()
+    {
         if (!empty($_SERVER['REMOTE_HOST'])) {
             return $_SERVER['REMOTE_HOST'];
         } elseif (!empty($_SERVER['REMOTE_ADDR'])) {
@@ -302,9 +287,49 @@ __EOS__;
     }
 
     //受注関連の会員情報を更新
-    function updateOrderSummary($customer_id) {
+    public function updateOrderSummary($customer_id)
+    {
         $objQuery =& SC_Query_Ex::getSingletonInstance();
         $arrOrderSummary =  $objQuery->getRow('SUM( payment_total) as buy_total, COUNT(order_id) as buy_times,MAX( create_date) as last_buy_date, MIN(create_date) as first_buy_date','dtb_order','customer_id = ? AND del_flg = 0 AND status <> ?',array($customer_id,ORDER_CANCEL));
         $objQuery->update('dtb_customer',$arrOrderSummary,'customer_id = ?',array($customer_id));
+    }
+
+    /**
+     * ログインを実行する.
+     *
+     * ログインを実行し, 成功した場合はユーザー情報をセッションに格納し,
+     * true を返す.
+     * モバイル端末の場合は, 携帯端末IDを保存する.
+     * ログインに失敗した場合は, false を返す.
+     *
+     * @param  string  $login_email ログインメールアドレス
+     * @param  string  $login_pass  ログインパスワード
+     * @return boolean ログインに成功した場合 true; 失敗した場合 false
+     */
+    public function doLogin($login_email, $login_pass)
+    {
+        switch (SC_Display_Ex::detectDevice()) {
+            case DEVICE_TYPE_MOBILE:
+                if (!$this->getCustomerDataFromMobilePhoneIdPass($login_pass) &&
+                    !$this->getCustomerDataFromEmailPass($login_pass, $login_email, true)
+                ) {
+                    return false;
+                } else {
+                    $this->updateMobilePhoneId();
+
+                    return true;
+                }
+                break;
+
+            case DEVICE_TYPE_SMARTPHONE:
+            case DEVICE_TYPE_PC:
+            default:
+                if (!$this->getCustomerDataFromEmailPass($login_pass, $login_email)) {
+                    return false;
+                } else {
+                    return true;
+                }
+                break;
+        }
     }
 }

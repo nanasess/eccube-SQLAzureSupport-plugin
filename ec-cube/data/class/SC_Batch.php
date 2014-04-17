@@ -2,7 +2,7 @@
 /*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2013 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -26,18 +26,17 @@
  *
  * @package Page
  * @author LOCKON CO.,LTD.
- * @version $Id: SC_Batch.php 21867 2012-05-30 07:37:01Z nakanishi $
+ * @version $Id: SC_Batch.php 23124 2013-08-24 14:33:52Z kimoto $
  */
-class SC_Batch {
-
-    // }}}
-    // {{{ functions
-
+class SC_Batch
+{
     /**
      * バッチ処理を実行する
      *
-     * @param mixed $argv コマンドライン引数
+     * @param  mixed $argv コマンドライン引数
      * @return mixed バッチの実行結果
      */
-    function execute($argv = '') {}
+    public function execute($argv = '')
+    {
+    }
 }

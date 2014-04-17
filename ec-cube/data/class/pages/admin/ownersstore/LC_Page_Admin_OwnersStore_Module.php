@@ -2,7 +2,7 @@
 /*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2013 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -21,7 +21,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-// {{{ requires
 require_once CLASS_EX_REALDIR . 'page_extends/admin/LC_Page_Admin_Ex.php';
 
 /**
@@ -29,20 +28,19 @@ require_once CLASS_EX_REALDIR . 'page_extends/admin/LC_Page_Admin_Ex.php';
  *
  * @package Page
  * @author LOCKON CO.,LTD.
- * @version $Id: LC_Page_Admin_OwnersStore_Module.php 21867 2012-05-30 07:37:01Z nakanishi $
+ * @version $Id: LC_Page_Admin_OwnersStore_Module.php 23124 2013-08-24 14:33:52Z kimoto $
  */
-class LC_Page_Admin_OwnersStore_Module extends LC_Page_Admin_Ex {
-
-    var $tpl_subno = 'index';
-    // }}}
-    // {{{ functions
+class LC_Page_Admin_OwnersStore_Module extends LC_Page_Admin_Ex
+{
+    public $tpl_subno = 'index';
 
     /**
      * Page を初期化する.
      *
      * @return void
      */
-    function init() {
+    public function init()
+    {
         parent::init();
 
         $this->tpl_mainpage = 'ownersstore/module.tpl';
@@ -57,7 +55,8 @@ class LC_Page_Admin_OwnersStore_Module extends LC_Page_Admin_Ex {
      *
      * @return void
      */
-    function process() {
+    public function process()
+    {
         $this->action();
         $this->sendResponse();
     }
@@ -67,16 +66,8 @@ class LC_Page_Admin_OwnersStore_Module extends LC_Page_Admin_Ex {
      *
      * @return void
      */
-    function action() {
+    public function action()
+    {
         // nothing.
-    }
-
-    /**
-     * デストラクタ.
-     *
-     * @return void
-     */
-    function destroy() {
-        parent::destroy();
     }
 }

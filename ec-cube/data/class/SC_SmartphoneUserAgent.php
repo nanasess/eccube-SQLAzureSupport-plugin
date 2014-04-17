@@ -2,7 +2,7 @@
 /*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2013 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -26,15 +26,16 @@
  *
  * @auther Yu Nobira
  */
-class SC_SmartphoneUserAgent {
-
+class SC_SmartphoneUserAgent
+{
     /**
      * スマートフォンかどうかを判別する。
      * $_SESSION['pc_disp'] = true の場合はPC表示。
      *
      * @return boolean
      */
-    function isSmartphone() {
+    public function isSmartphone()
+    {
         $nu = new Net_UserAgent_Mobile();
         // SPでかつPC表示OFFの場合
         return $nu->isSmartphone() && !SC_SmartphoneUserAgent_Ex::getSmartphonePcFlag();
@@ -45,7 +46,8 @@ class SC_SmartphoneUserAgent {
      *
      * @return boolean
      */
-    function isNonSmartphone() {
+    public function isNonSmartphone()
+    {
         return !SC_SmartphoneUserAgent_Ex::isSmartphone();
     }
 
@@ -54,22 +56,26 @@ class SC_SmartphoneUserAgent {
      *
      * @return string
      */
-    function getSmartphonePcFlag() {
+    public function getSmartphonePcFlag()
+    {
         $_SESSION['pc_disp'] = empty($_SESSION['pc_disp']) ? false : $_SESSION['pc_disp'];
+
         return $_SESSION['pc_disp'];
     }
 
     /**
      * PC表示ON
      */
-    function setPcDisplayOn() {
+    public function setPcDisplayOn()
+    {
         $_SESSION['pc_disp'] = true;
     }
 
     /**
      * PC表示OFF
      */
-    function setPcDisplayOff() {
+    public function setPcDisplayOff()
+    {
         $_SESSION['pc_disp'] = false;
     }
 }

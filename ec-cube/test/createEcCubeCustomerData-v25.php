@@ -3,7 +3,7 @@
 /*
  * EC-CUBE 動作検証用会員データ生成スクリプト
  *
- * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2013 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -22,7 +22,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  * @auther Kentaro Habu
- * @version $Id: createEcCubeCustomerData-v25.php 21867 2012-05-30 07:37:01Z nakanishi $
+ * @version $Id: createEcCubeCustomerData-v25.php 22857 2013-06-08 09:59:30Z Seasoft $
  */
 
 // {{{ requires
@@ -87,7 +87,8 @@ exit;
 /**
  * EC-CUBE のテスト用会員データを生成する
  */
-class CreateEcCubeCustomerData {
+class CreateEcCubeCustomerData 
+{
 
     /** SC_Query インスタンス */
     var $objQuery;
@@ -95,7 +96,8 @@ class CreateEcCubeCustomerData {
     /**
      * コンストラクタ.
      */
-    function CreateEcCubeCustomerData() {
+    function CreateEcCubeCustomerData()
+    {
         $this->objQuery = new SC_Query();
     }
 
@@ -104,7 +106,8 @@ class CreateEcCubeCustomerData {
      *
      * @return void
      */
-    function createCustomers() {
+    function createCustomers()
+    {
         lfPrintLog("createCustomers START.(" . CUSTOMERS_VOLUME . " data)");
         for ($i = 0; $i < CUSTOMERS_VOLUME; $i++) {
             lfPrintLog("----------");
@@ -154,11 +157,11 @@ class CreateEcCubeCustomerData {
         print("\n");
         lfPrintLog("createCustomers DONE.(" . CUSTOMERS_VOLUME . " data created)");
     }
-
 }
 
 /** テスト用スクリプトのログ出力関数 */
-function lfPrintLog($mess) {
+function lfPrintLog($mess)
+{
     $path = DATA_REALDIR . "logs/" .  basename(__FILE__, '.php') . ".log";
     GC_Utils::gfPrintLog($mess, $path);
 }
