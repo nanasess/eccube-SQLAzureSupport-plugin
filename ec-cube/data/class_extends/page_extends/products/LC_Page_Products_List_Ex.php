@@ -65,10 +65,10 @@ class LC_Page_Products_List_Ex extends LC_Page_Products_List
     }
 
     /* 商品一覧の表示 */
-    function lfGetProductsList($searchCondition, $disp_number, $startno, $linemax, &$objProduct)
+    public function lfGetProductsList($searchCondition, $disp_number, $startno, &$objProduct)
     {
         if (DB_TYPE != 'sqlsrv') {
-            return parent::lfGetProductsList($searchCondition, $disp_number, $startno, $linemax, $objProduct);
+            return parent::lfGetProductsList($searchCondition, $disp_number, $startno, $objProduct);
         } else {
             $arrOrderVal = array();
 
