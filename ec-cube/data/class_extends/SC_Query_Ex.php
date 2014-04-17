@@ -63,6 +63,6 @@ class SC_Query_Ex extends SC_Query
         $limit = $this->conn->limit;
         $this->setLimitOffset(0, 0);
 
-        return $this->conn->_modifyQuery($sql, false, $limit, $offset);
+        return $this->dbFactory->addLimitOffset($sql, $limit, $offset);
     }
 }

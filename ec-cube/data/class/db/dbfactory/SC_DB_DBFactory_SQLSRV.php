@@ -64,6 +64,7 @@ class SC_DB_DBFactory_SQLSRV extends SC_DB_DBFactory
     {
         $sql = $this->sfChangeILIKE($sql);
         $sql = $this->sfChangeArrayToString($sql);
+        $sql = $this->convertRecommendSql($sql);
 
         return $sql;
     }
@@ -81,13 +82,29 @@ class SC_DB_DBFactory_SQLSRV extends SC_DB_DBFactory
             preg_match_all('/ARRAY_TO_STRING.*?\(.*?ARRAY\(.*?SELECT (.+?) FROM (.+?) WHERE (.+?)\).*?\,.*?\'(.+?)\'.*?\)/is', $sql, $match, PREG_SET_ORDER);
 
             foreach($match as $item) {
-                $replace = $item[1] . " + '" . $item[4] . "' FROM " . $item[2] . " WHERE " . $item[3] . " FOR XML PATH('')";
+                $replace = "CAST ({$item[1]} AS varchar) + '" . $item[4] . "' FROM " . $item[2] . " WHERE " . $item[3] . " FOR XML PATH('')";
                 $sql = str_replace($item[0], $replace, $sql);
             }
         }
         return $sql;
     }
 
+    /**
+     * 関連商品の SQL を変換する。
+     *
+     * @param string SQL 文
+     * @return string 変換後の SQL 文
+     */
+    function convertRecommendSql($sql)
+    {
+        if (strpos(strtoupper($sql), ') AS RECOMMEND_') !== FALSE) {
+            $pattern = '/\(SELECT (comment|recommend_product_id) FROM dtb_recommend_products WHERE (.*?) ORDER BY (.*?) limit 1 offset (\d+)\) AS ((recommend_comment|recommend_product_id)\d+)/';
+            $replacement = '(SELECT \1 FROM dtb_recommend_products WHERE \2 ORDER BY \3 OFFSET \4 ROWS FETCH NEXT 1 ROWS ONLY) AS \5';
+            $sql = preg_replace($pattern, $replacement, $sql);
+        }
+
+        return $sql;
+    }
 
     /**
      * 昨日の売上高・売上件数を算出する SQL を返す.
@@ -262,5 +279,26 @@ class SC_DB_DBFactory_SQLSRV extends SC_DB_DBFactory
     {
         $changesql = preg_replace('/(^|[^\w])ILIKE([^\w]|$)/i', '$1LIKE$2', $sql);
         return $changesql;
+    }
+
+    /**
+     * SQL 文に OFFSET, LIMIT を付加する。
+     *
+     * @param string 元の SQL 文
+     * @param integer LIMIT
+     * @param integer OFFSET
+     * @return string 付加後の SQL 文
+     */
+    function addLimitOffset($sql, $limit = 0, $offset = 0)
+    {
+        if (strlen($offset) === 0) {
+            $offset = 0;
+        }
+        $sql .= " OFFSET $offset ROWS";
+        if ($limit != 0) {
+            $sql .= " FETCH NEXT $limit ROWS ONLY";
+        }
+
+        return $sql;
     }
 }
