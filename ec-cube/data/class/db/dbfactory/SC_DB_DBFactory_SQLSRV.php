@@ -244,7 +244,16 @@ class SC_DB_DBFactory_SQLSRV extends SC_DB_DBFactory
      */
     function findTableNames($expression = "")
     {
-        return array();
+        $objQuery =& SC_Query_Ex::getSingletonInstance();
+        $sql = 'SELECT name FROM sysobjects WHERE xtype = \'u\' AND name LIKE \'mtb_%\' order by name';
+        $arrColList = $objQuery->getAll($sql);
+        $arrColList = SC_Utils_Ex::sfSwapArray($arrColList, false);
+        $arrList = array();
+        foreach($arrColList[0] as $val){
+            $arrList[$val] = $val ;
+        }
+
+        return $arrList;
     }
 
     /**
