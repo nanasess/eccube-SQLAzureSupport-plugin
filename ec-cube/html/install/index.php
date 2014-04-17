@@ -45,10 +45,12 @@ ini_set('max_execution_time', 300);
 
 $objPage = new StdClass;
 $objPage->arrDB_TYPE = array(
+    'sqlsrv' => 'SQL Azure',
     'pgsql' => 'PostgreSQL',
     'mysql' => 'MySQL',
 );
 $objPage->arrDB_PORT = array(
+    'sqlsrv' => '1433',
     'pgsql' => '',
     'mysql' => '',
 );
@@ -143,7 +145,11 @@ switch ($mode) {
 
         // 初期データの作成
         if (count($objPage->arrErr) == 0) {
-            $objPage->arrErr = lfExecuteSQL('./sql/insert_data.sql', $arrDsn);
+            $insert_data_sql = './sql/insert_data_' . $arrDsn['phptype'] . '.sql';
+            if (!file_exists($insert_data_sql)) {
+                $insert_data_sql = './sql/insert_data.sql';
+            }
+            $objPage->arrErr = lfExecuteSQL($insert_data_sql, $arrDsn);
             if (count($objPage->arrErr) == 0) {
                 $objPage->tpl_message .= '○：初期データの作成に成功しました。<br />';
             } else {
@@ -622,7 +628,15 @@ function lfInitWebParam($objWebParam) {
 
     // 店名、管理者メールアドレスを取得する。(再インストール時)
     if (defined('DEFAULT_DSN')) {
-        $objQuery = new SC_Query();
+        $dsn = array('phptype'  => DB_TYPE,
+                     'username' => DB_USER,
+                     'password' => DB_PASSWORD,
+                     'protocol' => 'tcp',
+                     'hostspec' => DB_SERVER,
+                     'port'     => DB_PORT,
+                     'database' => DB_NAME
+                     );
+        $objQuery = new SC_Query($dsn);
         $tables = $objQuery->listTables();
 
         if (!PEAR::isError($tables) && in_array('dtb_baseinfo', $tables)) {
@@ -899,15 +913,20 @@ function lfCreateSequence($arrSequences, $arrDsn) {
 
     // Debugモード指定
     $options['debug'] = PEAR_DB_DEBUG;
-    $objDB = MDB2::connect($arrDsn, $options);
-    $objManager =& $objDB->loadModule('Manager');
 
     // 接続エラー
     if (!PEAR::isError($objDB)) {
 
+        $objDB = MDB2::connect($arrDsn, $options);
+        $objManager =& $objDB->loadModule('Manager');
         $exists = $objManager->listSequences();
+        $objDB->disconnect();
+
         foreach ($arrSequences as $seq) {
             SC_Utils::sfFlush(true);
+            $objDB = MDB2::connect($arrDsn, $options);
+            $objManager =& $objDB->loadModule('Manager');
+
             $res = $objDB->query('SELECT max(' . $seq[1] . ') FROM ' . $seq[0]);
             if (PEAR::isError($res)) {
                 $arrErr['all'] = '>> ' . $res->userinfo . '<br />';
@@ -924,6 +943,7 @@ function lfCreateSequence($arrSequences, $arrDsn) {
             } else {
                 GC_Utils_Ex::gfPrintLog('OK:' . $seq_name, INSTALL_LOG);
             }
+            $objDB->disconnect();
         }
     } else {
         $arrErr['all'] = '>> ' . $objDB->message;
@@ -1120,6 +1140,7 @@ function getArrayDsn(SC_FormParam $objDBParam) {
         'password'  => $arrRet['db_password'],
         'database'  => $arrRet['db_name'],
         'port'      => $arrRet['db_port'],
+        'protocol' => 'tcp',
     );
 
     // 文字列形式の DSN との互換処理
