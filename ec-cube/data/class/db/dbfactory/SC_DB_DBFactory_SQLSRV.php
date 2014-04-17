@@ -148,7 +148,7 @@ class SC_DB_DBFactory_SQLSRV extends SC_DB_DBFactory {
         //downloadable_daysにNULLが入っている場合(無期限ダウンロード可能時)もあるので、NULLの場合は0日に補正
         $downloadable_days = $baseinfo['downloadable_days'];
         if($downloadable_days ==null || $downloadable_days == "")$downloadable_days=0;
-        return "(SELECT CASE WHEN (SELECT d1.downloadable_days_unlimited FROM dtb_baseinfo d1) = 1 AND " . $dtb_order_alias . ".payment_date IS NOT NULL THEN 1 WHEN CURRENT_TIMESTAMP <= cast(getdate() as datetimeoffset) + " . $dtb_order_alias . ".payment_date + ". $downloadable_days ." THEN 1 ELSE 0 END)";
+        return "(SELECT CASE WHEN (SELECT d1.downloadable_days_unlimited FROM dtb_baseinfo d1) = 1 AND " . $dtb_order_alias . ".payment_date IS NOT NULL THEN 1 WHEN CURRENT_TIMESTAMP <= convert(datetimeoffset, DATEADD(day, ${downloadable_days}, ${dtb_order_alias}.payment_date)) THEN 1 ELSE 0 END)";
         return 1; // FIXME
     }
 
