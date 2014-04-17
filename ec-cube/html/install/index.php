@@ -164,6 +164,7 @@ switch ($mode) {
             if (count($objPage->arrErr) == 0) {
                 $objPage->tpl_message .= '○：シーケンスの作成に成功しました。<br />';
             } else {
+            var_dump($objPage->arrErr);
                 $objPage->tpl_message .= '×：シーケンスの作成に失敗しました。<br />';
             }
         }
@@ -878,7 +879,7 @@ function lfExecuteSQL($filepath, $arrDsn, $disp_err = true)
                         // エラー文を取得する
                         preg_match('/\[(.*)\]/', $ret->userinfo, $arrKey);
                         $arrErr['all'] .= $arrKey[0] . '<br />';
-                        $arrErr['all'] .= '>> テーブル構成の変更に失敗しました。<br />';
+                        $arrErr['all'] .= '>> テーブル構成の変更に失敗しました。<br />' ;
                         GC_Utils_Ex::gfPrintLog($ret->userinfo, INSTALL_LOG);
                         break;
                     } else {
@@ -946,14 +947,20 @@ function lfCreateSequence($arrSequences, $arrDsn)
 
     // Debugモード指定
     $options['debug'] = PEAR_DB_DEBUG;
-    $objDB = MDB2::connect($arrDsn, $options);
-    $objManager =& $objDB->loadModule('Manager');
 
     // 接続エラー
     if (!PEAR::isError($objDB)) {
+
+        $objDB = MDB2::connect($arrDsn, $options);
+        $objManager =& $objDB->loadModule('Manager');
         $exists = $objManager->listSequences();
+        $objDB->disconnect();
+
         foreach ($arrSequences as $seq) {
             SC_Utils::sfFlush(true);
+            $objDB = MDB2::connect($arrDsn, $options);
+            $objManager =& $objDB->loadModule('Manager');
+
             $res = $objDB->query('SELECT max(' . $seq[1] . ') FROM ' . $seq[0]);
             if (PEAR::isError($res)) {
                 $arrErr['all'] = '>> ' . $res->userinfo . '<br />';
@@ -970,6 +977,7 @@ function lfCreateSequence($arrSequences, $arrDsn)
             } else {
                 GC_Utils_Ex::gfPrintLog('OK:' . $seq_name, INSTALL_LOG);
             }
+            $objDB->disconnect();
         }
     } else {
         $arrErr['all'] = '>> ' . $objDB->message;
