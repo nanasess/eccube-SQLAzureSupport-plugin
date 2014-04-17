@@ -2,7 +2,7 @@
 /*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2013 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -37,7 +37,6 @@ SC_Utils::sfIsSuccess(new SC_Session());
 $module_id = isset($_GET['module_id']) ? $_GET['module_id'] : null;
 
 if (!empty($module_id) && is_numeric($module_id)) {
-
     GC_Utils::gfPrintLog('loading module ====> module_id = ' . $module_id);
 
     $objQuery =& SC_Query_Ex::getSingletonInstance();

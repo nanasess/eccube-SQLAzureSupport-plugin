@@ -2,7 +2,7 @@
 /*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2013 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -26,7 +26,7 @@ define('HTML_REALDIR', rtrim(realpath(rtrim(realpath(dirname(__FILE__)), '/\\') 
 define('ADMIN_FUNCTION', true);
 
 require_once HTML_REALDIR . 'define.php';
-if (ob_get_level() > 0) {
+if (ob_get_level() > 0 && ob_get_length() > 0) {
     while (ob_end_clean());
 }
 require_once HTML_REALDIR . HTML2DATA_DIR . 'require_base.php';

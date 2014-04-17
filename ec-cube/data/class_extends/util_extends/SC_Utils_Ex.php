@@ -2,7 +2,7 @@
 /*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2013 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -21,7 +21,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-// {{{ requires
 require_once CLASS_REALDIR . 'util/SC_Utils.php';
 
 /**
@@ -31,7 +30,8 @@ require_once CLASS_REALDIR . 'util/SC_Utils.php';
  *
  * @package Util
  * @author LOCKON CO.,LTD.
- * @version $Id: SC_Utils_Ex.php 21867 2012-05-30 07:37:01Z nakanishi $
+ * @version $Id: SC_Utils_Ex.php 22856 2013-06-08 07:35:27Z Seasoft $
  */
-class SC_Utils_Ex extends SC_Utils {
+class SC_Utils_Ex extends SC_Utils
+{
 }

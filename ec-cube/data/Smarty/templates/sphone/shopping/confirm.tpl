@@ -1,7 +1,7 @@
 <!--{*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2013 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -21,16 +21,15 @@
  *}-->
 
 <script>//<![CDATA[
-    var send = true;
+    var sent = false;
 
     function fnCheckSubmit() {
-        if(send) {
-            send = false;
-            return true;
-        } else {
+        if (sent) {
             alert("只今、処理中です。しばらくお待ち下さい。");
             return false;
         }
+        sent = true;
+        return true;
     }
 
     //ご注文内容エリアの表示/非表示
@@ -98,15 +97,15 @@
                         <!--{foreach from=$arrCartItems item=item}-->
                             <!--▼商品 -->
                             <div class="cartconfirmBox">
-                                <img src="<!--{$smarty.const.ROOT_URLPATH}-->resize_image.php?image=<!--{$item.productsClass.main_list_image|sfNoImageMainList|h}-->&amp;width=80&amp;height=80" alt="<!--{$item.productsClass.name|h}-->" width="80" height="80" class="photoL" />
+                                <img src="<!--{$smarty.const.IMAGE_SAVE_URLPATH}--><!--{$item.productsClass.main_list_image|sfNoImageMainList|h}-->" style="max-width: 80px;max-height: 80px;" alt="<!--{$item.productsClass.name|h}-->" class="photoL" />
                                 <div class="cartconfirmContents">
                                     <div>
                                         <p><em><!--{$item.productsClass.name|h}--></em><br />
                                         <!--{if $item.productsClass.classcategory_name1 != ""}-->
-                                                <span class="mini"><!--{$item.productsClass.class_name1}-->：<!--{$item.productsClass.classcategory_name1}--></span><br />
+                                                <span class="mini"><!--{$item.productsClass.class_name1|h}-->：<!--{$item.productsClass.classcategory_name1|h}--></span><br />
                                         <!--{/if}-->
                                         <!--{if $item.productsClass.classcategory_name2 != ""}-->
-                                                <span class="mini"><!--{$item.productsClass.class_name2}-->：<!--{$item.productsClass.classcategory_name2}--></span>
+                                                <span class="mini"><!--{$item.productsClass.class_name2|h}-->：<!--{$item.productsClass.classcategory_name2|h}--></span>
                                         <!--{/if}-->
                                         </p>
                                     </div>
@@ -167,9 +166,32 @@
             </div><!-- /.form_area -->
         </section>
 
+        <!--★注文者の確認★-->
+        <section class="customerconfirm_area">
+        <h3 class="subtitle">ご注文者</h3>
+        <div class="form_area">
+        <div class="formBox">
+            <dl class="customer_confirm">
+                <dd>
+                    <p>〒<!--{$arrForm.order_zip01|h}-->-<!--{$arrForm.order_zip02|h}--><br />
+                        <!--{$arrPref[$arrForm.order_pref]}--><!--{$arrForm.order_addr01|h}--><!--{$arrForm.order_addr02|h}--></p>
+                    <p class="deliv_name"><!--{$arrForm.order_name01|h}--> <!--{$arrForm.order_name02|h}--></p>
+                    <p><!--{$arrForm.order_tel01}-->-<!--{$arrForm.order_tel02}-->-<!--{$arrForm.order_tel03}--></p>
+                    <!--{if $arrForm.order_fax01 > 0}-->
+                        <p><!--{$arrForm.order_fax01}-->-<!--{$arrForm.order_fax02}-->-<!--{$arrForm.order_fax03}--></p>
+                    <!--{/if}-->
+                    <p><!--{$arrForm.order_email|h}--></p>
+                    <p>性別：<!--{$arrSex[$arrForm.order_sex]|h}--></p>
+                    <p>職業：<!--{$arrJob[$arrForm.order_job]|default:'(未登録)'|h}--></p>
+                    <p>生年月日：<!--{$arrForm.order_birth|regex_replace:"/ .+/":""|regex_replace:"/-/":"/"|default:'(未登録)'|h}--></p>
+                </dd>
+            </dl>
+        </div>
+        </div>
+        </section>
+
         <!--★お届け先の確認★-->
-        <!--{* 販売方法判定（ダウンロード販売のみの場合はお届け先を表示しない） *}-->
-        <!--{if $cartKey != $smarty.const.PRODUCT_TYPE_DOWNLOAD}-->
+        <!--{if $arrShipping}-->
             <section class="delivconfirm_area">
                 <h3 class="subtitle">お届け先</h3>
 
@@ -207,9 +229,9 @@
                                         <div class="cartconfirmBox">
                                             <!--{if $item.productsClass.main_image|strlen >= 1}-->
                                                 <a href="<!--{$smarty.const.IMAGE_SAVE_URLPATH}--><!--{$item.productsClass.main_image|sfNoImageMainList|h}-->" target="_blank">
-                                                <img src="<!--{$smarty.const.ROOT_URLPATH}-->resize_image.php?image=<!--{$item.productsClass.main_list_image|sfNoImageMainList|h}-->&amp;width=80&amp;height=80" alt="<!--{$item.productsClass.name|h}-->" width="80" height="80" class="photoL" /></a>
+                                                    <img src="<!--{$smarty.const.IMAGE_SAVE_URLPATH}--><!--{$item.productsClass.main_list_image|sfNoImageMainList|h}-->" style="max-width: 80px;max-height: 80px;" alt="<!--{$item.productsClass.name|h}-->" class="photoL" /></a>
                                             <!--{else}-->
-                                                <img src="<!--{$smarty.const.ROOT_URLPATH}-->resize_image.php?image=<!--{$item.productsClass.main_list_image|sfNoImageMainList|h}-->&amp;width=80&amp;height=80" alt="<!--{$item.productsClass.name|h}-->" width="80" height="80" class="photoL" />
+                                                <img src="<!--{$smarty.const.IMAGE_SAVE_URLPATH}--><!--{$item.productsClass.main_list_image|sfNoImageMainList|h}-->" style="max-width: 80px;max-height: 80px;" alt="<!--{$item.productsClass.name|h}-->" class="photoL" />
                                             <!--{/if}-->
                                             <div class="cartconfirmContents">
                                                 <p>
@@ -275,13 +297,6 @@
     </form>
 </section>
 
-<!--▼検索バー -->
-<section id="search_area">
-    <form method="get" action="<!--{$smarty.const.ROOT_URLPATH}-->products/list.php">
-        <input type="hidden" name="<!--{$smarty.const.TRANSACTION_ID_NAME}-->" value="<!--{$transactionid}-->" />
-        <input type="hidden" name="mode" value="search" />
-        <input type="search" name="name" id="search" value="" placeholder="キーワードを入力" class="searchbox" >
-    </form>
-</section>
-<!--▲検索バー -->
+<!--{include file= 'frontparts/search_area.tpl'}-->
+
 <!--▲コンテンツここまで -->

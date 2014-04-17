@@ -2,7 +2,7 @@
 /*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2013 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -21,7 +21,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-// {{{ requires
 require_once CLASS_REALDIR . 'db/SC_DB_DBFactory.php';
 
 /**
@@ -31,26 +30,27 @@ require_once CLASS_REALDIR . 'db/SC_DB_DBFactory.php';
  *
  * @package DB
  * @author LOCKON CO.,LTD.
- * @version $Id: SC_DB_DBFactory_Ex.php 21867 2012-05-30 07:37:01Z nakanishi $
+ * @version $Id: SC_DB_DBFactory_Ex.php 22856 2013-06-08 07:35:27Z Seasoft $
  */
-class SC_DB_DBFactory_Ex extends SC_DB_DBFactory {
-
-    // }}}
-    // {{{ functions
-
+class SC_DB_DBFactory_Ex extends SC_DB_DBFactory
+{
     /**
      * DB_TYPE に応じた DBFactory インスタンスを生成する.
      *
      * @param string $db_type 任意のインスタンスを返したい場合は DB_TYPE 文字列を指定
      * @return mixed DBFactory インスタンス
      */
-    function getInstance($db_type = DB_TYPE) {
+    function getInstance($db_type = DB_TYPE)
+    {
         switch ($db_type) {
             case 'mysql':
                 return new SC_DB_DBFactory_MYSQL_Ex();
 
             case 'pgsql':
                 return new SC_DB_DBFactory_PGSQL_Ex();
+
+            case 'sqlsrv':
+                return new SC_DB_DBFactory_SQLSRV_Ex();
 
             default:
                 return new SC_DB_DBFactory_Ex();

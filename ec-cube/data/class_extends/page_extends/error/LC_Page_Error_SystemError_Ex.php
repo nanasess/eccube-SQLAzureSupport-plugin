@@ -2,7 +2,7 @@
 /*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2013 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -21,7 +21,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-// {{{ requires
 require_once CLASS_REALDIR . 'pages/error/LC_Page_Error_SystemError.php';
 
 /**
@@ -32,19 +31,17 @@ require_once CLASS_REALDIR . 'pages/error/LC_Page_Error_SystemError.php';
  *
  * @package Page
  * @author LOCKON CO.,LTD.
- * @version $Id: LC_Page_Error_SystemError_Ex.php 21867 2012-05-30 07:37:01Z nakanishi $
+ * @version $Id: LC_Page_Error_SystemError_Ex.php 22926 2013-06-29 16:24:23Z Seasoft $
  */
-class LC_Page_Error_SystemError_Ex extends LC_Page_Error_SystemError {
-
-    // }}}
-    // {{{ functions
-
+class LC_Page_Error_SystemError_Ex extends LC_Page_Error_SystemError
+{
     /**
      * Page を初期化する.
      *
      * @return void
      */
-    function init() {
+    function init()
+    {
         parent::init();
     }
 
@@ -53,16 +50,8 @@ class LC_Page_Error_SystemError_Ex extends LC_Page_Error_SystemError {
      *
      * @return void
      */
-    function process() {
+    function process()
+    {
         parent::process();
-    }
-
-    /**
-     * デストラクタ.
-     *
-     * @return void
-     */
-    function destroy() {
-        parent::destroy();
     }
 }

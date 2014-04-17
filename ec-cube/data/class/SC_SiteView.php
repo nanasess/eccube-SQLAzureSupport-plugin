@@ -2,7 +2,7 @@
 /*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2013 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -21,8 +21,10 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-class SC_SiteView extends SC_View_Ex {
-    function __construct($setPrevURL = true) {
+class SC_SiteView extends SC_View_Ex
+{
+    public function __construct($setPrevURL = true)
+    {
         parent::__construct();
 
         if ($setPrevURL) {
@@ -30,17 +32,18 @@ class SC_SiteView extends SC_View_Ex {
         }
     }
 
-    function init() {
+    public function init()
+    {
         parent::init();
 
         $this->_smarty->template_dir = TEMPLATE_REALDIR;
         $this->_smarty->compile_dir = COMPILE_REALDIR;
 
         $this->assignTemplatePath(DEVICE_TYPE_PC);
-        $this->initpath();
     }
 
-    function setPrevURL() {
+    public function setPrevURL()
+    {
             $objCartSess = new SC_CartSession_Ex();
             $objCartSess->setPrevURL($_SERVER['REQUEST_URI']);
     }

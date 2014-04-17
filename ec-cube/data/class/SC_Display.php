@@ -2,7 +2,7 @@
 /*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2013 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -25,18 +25,20 @@
  * Http コンテンツ出力を制御するクラス.
  *
  * @author Ryuichi Tokugami
- * @version $Id: SC_Display.php 21925 2012-06-19 07:15:24Z pineray $
+ * @version $Id: SC_Display.php 23124 2013-08-24 14:33:52Z kimoto $
  */
-class SC_Display{
+class SC_Display
+{
+    public $response;
 
-    var $response;
-
-    var $device;
+    /** 端末種別を保持する */
+    // XXX プロパティとして保持する必要があるのか疑問。
+    public static $device;
 
     /** SC_View インスタンス */
-    var $view;
+    public $view;
 
-    var $deviceSeted = false;
+    public $deviceSeted = false;
 
     /*
      * TODO php4を捨てたときに ここのコメントアウトを外してね。
@@ -46,14 +48,16 @@ class SC_Display{
      * const('ADMIN',99);
      */
 
-    function __construct($hasPrevURL = true) {
+    public function __construct($hasPrevURL = true)
+    {
         $this->response = new SC_Response_Ex();
         if ($hasPrevURL) {
             $this->setPrevURL();
         }
     }
 
-    function setPrevURL() {
+    public function setPrevURL()
+    {
         // TODO SC_SiteSession で実装した方が良さげ
         $objCartSess = new SC_CartSession_Ex();
         $objCartSess->setPrevURL($_SERVER['REQUEST_URI']);
@@ -65,7 +69,8 @@ class SC_Display{
      * @param LC_Page $page LC_Page インスタンス
      * @param $is_admin boolean 管理画面を扱う場合 true
      */
-    function prepare($page, $is_admin = false) {
+    public function prepare($page, $is_admin = false)
+    {
         if (!$this->deviceSeted || !is_null($this->view)) {
             $device = ($is_admin) ? DEVICE_TYPE_ADMIN : $this->detectDevice();
             $this->setDevice($device);
@@ -80,18 +85,21 @@ class SC_Display{
      *
      * SC_Response::reload() のラッパーです.
      */
-    function reload($queryString = array(), $removeQueryString = false) {
+    public function reload($queryString = array(), $removeQueryString = false)
+    {
         $this->response->reload($queryString, $removeQueryString);
     }
 
-    function noAction() {
+    public function noAction()
+    {
         return;
     }
 
     /**
      * ヘッダを追加する.
      */
-    function addHeader($name, $value) {
+    public function addHeader($name, $value)
+    {
         $this->response->addHeader($name, $value);
     }
 
@@ -99,8 +107,8 @@ class SC_Display{
      * デバイス毎の出力方法を自動で変更する、ファサード
      * Enter description here ...
      */
-    function setDevice($device = DEVICE_TYPE_PC) {
-
+    public function setDevice($device = DEVICE_TYPE_PC)
+    {
         switch ($device) {
             case DEVICE_TYPE_MOBILE:
                 if (USE_MOBILE === false) {
@@ -124,41 +132,51 @@ class SC_Display{
     /**
      * SC_View インスタンスを設定する.
      */
-    function setView($view) {
+    public function setView($view)
+    {
         $this->view = $view;
     }
 
     /**
-     * 機種を判別する。
+     * 端末種別を判別する。
      *
      * SC_Display::MOBILE = ガラケー = 1
      * SC_Display::SMARTPHONE = スマホ = 2
      * SC_Display::PC = PC = 10
      *
      * @static
+     * @param          $reset boolean
      * @return integer 端末種別ID
      */
-    function detectDevice() {
-        $nu = new Net_UserAgent_Mobile();
-        $su = new SC_SmartphoneUserAgent_Ex();
-        if ($nu->isMobile()) {
-            return DEVICE_TYPE_MOBILE;
-        } elseif ($su->isSmartphone()) {
-            return DEVICE_TYPE_SMARTPHONE;
-        } else {
-            return DEVICE_TYPE_PC;
+    public static function detectDevice($reset = FALSE)
+    {
+        if (is_null(SC_Display_Ex::$device) || $reset) {
+            $nu = new Net_UserAgent_Mobile();
+            $su = new SC_SmartphoneUserAgent_Ex();
+            if ($nu->isMobile()) {
+                SC_Display_Ex::$device = DEVICE_TYPE_MOBILE;
+            } elseif ($su->isSmartphone()) {
+                SC_Display_Ex::$device = DEVICE_TYPE_SMARTPHONE;
+            } else {
+                SC_Display_Ex::$device = DEVICE_TYPE_PC;
+            }
         }
+
+        return SC_Display_Ex::$device;
     }
 
-    function assign($val1,$val2) {
+    public function assign($val1,$val2)
+    {
         $this->view->assign($val1, $val2);
     }
 
-    function assignobj($obj) {
+    public function assignobj($obj)
+    {
         $this->view->assignobj($obj);
     }
 
-    function assignarray($array) {
+    public function assignarray($array)
+    {
         $this->view->assignarray($array);
     }
 }

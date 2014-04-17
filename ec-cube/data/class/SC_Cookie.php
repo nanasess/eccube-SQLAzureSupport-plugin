@@ -2,7 +2,7 @@
 /*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2013 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -25,18 +25,20 @@
  * クッキー用クラス
  *
  */
-class SC_Cookie {
-
-    var $expire;
+class SC_Cookie
+{
+    public $expire;
 
     // コンストラクタ
-    function __construct($day = 365) {
+    public function __construct($day = COOKIE_EXPIRE)
+    {
         // 有効期限
         $this->expire = time() + ($day * 24 * 3600);
     }
 
     // クッキー書き込み
-    function setCookie($key, $val) {
+    public function setCookie($key, $val)
+    {
         setcookie($key, $val, $this->expire, ROOT_URLPATH, DOMAIN_NAME);
     }
 
@@ -45,7 +47,8 @@ class SC_Cookie {
      *
      * EC-CUBE をURLパスルート以外にインストールしている場合、上位ディレクトリの値も(劣後ではあるが)取得する点に留意。
      */
-    function getCookie($key) {
+    public function getCookie($key)
+    {
         return isset($_COOKIE[$key]) ? $_COOKIE[$key] : null;
     }
 }

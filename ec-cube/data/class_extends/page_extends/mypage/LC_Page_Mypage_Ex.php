@@ -2,7 +2,7 @@
 /*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2013 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -21,29 +21,26 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-// {{{ requires
 require_once CLASS_REALDIR . 'pages/mypage/LC_Page_Mypage.php';
 
 /**
  * MyPage のページクラス(拡張).
  *
- * LC_Page_MyPage をカスタマイズする場合はこのクラスを編集する.
+ * LC_Page_Mypage をカスタマイズする場合はこのクラスを編集する.
  *
  * @package Page
  * @author LOCKON CO.,LTD.
- * @version $Id: LC_Page_Mypage_Ex.php 21867 2012-05-30 07:37:01Z nakanishi $
+ * @version $Id: LC_Page_Mypage_Ex.php 23038 2013-08-09 01:13:55Z h_yoshimoto $
  */
-class LC_Page_Mypage_Ex extends LC_Page_Mypage {
-
-    // }}}
-    // {{{ functions
-
+class LC_Page_Mypage_Ex extends LC_Page_Mypage
+{
     /**
      * Page を初期化する.
      *
      * @return void
      */
-    function init() {
+    function init()
+    {
         parent::init();
     }
 
@@ -52,16 +49,8 @@ class LC_Page_Mypage_Ex extends LC_Page_Mypage {
      *
      * @return void
      */
-    function process() {
+    function process()
+    {
         parent::process();
-    }
-
-    /**
-     * デストラクタ.
-     *
-     * @return void
-     */
-    function destroy() {
-        parent::destroy();
     }
 }

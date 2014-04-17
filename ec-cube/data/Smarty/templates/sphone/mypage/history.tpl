@@ -2,7 +2,7 @@
 /*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2013 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -34,14 +34,6 @@
                 <em>注文番号</em>：&nbsp;<!--{$tpl_arrOrderData.order_id}--><br />
                 <em>購入日時</em>：&nbsp;<!--{$tpl_arrOrderData.create_date|sfDispDBDate}--><br />
                 <em>お支払い方法</em>：&nbsp;<!--{$arrPayment[$tpl_arrOrderData.payment_id]|h}-->
-                <!--{if $tpl_arrOrderData.deliv_time_id != ""}-->
-                    <br />
-                    <em>お届け時間</em>：&nbsp;</strong><!--{$arrDelivTime[$tpl_arrOrderData.deliv_time_id]|h}-->
-                <!--{/if}-->
-                <!--{if $tpl_arrOrderData.deliv_date != ""}-->
-                    <br />
-                    <em>お届け日</em>：&nbsp;</strong><!--{$tpl_arrOrderData.deliv_date|h}-->
-                <!--{/if}-->
             </p>
 
             <form action="order.php" method="post">
@@ -50,6 +42,50 @@
                 <input class="btn_reorder btn data-role-none" type="submit" name="submit" value="再注文">
             </form>
         </div>
+        <!--{foreach item=shippingItem name=shippingItem from=$arrShipping}-->
+            <h3>お届け先<!--{if $isMultiple}--><!--{$smarty.foreach.shippingItem.iteration}--><!--{/if}--></h3>
+        <div class="historyBox">
+        <p>
+            <!--{if $isMultiple}-->
+                    <!--{foreach item=item from=$shippingItem.shipment_item}-->
+                        <em>商品コード：&nbsp;</em><!--{$item.productsClass.product_code|h}--><br />
+                        <em>商品名：&nbsp;</em>
+                                <!--{$item.productsClass.name|h}--><br />
+                                <!--{if $item.productsClass.classcategory_name1 != ""}-->
+                                    <!--{$item.productsClass.class_name1}-->：<!--{$item.productsClass.classcategory_name1}--><br />
+                                <!--{/if}-->
+                                <!--{if $item.productsClass.classcategory_name2 != ""}-->
+                                    <!--{$item.productsClass.class_name2}-->：<!--{$item.productsClass.classcategory_name2}--><br />
+                                <!--{/if}-->
+
+                        <em>単価：&nbsp;</em><!--{$item.price|sfCalcIncTax:$tpl_arrOrderData.order_tax_rate:$tpl_arrOrderData.order_tax_rule|number_format}-->円<br />
+                        <em>数量：&nbsp;</em><!--{$item.quantity}--><br />
+                        <!--{* XXX 購入小計と誤差が出るためコメントアウト
+                        <em>小計</em><!--{$item.total_inctax|number_format}-->円
+                        *}-->
+                        <br />
+                    <!--{/foreach}-->
+            <!--{/if}-->
+
+            <em>お名前</em>：&nbsp;<!--{$shippingItem.shipping_name01|h}-->&nbsp;<!--{$shippingItem.shipping_name02|h}--><br />
+            <em>お名前(フリガナ)</em>：&nbsp;<!--{$shippingItem.shipping_kana01|h}-->&nbsp;<!--{$shippingItem.shipping_kana02|h}--><br />
+            <em>会社名</em>：&nbsp;<!--{$shippingItem.shipping_company_name|h}--><br />
+            <!--{if $smarty.const.FORM_COUNTRY_ENABLE}-->
+                <em>国</em>：&nbsp;<!--{$arrCountry[$shippingItem.shipping_country_id]|h}--><br />
+                <em>ZIPCODE</em>：&nbsp;<!--{$shippingItem.shipping_zipcode|h}--><br />
+            <!--{/if}-->
+            <em>郵便番号</em>：&nbsp;〒<!--{$shippingItem.shipping_zip01}-->-<!--{$shippingItem.shipping_zip02}--><br />
+            <em>住所</em>：&nbsp;<!--{$arrPref[$shippingItem.shipping_pref]}--><!--{$shippingItem.shipping_addr01|h}--><!--{$shippingItem.shipping_addr02|h}--><br />
+            <em>電話番号</em>：&nbsp;<!--{$shippingItem.shipping_tel01}-->-<!--{$shippingItem.shipping_tel02}-->-<!--{$shippingItem.shipping_tel03}--><br />
+                            <!--{if $shippingItem.shipping_fax01 > 0}-->
+            <em>FAX番号</em>：&nbsp;<!--{$shippingItem.shipping_fax01}-->-<!--{$shippingItem.shipping_fax02}-->-<!--{$shippingItem.shipping_fax03}--><br />
+                            <!--{/if}-->
+            <em>お届け日</em>：&nbsp;<!--{$shippingItem.shipping_date|default:'指定なし'|h}--><br />
+            <em>お届け時間</em>：&nbsp;<!--{$shippingItem.shipping_time|default:'指定なし'|h}--><br />
+</p>
+</div>
+
+        <!--{/foreach}-->
 
         <div class="formBox">
             <!--▼カートの中の商品一覧 -->
@@ -58,7 +94,7 @@
                 <!--▼商品 -->
                 <!--{foreach from=$tpl_arrOrderDetail item=orderDetail}-->
                     <div>
-                        <img src="<!--{$smarty.const.ROOT_URLPATH}-->resize_image.php?image=<!--{$orderDetail.main_list_image|sfNoImageMainList|h}-->&amp;width=80&amp;height=80" alt="<!--{$orderDetail.product_name|h}-->" class="photoL" />
+                        <img src="<!--{$smarty.const.IMAGE_SAVE_URLPATH}--><!--{$orderDetail.main_list_image|sfNoImageMainList|h}-->" style="max-width: 80px;max-height: 80px;" alt="<!--{$orderDetail.product_name|h}-->" class="photoL" />
                         <div class="cartinContents">
                             <div>
                                 <p><em><!--→商品名--><a<!--{if $orderDetail.enable}--> href="<!--{$smarty.const.P_DETAIL_URLPATH}--><!--{$orderDetail.product_id|u}-->"<!--{/if}--> rel="external"><!--{$orderDetail.product_name|h}--></a><!--←商品名--></em></p>
@@ -85,10 +121,11 @@
                                 <!--{/if}-->
                                 <!--←商品種別-->
                             </div>
-
+                            <!--{assign var=tax_rate value=`$orderDetail.tax_rate`}-->
+                            <!--{assign var=tax_rule value=`$orderDetail.tax_rule`}-->
                             <ul>
                                 <li><span class="mini">数量：</span><!--{$quantity|h}--></li>
-                                <li class="result"><span class="mini">小計：</span><!--{$price|sfCalcIncTax|sfMultiply:$quantity|number_format}-->円</li>
+                                <li class="result"><span class="mini">小計：</span><!--{$price|sfCalcIncTax:$tax_rate:$tax_rule|sfMultiply:$quantity|number_format}-->円</li>
                             </ul>
                         </div>
                     </div>
@@ -138,15 +175,7 @@
 
 </section>
 
-<!--▼検索バー -->
-<section id="search_area">
-    <form method="get" action="<!--{$smarty.const.ROOT_URLPATH}-->products/list.php">
-        <input type="hidden" name="<!--{$smarty.const.TRANSACTION_ID_NAME}-->" value="<!--{$transactionid}-->" />
-        <input type="hidden" name="mode" value="search" />
-        <input type="search" name="name" id="search" value="" placeholder="キーワードを入力" class="searchbox" >
-    </form>
-</section>
-<!--▲検索バー -->
+<!--{include file= 'frontparts/search_area.tpl'}-->
 
 <script>
     function getMailDetail(send_id) {

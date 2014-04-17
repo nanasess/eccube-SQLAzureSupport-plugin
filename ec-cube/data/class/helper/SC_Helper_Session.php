@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2013 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  */
@@ -10,21 +10,19 @@
  *
  * @package Helper
  * @author LOCKON CO.,LTD.
- * @version $Id: SC_Helper_Session.php 21867 2012-05-30 07:37:01Z nakanishi $
+ * @version $Id: SC_Helper_Session.php 23124 2013-08-24 14:33:52Z kimoto $
  */
-class SC_Helper_Session {
-
-    var $objDb;
-
-    // }}}
-    // {{{ constructor
+class SC_Helper_Session
+{
+    public $objDb;
 
     /**
      * デフォルトコンストラクタ.
      *
      * 各関数をセッションハンドラに保存する
      */
-    function __construct() {
+    public function __construct()
+    {
         $this->objDb = new SC_Helper_DB_Ex();
         session_set_save_handler(array(&$this, 'sfSessOpen'),
                                  array(&$this, 'sfSessClose'),
@@ -38,17 +36,15 @@ class SC_Helper_Session {
         register_shutdown_function('session_write_close');
     }
 
-    // }}}
-    // {{{ functions
-
     /**
      * セッションを開始する.
      *
-     * @param string $save_path セッションを保存するパス(使用しない)
-     * @param string $session_name セッション名(使用しない)
-     * @return bool セッションが正常に開始された場合 true
+     * @param  string $save_path    セッションを保存するパス(使用しない)
+     * @param  string $session_name セッション名(使用しない)
+     * @return bool   セッションが正常に開始された場合 true
      */
-    function sfSessOpen($save_path, $session_name) {
+    public function sfSessOpen($save_path, $session_name)
+    {
         return true;
     }
 
@@ -57,17 +53,19 @@ class SC_Helper_Session {
      *
      * @return bool セッションが正常に終了した場合 true
      */
-    function sfSessClose() {
+    public function sfSessClose()
+    {
         return true;
     }
 
     /**
      * セッションのデータをDBから読み込む.
      *
-     * @param string $id セッションID
+     * @param  string $id セッションID
      * @return string セッションデータの値
      */
-    function sfSessRead($id) {
+    public function sfSessRead($id)
+    {
         $objQuery =& SC_Query_Ex::getSingletonInstance();
         $arrRet = $objQuery->select('sess_data', 'dtb_session', 'sess_id = ?', array($id));
         if (empty($arrRet)) {
@@ -80,11 +78,12 @@ class SC_Helper_Session {
     /**
      * セッションのデータをDBに書き込む.
      *
-     * @param string $id セッションID
-     * @param string $sess_data セッションデータの値
-     * @return bool セッションの書き込みに成功した場合 true
+     * @param  string $id        セッションID
+     * @param  string $sess_data セッションデータの値
+     * @return bool   セッションの書き込みに成功した場合 true
      */
-    function sfSessWrite($id, $sess_data) {
+    public function sfSessWrite($id, $sess_data)
+    {
         $objQuery =& SC_Query_Ex::getSingletonInstance();
         $exists = $objQuery->exists('dtb_session', 'sess_id = ?', array($id));
         $sqlval = array();
@@ -103,6 +102,7 @@ class SC_Helper_Session {
                 $objQuery->insert('dtb_session', $sqlval);
             }
         }
+
         return true;
     }
 
@@ -111,12 +111,14 @@ class SC_Helper_Session {
     /**
      * セッションを破棄する.
      *
-     * @param string $id セッションID
-     * @return bool セッションを正常に破棄した場合 true
+     * @param  string $id セッションID
+     * @return bool   セッションを正常に破棄した場合 true
      */
-    function sfSessDestroy($id) {
+    public function sfSessDestroy($id)
+    {
         $objQuery =& SC_Query_Ex::getSingletonInstance();
         $objQuery->delete('dtb_session', 'sess_id = ?', array($id));
+
         return true;
     }
 
@@ -127,11 +129,14 @@ class SC_Helper_Session {
      *
      * @param integer $maxlifetime セッションの有効期限(使用しない)
      */
-    function sfSessGc($maxlifetime) {
+    public function sfSessGc($maxlifetime)
+    {
         // MAX_LIFETIME以上更新されていないセッションを削除する。
         $objQuery =& SC_Query_Ex::getSingletonInstance();
-        $where = "update_date < current_timestamp + '-". MAX_LIFETIME . " secs'";
+        $limit = date("Y-m-d H:i:s",time() - MAX_LIFETIME);
+        $where = "update_date < '". $limit . "' ";
         $objQuery->delete('dtb_session', $where);
+
         return true;
     }
 
@@ -153,10 +158,12 @@ class SC_Helper_Session {
      * @access protected
      * @return string トランザクショントークンの文字列
      */
-    function getToken() {
+    public function getToken()
+    {
         if (empty($_SESSION[TRANSACTION_ID_NAME])) {
             $_SESSION[TRANSACTION_ID_NAME] = SC_Helper_Session_Ex::createToken();
         }
+
         return $_SESSION[TRANSACTION_ID_NAME];
     }
 
@@ -166,7 +173,8 @@ class SC_Helper_Session {
      * @access private
      * @return string トランザクショントークン用の文字列
      */
-    function createToken() {
+    public function createToken()
+    {
         return sha1(uniqid(rand(), true));
     }
 
@@ -188,13 +196,15 @@ class SC_Helper_Session {
      *                          デフォルト値は false
      * @return boolean トランザクショントークンが有効な場合 true
      */
-    function isValidToken($is_unset = false) {
+    public function isValidToken($is_unset = false)
+    {
         // token の妥当性チェック
         $ret = $_REQUEST[TRANSACTION_ID_NAME] === $_SESSION[TRANSACTION_ID_NAME];
 
         if ($is_unset || $ret === false) {
             SC_Helper_Session_Ex::destroyToken();
         }
+
         return $ret;
     }
 
@@ -203,7 +213,8 @@ class SC_Helper_Session {
      *
      * @return void
      */
-    function destroyToken() {
+    public function destroyToken()
+    {
         unset($_SESSION[TRANSACTION_ID_NAME]);
     }
 
@@ -214,21 +225,26 @@ class SC_Helper_Session {
      *
      * @return void
      */
-    function adminAuthorization() {
-        $masterData = new SC_DB_MasterData_Ex();
-        $arrExcludes = $masterData->getMasterData('mtb_auth_excludes');
-        if (preg_match('|^' . ROOT_URLPATH . ADMIN_DIR . '|', $_SERVER['SCRIPT_NAME'])) {
-            $is_auth = true;
-
-            foreach ($arrExcludes as $exclude) {
-                if (preg_match('|^' . ROOT_URLPATH . ADMIN_DIR . $exclude . '|', $_SERVER['SCRIPT_NAME'])) {
-                    $is_auth = false;
-                    break;
+    public function adminAuthorization()
+    {
+        if (($script_path = realpath($_SERVER['SCRIPT_FILENAME'])) !== FALSE) {
+            $arrScriptPath = explode('/', str_replace('\\', '/', $script_path));
+            $arrAdminPath = explode('/', str_replace('\\', '/', substr(HTML_REALDIR . ADMIN_DIR, 0, -1)));
+            $arrDiff = array_diff_assoc($arrAdminPath, $arrScriptPath);
+            if (in_array(substr(ADMIN_DIR, 0, -1), $arrDiff)) {
+                return;
+            } else {
+                $masterData = new SC_DB_MasterData_Ex();
+                $arrExcludes = $masterData->getMasterData('mtb_auth_excludes');
+                foreach ($arrExcludes as $exclude) {
+                    $arrExcludesPath = explode('/', str_replace('\\', '/', HTML_REALDIR . ADMIN_DIR . $exclude));
+                    $arrDiff = array_diff_assoc($arrExcludesPath, $arrScriptPath);
+                    if (count($arrDiff) === 0) {
+                        return;
+                    }
                 }
             }
-            if ($is_auth) {
-                SC_Utils_Ex::sfIsSuccess(new SC_Session_Ex());
-            }
         }
+        SC_Utils_Ex::sfIsSuccess(new SC_Session_Ex());
     }
 }

@@ -73,6 +73,8 @@ CREATE TABLE dtb_baseinfo (
     company_kana nvarchar(max),
     zip01 nvarchar(max),
     zip02 nvarchar(max),
+    zipcode nvarchar(max),
+    country_id int,
     pref smallint,
     addr01 nvarchar(max),
     addr02 nvarchar(max),
@@ -87,6 +89,8 @@ CREATE TABLE dtb_baseinfo (
     law_manager nvarchar(max),
     law_zip01 nvarchar(max),
     law_zip02 nvarchar(max),
+    law_zipcode nvarchar(max),
+    law_country_id int,
     law_pref smallint,
     law_addr01 nvarchar(max),
     law_addr02 nvarchar(max),
@@ -108,13 +112,10 @@ CREATE TABLE dtb_baseinfo (
     law_term08 nvarchar(max),
     law_term09 nvarchar(max),
     law_term10 nvarchar(max),
-    tax numeric(9) NOT NULL DEFAULT 5,
-    tax_rule smallint NOT NULL DEFAULT 1,
     email01 nvarchar(max),
     email02 nvarchar(max),
     email03 nvarchar(max),
     email04 nvarchar(max),
-    email05 nvarchar(max),
     free_rule numeric(9),
     shop_name nvarchar(max),
     shop_kana nvarchar(max),
@@ -312,7 +313,7 @@ CREATE TABLE dtb_products_class (
     classcategory_id1 int NOT NULL DEFAULT 0,
     classcategory_id2 int NOT NULL DEFAULT 0,
     product_type_id int NOT NULL DEFAULT 0,
-    product_code nvarchar(max),
+    product_code nvarchar(64),
     stock numeric(9),
     stock_unlimited smallint NOT NULL DEFAULT 0,
     sale_limit numeric(9),
@@ -392,7 +393,7 @@ CREATE TABLE dtb_recommend_products (
     creator_id int NOT NULL,
     create_date datetimeoffset NOT NULL DEFAULT CURRENT_TIMESTAMP,
     update_date datetimeoffset NOT NULL,
-    PRIMARY KEY(product_id, recommend_product_id)
+    PRIMARY KEY(product_id)
 );
 
 CREATE TABLE dtb_review (
@@ -480,10 +481,13 @@ CREATE TABLE dtb_customer (
     customer_id int NOT NULL,
     name01 nvarchar(max) NOT NULL,
     name02 nvarchar(max) NOT NULL,
-    kana01 nvarchar(max) NOT NULL,
-    kana02 nvarchar(max) NOT NULL,
+    kana01 nvarchar(max),
+    kana02 nvarchar(max),
+    company_name nvarchar(max),
     zip01 nvarchar(max),
     zip02 nvarchar(max),
+    zipcode nvarchar(max),
+    country_id int,
     pref smallint,
     addr01 nvarchar(max),
     addr02 nvarchar(max),
@@ -528,6 +532,7 @@ CREATE TABLE dtb_order (
     order_name02 nvarchar(max),
     order_kana01 nvarchar(max),
     order_kana02 nvarchar(max),
+    order_company_name nvarchar(max),
     order_email nvarchar(max),
     order_tel01 nvarchar(max),
     order_tel02 nvarchar(max),
@@ -537,6 +542,8 @@ CREATE TABLE dtb_order (
     order_fax03 nvarchar(max),
     order_zip01 nvarchar(max),
     order_zip02 nvarchar(max),
+    order_zipcode nvarchar(max),
+    order_country_id int,
     order_pref smallint,
     order_addr01 nvarchar(max),
     order_addr02 nvarchar(max),
@@ -585,6 +592,7 @@ CREATE TABLE dtb_order_temp (
     order_name02 nvarchar(max),
     order_kana01 nvarchar(max),
     order_kana02 nvarchar(max),
+    order_company_name nvarchar(max),
     order_email nvarchar(max),
     order_tel01 nvarchar(max),
     order_tel02 nvarchar(max),
@@ -594,6 +602,8 @@ CREATE TABLE dtb_order_temp (
     order_fax03 nvarchar(max),
     order_zip01 nvarchar(max),
     order_zip02 nvarchar(max),
+    order_zipcode nvarchar(max),
+    order_country_id int,
     order_pref smallint,
     order_addr01 nvarchar(max),
     order_addr02 nvarchar(max),
@@ -644,15 +654,18 @@ CREATE TABLE dtb_shipping (
     shipping_name02 nvarchar(max),
     shipping_kana01 nvarchar(max),
     shipping_kana02 nvarchar(max),
+    shipping_company_name nvarchar(max),
     shipping_tel01 nvarchar(max),
     shipping_tel02 nvarchar(max),
     shipping_tel03 nvarchar(max),
     shipping_fax01 nvarchar(max),
     shipping_fax02 nvarchar(max),
     shipping_fax03 nvarchar(max),
+    shipping_country_id int,
     shipping_pref smallint,
     shipping_zip01 nvarchar(max),
     shipping_zip02 nvarchar(max),
+    shipping_zipcode nvarchar(max),
     shipping_addr01 nvarchar(max),
     shipping_addr02 nvarchar(max),
     time_id int,
@@ -672,7 +685,7 @@ CREATE TABLE dtb_shipment_item (
     product_class_id int NOT NULL,
     order_id int NOT NULL,
     product_name nvarchar(max) NOT NULL,
-    product_code nvarchar(max),
+    product_code nvarchar(64),
     classcategory_name1 nvarchar(max),
     classcategory_name2 nvarchar(max),
     price numeric(9),
@@ -687,8 +700,11 @@ CREATE TABLE dtb_other_deliv (
     name02 nvarchar(max),
     kana01 nvarchar(max),
     kana02 nvarchar(max),
+    company_name nvarchar(max),
     zip01 nvarchar(max),
     zip02 nvarchar(max),
+    zipcode nvarchar(max),
+    country_id int,
     pref smallint,
     addr01 nvarchar(max),
     addr02 nvarchar(max),
@@ -704,12 +720,14 @@ CREATE TABLE dtb_order_detail (
     product_id int NOT NULL,
     product_class_id int NOT NULL,
     product_name nvarchar(max) NOT NULL,
-    product_code nvarchar(max),
+    product_code nvarchar(64),
     classcategory_name1 nvarchar(max),
     classcategory_name2 nvarchar(max),
     price numeric(9),
     quantity numeric(9),
     point_rate numeric(9) NOT NULL DEFAULT 0,
+    tax_rate numeric,
+    tax_rule smallint,
     PRIMARY KEY (order_detail_id)
 );
 
@@ -746,6 +764,7 @@ CREATE TABLE dtb_pagelayout (
     update_url nvarchar(max),
     create_date datetimeoffset NOT NULL DEFAULT CURRENT_TIMESTAMP,
     update_date datetimeoffset NOT NULL,
+    meta_robots nvarchar(max),
     PRIMARY KEY (device_type_id, page_id)
 );
 
@@ -989,14 +1008,7 @@ CREATE TABLE mtb_order_status (
 
 CREATE TABLE mtb_product_status_color (
     id smallint,
-    name varchar(max),
-    rank smallint NOT NULL DEFAULT 0,
-    PRIMARY KEY (id)
-);
-
-CREATE TABLE mtb_customer_order_status (
-    id smallint,
-    name varchar(max),
+    name nvarchar(max),
     rank smallint NOT NULL DEFAULT 0,
     PRIMARY KEY (id)
 );
@@ -1093,6 +1105,13 @@ CREATE TABLE mtb_device_type (
     PRIMARY KEY (id)
 );
 
+CREATE TABLE mtb_country (
+    id int,
+    name nvarchar(max),
+    rank int NOT NULL,
+    PRIMARY KEY (id)
+);
+
 CREATE TABLE dtb_mobile_ext_session_id (
     session_id varchar(64) NOT NULL,
     param_key nvarchar(max),
@@ -1154,6 +1173,8 @@ CREATE TABLE dtb_plugin (
 CREATE TABLE dtb_plugin_hookpoint (
     plugin_hookpoint_id int NOT NULL,
     plugin_id int NOT NULL,
+    callback nvarchar(max),
+    use_flg smallint NOT NULL DEFAULT 1,
     hook_point nvarchar(max) NOT NULL,
     create_date datetimeoffset NOT NULL DEFAULT CURRENT_TIMESTAMP,
     update_date datetimeoffset NOT NULL,
@@ -1191,4 +1212,21 @@ CREATE TABLE dtb_api_account (
     create_date datetimeoffset NOT NULL DEFAULT CURRENT_TIMESTAMP,
     update_date datetimeoffset NOT NULL,
     PRIMARY KEY (api_account_id)
+);
+
+CREATE TABLE dtb_tax_rule (
+    tax_rule_id int NOT NULL,
+    country_id int NOT NULL DEFAULT 0,
+    pref_id int NOT NULL DEFAULT 0,
+    product_id int NOT NULL DEFAULT 0,
+    product_class_id int NOT NULL DEFAULT 0,
+    calc_rule smallint NOT NULL DEFAULT 1,
+    tax_rate numeric NOT NULL DEFAULT 5,
+    tax_adjust numeric(9) NOT NULL DEFAULT 0,
+    apply_date datetimeoffset NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	member_id int NOT NULL,
+    del_flg smallint NOT NULL DEFAULT 0,
+    create_date datetimeoffset NOT NULL,
+    update_date datetimeoffset NOT NULL,
+    PRIMARY KEY (tax_rule_id)
 );

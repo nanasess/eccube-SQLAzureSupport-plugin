@@ -2,7 +2,7 @@
 /*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2013 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -23,25 +23,24 @@
 
 require_once realpath(dirname(__FILE__)) . '/../module/Smarty/libs/Smarty.class.php';
 
-class SC_View {
+class SC_View
+{
+    public $_smarty;
 
-    var $_smarty;
-
-    var $objPage;
+    public $objPage;
 
     // コンストラクタ
-    function __construct() {
+    public function __construct()
+    {
         $this->init();
     }
 
-    function init() {
+    public function init()
+    {
         $this->_smarty = new Smarty;
         $this->_smarty->left_delimiter = '<!--{';
         $this->_smarty->right_delimiter = '}-->';
         $this->_smarty->register_modifier('sfDispDBDate', array('SC_Utils_Ex', 'sfDispDBDate'));
-        $this->_smarty->register_modifier('sfConvSendDateToDisp', array('SC_Utils_Ex', 'sfConvSendDateToDisp'));
-        $this->_smarty->register_modifier('sfConvSendWdayToDisp', array('SC_Utils_Ex', 'sfConvSendWdayToDisp'));
-        $this->_smarty->register_modifier('sfGetVal', array('SC_Utils_Ex', 'sfGetVal'));
         $this->_smarty->register_modifier('sfGetErrorColor', array('SC_Utils_Ex', 'sfGetErrorColor'));
         $this->_smarty->register_modifier('sfTrim', array('SC_Utils_Ex', 'sfTrim'));
         $this->_smarty->register_modifier('sfCalcIncTax', array('SC_Helper_DB_Ex', 'sfCalcIncTax'));
@@ -54,7 +53,6 @@ class SC_View {
         $this->_smarty->plugins_dir=array('plugins', realpath(dirname(__FILE__)) . '/../smarty_extends');
         $this->_smarty->register_modifier('sfMbConvertEncoding', array('SC_Utils_Ex', 'sfMbConvertEncoding'));
         $this->_smarty->register_modifier('sfGetEnabled', array('SC_Utils_Ex', 'sfGetEnabled'));
-        $this->_smarty->register_modifier('sfGetCategoryId', array('SC_Utils_Ex', 'sfGetCategoryId'));
         $this->_smarty->register_modifier('sfNoImageMainList', array('SC_Utils_Ex', 'sfNoImageMainList'));
         // XXX register_function で登録すると if で使用できないのではないか？
         $this->_smarty->register_function('sfIsHTTPS', array('SC_Utils_Ex', 'sfIsHTTPS'));
@@ -72,23 +70,26 @@ class SC_View {
     }
 
     // テンプレートに値を割り当てる
-    function assign($val1, $val2) {
+    public function assign($val1, $val2)
+    {
         $this->_smarty->assign($val1, $val2);
     }
 
     // テンプレートの処理結果を取得
-    function fetch($template) {
+    public function fetch($template)
+    {
         return $this->_smarty->fetch($template);
     }
 
     /**
      * SC_Display用にレスポンスを返す
      * @global string $GLOBAL_ERR
-     * @param array $template
-     * @param boolean $no_error
+     * @param  array   $template
+     * @param  boolean $no_error
      * @return string
      */
-    function getResponse($template, $no_error = false) {
+    public function getResponse($template, $no_error = false)
+    {
         if (!$no_error) {
             global $GLOBAL_ERR;
             if (!defined('OUTPUT_ERR')) {
@@ -103,59 +104,71 @@ class SC_View {
             $time = $time_end - $this->time_start;
             $res .= '処理時間: ' . sprintf('%.3f', $time) . '秒';
         }
+
         return $res;
     }
 
     /**
      * Pageオブジェクトをセットします.
-     * @param LC_Page_Ex $objPage 
+     * @param  LC_Page_Ex $objPage
      * @return void
      */
-    function setPage($objPage) {
+    public function setPage($objPage)
+    {
        $this->objPage = $objPage;
     }
 
     /**
-     * Smartyのfilterをセットします. 
+     * Smartyのfilterをセットします.
      * @return void
      */
-    function registFilter() {
+    public function registFilter()
+    {
         $this->_smarty->register_prefilter(array(&$this, 'prefilter_transform'));
         $this->_smarty->register_outputfilter(array(&$this, 'outputfilter_transform'));
     }
 
     /**
      * prefilter用のフィルタ関数。プラグイン用のフックポイント処理を実行
-     * @param string $source ソース
-     * @param Smarty_Compiler $smarty Smartyのコンパイラクラス
-     * @return string $source ソース
+     * @param  string          $source ソース
+     * @param  Smarty_Compiler $smarty Smartyのコンパイラクラス
+     * @return string          $source ソース
      */
-    function prefilter_transform($source, &$smarty) {
+    public function prefilter_transform($source, &$smarty)
+    {
         if (!is_null($this->objPage)) {
             // フックポイントを実行.
             $objPlugin = SC_Helper_Plugin_Ex::getSingletonInstance($this->objPage->plugin_activate_flg);
-            $objPlugin->doAction('prefilterTransform', array(&$source, $this->objPage, $smarty->_current_file));
+            if (is_object($objPlugin)) {
+                $objPlugin->doAction('prefilterTransform', array(&$source, $this->objPage, $smarty->_current_file));
+            }
         }
+
         return $source;
     }
 
     /**
      * outputfilter用のフィルタ関数。プラグイン用のフックポイント処理を実行
-     * @param string $source ソース
-     * @param Smarty_Compiler $smarty Smartyのコンパイラクラス
-     * @return string $source ソース
+     * @param  string          $source ソース
+     * @param  Smarty_Compiler $smarty Smartyのコンパイラクラス
+     * @return string          $source ソース
      */
-    function outputfilter_transform($source, &$smarty) {
+    public function outputfilter_transform($source, &$smarty)
+    {
         if (!is_null($this->objPage)) {
             // フックポイントを実行.
             $objPlugin = SC_Helper_Plugin_Ex::getSingletonInstance($this->objPage->plugin_activate_flg);
-            $objPlugin->doAction('outputfilterTransform', array(&$source, $this->objPage, $smarty->_current_file));
+            if (is_object($objPlugin)) {
+                $objPlugin->doAction('outputfilterTransform', array(&$source, $this->objPage, $smarty->_current_file));
+            }
         }
+
         return $source;
     }
 
     // テンプレートの処理結果を表示
-    function display($template, $no_error = false) {
+    public function display($template, $no_error = false)
+    {
         if (!$no_error) {
             global $GLOBAL_ERR;
             if (!defined('OUTPUT_ERR')) {
@@ -173,8 +186,9 @@ class SC_View {
         }
     }
 
-    // オブジェクト内の変数をすべて割り当てる。
-    function assignobj($obj) {
+    // オブジェクト内の変数を全て割り当てる。
+    public function assignobj($obj)
+    {
         $data = get_object_vars($obj);
 
         foreach ($data as $key => $value) {
@@ -182,21 +196,12 @@ class SC_View {
         }
     }
 
-    // 連想配列内の変数をすべて割り当てる。
-    function assignarray($array) {
+    // 連想配列内の変数を全て割り当てる。
+    public function assignarray($array)
+    {
         foreach ($array as $key => $val) {
             $this->_smarty->assign($key, $val);
         }
-    }
-
-    /* サイト初期設定 */
-    function initpath() {
-        $array = array();
-        $array['tpl_mainnavi'] = realpath(dirname(__FILE__)) . '/../Smarty/templates/frontparts/mainnavi.tpl';
-
-        $objDb = new SC_Helper_DB_Ex();
-        $array['tpl_root_id'] = $objDb->sfGetRootId();
-        $this->assignarray($array);
     }
 
     /**
@@ -204,8 +209,8 @@ class SC_View {
      *
      * @param integer $device_type_id 端末種別ID
      */
-    function assignTemplatePath($device_type_id) {
-
+    public function assignTemplatePath($device_type_id)
+    {
         // テンプレート変数を割り当て
         $this->assign('TPL_URLPATH', SC_Helper_PageLayout_Ex::getUserDir($device_type_id, true));
 
@@ -219,7 +224,8 @@ class SC_View {
     }
 
     // デバッグ
-    function debug($var = true) {
+    public function debug($var = true)
+    {
         $this->_smarty->debugging = $var;
     }
 }

@@ -2,7 +2,7 @@
 /*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2013 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -28,9 +28,10 @@
     <div align="center">
         <form action="?" method="post">
             <input type="hidden" name="mode" value="complete">
+            <input type="hidden" name="refusal_transactionid" value="<!--{$refusal_transactionid}-->" />
             <input type="hidden" name="<!--{$smarty.const.TRANSACTION_ID_NAME}-->" value="<!--{$transactionid}-->">
 
-        	<input type="submit" name="complete" value="退会する">
+            <input type="submit" name="complete" value="退会する">
         </form>
     </div>
     <br>

@@ -1,7 +1,7 @@
 <!--{*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2013 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -19,7 +19,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *}-->
-
 　※本メールは自動配信メールです。
 　等幅フォント(MSゴシック12ポイント、Osaka-等幅など)で
 　最適にご覧になれます。
@@ -30,7 +29,7 @@
 　お送りしています。
 　もしお心当たりが無い場合はこのままこのメールを破棄していただ
 　ければ会員登録はなされません。
-　またその旨<!--{* 問い合わせ受付メール *}--><!--{$CONF.email02}-->まで
+　またその旨 <!--{* 問い合わせ受付メール *}--><!--{$CONF.email02}--> まで
 　ご連絡いただければ幸いです。
 ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 

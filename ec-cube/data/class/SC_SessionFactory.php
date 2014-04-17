@@ -2,7 +2,7 @@
 /*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2013 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -39,20 +39,17 @@
  *
  * @package SC_Session
  * @author LOCKON CO.,LTD.
- * @version $Id: SC_SessionFactory.php 21867 2012-05-30 07:37:01Z nakanishi $
+ * @version $Id: SC_SessionFactory.php 23124 2013-08-24 14:33:52Z kimoto $
  */
-class SC_SessionFactory {
-
-    // }}}
-    // {{{ functions
-
+class SC_SessionFactory
+{
     /**
      * パラメーター管理で設定したセッション維持設定に従って適切なオブジェクトを返す.
      *
      * @return SC_SessionFactory
      */
-    function getInstance() {
-
+    public function getInstance()
+    {
         $type = defined('SESSION_KEEP_METHOD')
             ? SESSION_KEEP_METHOD
             : '';
@@ -86,15 +83,18 @@ class SC_SessionFactory {
      * セッションの初期化を行う.
      *
      */
-    function initSession() {}
+    public function initSession()
+    {
+    }
 
     /**
      * Cookieを使用するかどうかを返す.
      *
      * @return boolean
      */
-    function useCookie() {}
-
+    public function useCookie()
+    {
+    }
 }
 /*
  * Local variables:

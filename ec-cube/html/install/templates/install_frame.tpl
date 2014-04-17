@@ -1,7 +1,7 @@
 <!--{*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2013 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -26,9 +26,8 @@
         <meta http-equiv="content-script-type" content="text/javascript" />
         <meta http-equiv="content-style-type" content="text/css" />
         <link rel="stylesheet" href="css/admin_contents.css" type="text/css" media="all" />
-        <script type="text/javascript" src="../js/css.js"></script>
-        <script type="text/javascript" src="../js/navi.js"></script>
         <script type="text/javascript" src="../js/jquery-1.4.2.min.js"></script>
+        <script type="text/javascript" src="../js/eccube.js"></script>
         <title>EC-CUBEインストール</title>
     </head>
     <body>

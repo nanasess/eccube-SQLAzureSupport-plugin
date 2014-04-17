@@ -20,7 +20,7 @@
  * Sendmail implementation of the PEAR Mail:: interface.
  * @access public
  * @package Mail
- * @version $Revision: 20119 $
+ * @version $Revision: 23141 $
  */
 class Mail_sendmail extends Mail {
 

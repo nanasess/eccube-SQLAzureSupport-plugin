@@ -3,7 +3,7 @@
 /*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2013 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -28,7 +28,7 @@
     <p class="windowtext">以下の商品について、お客様のご意見、ご感想をどしどしお寄せください。<br />
         「<span class="attention">※</span>」印は入力必須項目です。<br />
         ご入力後、一番下の「確認ページへ」ボタンをクリックしてください。</p>
-    <form name="form1" method="post" action="?">
+    <form name="form1" id="form1" method="post" action="?">
         <input type="hidden" name="<!--{$smarty.const.TRANSACTION_ID_NAME}-->" value="<!--{$transactionid}-->" />
         <input type="hidden" name="mode" value="confirm" />
         <input type="hidden" name="product_id" value="<!--{$arrForm.product_id|h}-->" />
@@ -73,12 +73,12 @@
                 <th>コメント<span class="attention">※</span></th>
                 <td>
                     <span class="attention"><!--{$arrErr.comment}--></span>
-                    <textarea name="comment" cols="15" rows="10" style="<!--{$arrErr.comment|sfGetErrorColor}-->" class="textarea data-role-none" wrap="hard"><!--{$arrForm.comment|h}--></textarea>
+                    <textarea name="comment" cols="15" rows="10" style="<!--{$arrErr.comment|sfGetErrorColor}-->" class="textarea data-role-none" wrap="hard"><!--{"\n"}--><!--{$arrForm.comment|h}--></textarea>
                 </td>
             </tr>
         </table>
         <div class="btn_area">
-                <p><input type="submit" value="次へ" class="btn data-role-none" alt="次へ" name="next" id="next" /></p>
+                <p><input type="submit" value="次へ" class="btn data-role-none" name="next" id="next" /></p>
             </div>
     </form>
 </div>

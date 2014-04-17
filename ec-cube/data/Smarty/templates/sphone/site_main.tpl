@@ -1,7 +1,7 @@
 <!--{*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2013 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -20,7 +20,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *}-->
 
-<body>
+<body class="<!--{$tpl_page_class_name|h}-->">
     <div data-role="page" data-keep-native=".data-role-none" data-theme="f">
 
         <!--{* ▼HeaderHeaderTop COLUMN*}-->

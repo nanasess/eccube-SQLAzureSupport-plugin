@@ -2,7 +2,7 @@
 /*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2013 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -21,7 +21,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-// {{{ requires
 require_once CLASS_EX_REALDIR . 'page_extends/admin/LC_Page_Admin_Ex.php';
 
 /**
@@ -29,19 +28,17 @@ require_once CLASS_EX_REALDIR . 'page_extends/admin/LC_Page_Admin_Ex.php';
  *
  * @package Page
  * @author LOCKON CO.,LTD.
- * @version $Id: LC_Page_Admin_System_Delete.php 21867 2012-05-30 07:37:01Z nakanishi $
+ * @version $Id: LC_Page_Admin_System_Delete.php 23124 2013-08-24 14:33:52Z kimoto $
  */
-class LC_Page_Admin_System_Delete extends LC_Page_Admin_Ex {
-
-    // }}}
-    // {{{ functions
-
+class LC_Page_Admin_System_Delete extends LC_Page_Admin_Ex
+{
     /**
      * Page を初期化する.
      *
      * @return void
      */
-    function init() {
+    public function init()
+    {
         parent::init();
     }
 
@@ -50,7 +47,8 @@ class LC_Page_Admin_System_Delete extends LC_Page_Admin_Ex {
      *
      * @return void
      */
-    function process() {
+    public function process()
+    {
         $this->action();
         $this->sendResponse();
     }
@@ -60,9 +58,9 @@ class LC_Page_Admin_System_Delete extends LC_Page_Admin_Ex {
      *
      * @return void
      */
-    function action() {
-
-        $objFormParam = new SC_FormParam;
+    public function action()
+    {
+        $objFormParam = new SC_FormParam_Ex;
 
         // パラメーターの初期化
         $this->initParam($objFormParam, $_GET);
@@ -70,7 +68,6 @@ class LC_Page_Admin_System_Delete extends LC_Page_Admin_Ex {
         // パラメーターの検証
         if ($objFormParam->checkError()
             || !SC_Utils_ex::sfIsInt($id = $objFormParam->getValue('id'))) {
-
             GC_Utils_Ex::gfPrintLog("error id=$id");
             SC_Utils_Ex::sfDispError(INVALID_MOVE_ERRORR);
         }
@@ -88,36 +85,27 @@ class LC_Page_Admin_System_Delete extends LC_Page_Admin_Ex {
     }
 
     /**
-     * デストラクタ.
-     *
-     * @return void
-     */
-    function destroy() {
-        parent::destroy();
-    }
-
-    /**
      * パラメーター初期化.
      *
-     * @param object $objFormParam
-     * @param array  $arrParams  $_GET値
+     * @param  object $objFormParam
+     * @param  array  $arrParams    $_GET値
      * @return void
      */
-    function initParam(&$objFormParam, &$arrParams) {
-
+    public function initParam(&$objFormParam, &$arrParams)
+    {
         $objFormParam->addParam('pageno', 'pageno', INT_LEN, '', array('NUM_CHECK', 'MAX_LENGTH_CHECK', 'EXIST_CHECK'));
         $objFormParam->addParam('id', 'id', INT_LEN, '', array('NUM_CHECK', 'MAX_LENGTH_CHECK'));
         $objFormParam->setParam($arrParams);
-
     }
 
     /**
      * メンバー情報削除の為の制御.
      *
-     * @param integer $id 削除対象のmember_id
+     * @param  integer $id 削除対象のmember_id
      * @return void
      */
-    function deleteMember($id) {
+    public function deleteMember($id)
+    {
         $objQuery =& SC_Query_Ex::getSingletonInstance();
         $objQuery->begin();
 
@@ -130,12 +118,12 @@ class LC_Page_Admin_System_Delete extends LC_Page_Admin_Ex {
     /**
      * ランキングの振り直し.
      *
-     * @param object $objQuery
-     * @param integer $id 削除対象のmember_id
+     * @param  object      $objQuery
+     * @param  integer     $id       削除対象のmember_id
      * @return void|UPDATE の結果フラグ
      */
-    function renumberRank(&$objQuery, $id) {
-
+    public function renumberRank(&$objQuery, $id)
+    {
         // ランクの取得
         $where1 = 'member_id = ?';
         $rank = $objQuery->get('rank', 'dtb_member', $where1, array($id));
@@ -150,12 +138,12 @@ class LC_Page_Admin_System_Delete extends LC_Page_Admin_Ex {
     /**
      * レコードの削除(削除フラグをONにする).
      *
-     * @param object $objQuery
-     * @param integer $id 削除対象のmember_id
+     * @param  object      $objQuery
+     * @param  integer     $id       削除対象のmember_id
      * @return void|UPDATE の結果フラグ
      */
-    function deleteRecode(&$objQuery, $id) {
-
+    public function deleteRecode(&$objQuery, $id)
+    {
         // Updateする値を作成する.
         $sqlVal = array();
         $sqlVal['rank'] = 0;

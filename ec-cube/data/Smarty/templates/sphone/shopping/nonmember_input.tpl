@@ -1,7 +1,7 @@
 <!--{*
  * This file is part of EC-CUBE
  *
- * Copyright(c) 2000-2012 LOCKON CO.,LTD. All Rights Reserved.
+ * Copyright(c) 2000-2013 LOCKON CO.,LTD. All Rights Reserved.
  *
  * http://www.lockon.co.jp/
  *
@@ -69,7 +69,7 @@
                     class="boxHarf text data-role-none" placeholder="名"/>
             </dd>
 
-            <dt>お名前(フリガナ)&nbsp;<span class="attention">※</span></dt>
+            <dt>お名前(フリガナ)<!--{if !$smarty.const.FORM_COUNTRY_ENABLE}-->&nbsp;<span class="attention">※</span><!--{/if}--></dt>
             <dd>
                 <!--{assign var=key1 value="order_kana01"}-->
                 <!--{assign var=key2 value="order_kana02"}-->
@@ -86,7 +86,33 @@
                     class="boxHarf text data-role-none" placeholder="メイ"/>
             </dd>
 
-            <dt>郵便番号&nbsp;<span class="attention">※</span></dt>
+            <dt>会社名</dt>
+            <dd>
+                <!--{assign var=key value="order_company_name"}-->
+                <span class="attention"><!--{$arrErr[$key]}--></span>
+                <input type="text" name="<!--{$key}-->" value="<!--{$arrForm[$key].value|h}-->" class="boxLong text data-role-none" style="<!--{$arrErr[$key]|sfGetErrorColor}-->" />
+            </dd>
+
+            <!--{if $smarty.const.FORM_COUNTRY_ENABLE}-->
+            <dt>国&nbsp;<span class="attention">※</span></dt>
+            <dd>
+                <!--{assign var=key1 value="order_country_id"}-->
+                <div class="attention"><!--{$arrErr[$key1]}--></div>
+                <select name="<!--{$key1}-->" style="<!--{$arrErr[$key1]|sfGetErrorColor}-->">
+                    <option value="" selected="selected">国を選択</option>
+                    <!--{html_options options=$arrCountry selected=$arrForm[$key1].value|h|default:$smarty.const.DEFAULT_COUNTRY_ID}-->
+                </select>
+            </dd>
+
+            <dt>ZIP CODE</dt>
+            <dd>
+                <!--{assign var=key1 value="order_zipcode"}-->
+                <div class="attention"><!--{$arrErr[$key1]}--></div>
+                <input type="text" name="<!--{$key1}-->" value="<!--{$arrForm[$key1].value|h}-->" maxlength="<!--{$arrForm[$key1].length}-->" class="boxLong text data-role-none" style="<!--{$arrErr[$key1]|sfGetErrorColor}-->; ime-mode: disabled;" />
+            </dd>
+            <!--{/if}-->
+
+            <dt>郵便番号<!--{if !$smarty.const.FORM_COUNTRY_ENABLE}-->&nbsp;<span class="attention">※</span><!--{/if}--></dt>
             <dd>
                 <!--{assign var=key1 value="order_zip01"}-->
                 <!--{assign var=key2 value="order_zip02"}-->
@@ -94,16 +120,16 @@
                 <p>
                     <input type="tel" name="<!--{$key1}-->"
                         value="<!--{$arrForm[$key1].value|h}-->"
-                        max="<!--{$arrForm[$key1].length}-->"
+                        maxlength="<!--{$arrForm[$key1].length}-->"
                         style="<!--{$arrErr[$key1]|sfGetErrorColor}-->" class="boxShort text data-role-none" />&nbsp;－&nbsp;
                     <input type="tel" name="<!--{$key2}-->"
                         value="<!--{$arrForm[$key2].value|h}-->"
-                        max="<!--{$arrForm[$key2].length}-->"
+                        maxlength="<!--{$arrForm[$key2].length}-->"
                         style="<!--{$arrErr[$key2]|sfGetErrorColor}-->" class="boxShort text data-role-none" />&nbsp;
                     <a href="http://search.post.japanpost.jp/zipcode/" target="_blank"><span class="fn">郵便番号検索</span></a>
                 </p>
 
-                <a href="javascript:fnCallAddress('<!--{$smarty.const.INPUT_ZIP_URLPATH}-->', 'order_zip01', 'order_zip02', 'order_pref', 'order_addr01');" class="btn_sub btn_inputzip">郵便番号から住所自動入力</a>
+                <a href="javascript:eccube.getAddress('<!--{$smarty.const.INPUT_ZIP_URLPATH}-->', 'order_zip01', 'order_zip02', 'order_pref', 'order_addr01');" class="btn_sub btn_inputzip">郵便番号から住所自動入力</a>
             </dd>
 
             <dt>住所&nbsp;<span class="attention">※</span></dt>
@@ -230,7 +256,7 @@
 
             <dt class="bg_head">
                 <!--{assign var=key value="deliv_check"}-->
-                <input class="radio_btn data-role-none" type="checkbox" name="<!--{$key}-->" value="1" onchange="fnDelivToggle($('#add_deliv_area')); fnCheckInputDeliv();" <!--{$arrForm[$key].value|sfGetChecked:1}--> id="deliv_label" />
+                <input class="radio_btn data-role-none" type="checkbox" name="<!--{$key}-->" value="1" onchange="fnDelivToggle($('#add_deliv_area')); eccube.toggleDeliveryForm();" <!--{$arrForm[$key].value|sfGetChecked:1}--> id="deliv_label" />
                 <label for="deliv_label"><span class="fb">お届け先を指定</span></label>
             </dt>
             <dd>
@@ -255,7 +281,7 @@
                         class="boxHarf text data-role-none" placeholder="名"/>
                 </dd>
 
-                <dt>フリガナ&nbsp;<span class="attention">※</span></dt>
+                <dt>フリガナ<!--{if !$smarty.const.FORM_COUNTRY_ENABLE}-->&nbsp;<span class="attention">※</span><!--{/if}--></dt>
                 <dd>
                     <!--{assign var=key1 value="shipping_kana01"}-->
                     <!--{assign var=key2 value="shipping_kana02"}-->
@@ -272,7 +298,33 @@
                         class="boxHarf text data-role-none" placeholder="メイ"/>
                 </dd>
 
-                <dt>郵便番号&nbsp;<span class="attention">※</span></dt>
+                <dt>会社名</dt>
+                <dd>
+                    <!--{assign var=key value="shipping_company_name"}-->
+                    <span class="attention"><!--{$arrErr[$key]}--></span>
+                    <input type="text" name="<!--{$key}-->" value="<!--{$arrForm[$key].value|h}-->" class="boxLong text data-role-none" style="<!--{$arrErr[$key]|sfGetErrorColor}-->" />
+                </dd>
+
+                <!--{if $smarty.const.FORM_COUNTRY_ENABLE}-->
+                <dt>国&nbsp;<span class="attention">※</span></dt>
+                <dd>
+                    <!--{assign var=key1 value="shipping_country_id"}-->
+                    <div class="attention"><!--{$arrErr[$key1]}--></div>
+                    <select name="<!--{$key1}-->" style="<!--{$arrErr[$key1]|sfGetErrorColor}-->">
+                        <option value="" selected="selected">国を選択</option>
+                        <!--{html_options options=$arrCountry selected=$arrForm[$key1].value|h|default:$smarty.const.DEFAULT_COUNTRY_ID}-->
+                    </select>
+                </dd>
+
+                <dt>ZIP CODE</dt>
+                <dd>
+                    <!--{assign var=key1 value="shipping_zipcode"}-->
+                    <div class="attention"><!--{$arrErr[$key1]}--></div>
+                    <input type="text" name="<!--{$key1}-->" value="<!--{$arrForm[$key1].value|h}-->" maxlength="<!--{$arrForm[$key1].length}-->" class="boxLong text data-role-none" style="<!--{$arrErr[$key1]|sfGetErrorColor}-->; ime-mode: disabled;" />
+                </dd>
+                <!--{/if}-->
+
+                <dt>郵便番号<!--{if !$smarty.const.FORM_COUNTRY_ENABLE}-->&nbsp;<span class="attention">※</span><!--{/if}--></dt>
                 <dd>
                     <!--{assign var=key1 value="shipping_zip01"}-->
                     <!--{assign var=key2 value="shipping_zip02"}-->
@@ -280,16 +332,16 @@
                     <p>
                         <input type="tel" name="<!--{$key1}-->"
                             value="<!--{$arrForm[$key1].value|h}-->"
-                            max="<!--{$arrForm[$key1].length}-->"
+                            maxlength="<!--{$arrForm[$key1].length}-->"
                             style="<!--{$arrErr[$key1]|sfGetErrorColor}-->" class="boxShort text data-role-none" />&nbsp;－&nbsp;
                         <input type="tel" name="<!--{$key2}-->"
                             value="<!--{$arrForm[$key2].value|h}-->"
-                            max="<!--{$arrForm[$key2].length}-->"
+                            maxlength="<!--{$arrForm[$key2].length}-->"
                             style="<!--{$arrErr[$key2]|sfGetErrorColor}-->" class="boxShort text data-role-none" />&nbsp;
                         <a href="http://search.post.japanpost.jp/zipcode/" target="_blank"><span class="fn">郵便番号検索</span></a>
                     </p>
 
-                    <a href="javascript:fnCallAddress('<!--{$smarty.const.INPUT_ZIP_URLPATH}-->', 'shipping_zip01', 'shipping_zip02', 'shipping_pref', 'shipping_addr01');" class="btn_sub btn_inputzip">郵便番号から住所自動入力</a>
+                    <a href="javascript:eccube.getAddress('<!--{$smarty.const.INPUT_ZIP_URLPATH}-->', 'shipping_zip01', 'shipping_zip02', 'shipping_pref', 'shipping_addr01');" class="btn_sub btn_inputzip">郵便番号から住所自動入力</a>
                 </dd>
 
                 <dt>住所&nbsp;<span class="attention">※</span></dt>
@@ -340,7 +392,7 @@
                 </dd>
                 <!--{if $smarty.const.USE_MULTIPLE_SHIPPING !== false}-->
                     <dd class="pb">
-                        <a class="btn_more" href="javascript:fnModeSubmit('multiple', '', '');">お届け先を複数指定する</a>
+                        <a class="btn_more" href="javascript:eccube.setModeAndSubmit('multiple', '', '');">お届け先を複数指定する</a>
                     </dd>
                 <!--{/if}-->
             </div>
@@ -352,13 +404,6 @@
     </form>
 </section>
 
-<!--▼検索バー -->
-<section id="search_area">
-    <form method="get" action="<!--{$smarty.const.ROOT_URLPATH}-->products/list.php">
-        <input type="hidden" name="<!--{$smarty.const.TRANSACTION_ID_NAME}-->" value="<!--{$transactionid}-->" />
-        <input type="hidden" name="mode" value="search" />
-        <input type="search" name="name" id="search" value="" placeholder="キーワードを入力" class="searchbox" >
-    </form>
-</section>
-<!--▲検索バー -->
+<!--{include file= 'frontparts/search_area.tpl'}-->
+
 <!--▲コンテンツここまで -->
