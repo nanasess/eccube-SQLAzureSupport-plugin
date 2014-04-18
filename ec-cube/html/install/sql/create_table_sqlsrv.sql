@@ -41,12 +41,12 @@ CREATE TABLE dtb_holiday (
 );
 
 CREATE TABLE mtb_zip (
-    id int,
+    zip_id int,
     zipcode nvarchar(max),
     state nvarchar(max),
     city nvarchar(max),
     town nvarchar(max),
-    PRIMARY KEY(id)
+    PRIMARY KEY(zip_id)
 );
 
 CREATE TABLE dtb_update (
