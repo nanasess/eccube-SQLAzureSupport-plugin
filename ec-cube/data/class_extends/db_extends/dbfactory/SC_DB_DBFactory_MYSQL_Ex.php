@@ -34,4 +34,25 @@ require_once CLASS_REALDIR . 'db/dbfactory/SC_DB_DBFactory_MYSQL.php';
  */
 class SC_DB_DBFactory_MYSQL_Ex extends SC_DB_DBFactory_MYSQL
 {
+    // 2.13.2 向けにコミットの予定
+    /**
+     * SQL 文に OFFSET, LIMIT を付加する。
+     *
+     * @param string 元の SQL 文
+     * @param integer LIMIT
+     * @param integer OFFSET
+     * @return string 付加後の SQL 文
+     */
+    function addLimitOffset($sql, $limit = 0, $offset = 0)
+    {
+        if ($limit != 0) {
+            $sql .= " LIMIT $limit";
+        }
+        if (strlen($offset) === 0) {
+            $offset = 0;
+        }
+        $sql .= " OFFSET $offset";
+
+        return $sql;
+    }
 }
