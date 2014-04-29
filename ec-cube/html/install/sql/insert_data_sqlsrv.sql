@@ -1534,3 +1534,19 @@ INSERT INTO mtb_country (id, name, rank) VALUES (643,'ロシア|ロシア連邦'
 
 
 INSERT INTO dtb_plugin (plugin_id, plugin_name, class_name, plugin_code, author, author_site_url, plugin_site_url, plugin_version, compliant_version, plugin_description, priority, enable, create_date, update_date) VALUES (1, N'Microsoft Windows Azure プラグイン', 'SQLAzureSupport', 'SQLAzureSupport', N'Kentaro Ohkouchi (Loop AZ)', 'http://www.loop-az.co.jp/', null, '1.0.1', '2.12.1', N'Microsoft Windows Azure 対応プラグインです。インストーラのデータベースに SQL Azure が追加されます。PHP 5.3.0 以降対応。sqlsrv ドライバが必要です。', 1, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+
+CREATE NONCLUSTERED INDEX product_category_category_id_idx ON [dbo].[dtb_product_categories] ([category_id]) INCLUDE ([product_id]);
+CREATE NONCLUSTERED INDEX product_code_idx ON dtb_products_class (product_code) INCLUDE (product_id);
+CREATE NONCLUSTERED INDEX price01_idx ON dtb_products_class (price01) INCLUDE (product_id);
+CREATE NONCLUSTERED INDEX price02_idx ON dtb_products_class (price02) INCLUDE (product_id);
+CREATE NONCLUSTERED INDEX stock_idx ON dtb_products_class (stock) INCLUDE (product_id);
+CREATE NONCLUSTERED INDEX stock_unlimited_idx ON dtb_products_class (stock_unlimited) INCLUDE (product_id);
+CREATE NONCLUSTERED INDEX point_rate_idx ON dtb_products_class (point_rate) INCLUDE (product_id);
+CREATE NONCLUSTERED INDEX deliv_fee_idx ON dtb_products_class (deliv_fee) INCLUDE (product_id);
+CREATE NONCLUSTERED INDEX product_id_idx ON dtb_products_class (product_id);
+CREATE NONCLUSTERED INDEX IX_dtb_products_class_0 ON dtb_products_class (del_flg)
+CREATE NONCLUSTERED INDEX maker_id_idx ON dtb_products (maker_id);
+CREATE NONCLUSTERED INDEX dtb_products_class_count_idx ON dtb_products_class (del_flg) INCLUDE (product_id, product_code, stock, stock_unlimited, price02);
+CREATE NONCLUSTERED INDEX dtb_products_status_del_flg_idx ON dtb_products (status, del_flg) INCLUDE (product_id);
+CREATE NONCLUSTERED INDEX dtb_category_rank_idx ON dtb_category (rank) INCLUDE (category_id);
+CREATE NONCLUSTERED INDEX dtb_product_categories_rank_idx ON dtb_product_categories (rank) INCLUDE (product_id);
