@@ -45,14 +45,10 @@ ini_set('max_execution_time', 300);
 
 $objPage = new StdClass;
 $objPage->arrDB_TYPE = array(
-    'sqlsrv' => 'SQL Azure',
-    'pgsql' => 'PostgreSQL',
-    'mysql' => 'MySQL',
+    'sqlsrv' => 'SQL Database'
 );
 $objPage->arrDB_PORT = array(
-    'sqlsrv' => '1433',
-    'pgsql' => '',
-    'mysql' => '',
+    'sqlsrv' => '1433'
 );
 $objPage->arrMailBackend = array('mail' => 'mail',
                                  'smtp' => 'SMTP',

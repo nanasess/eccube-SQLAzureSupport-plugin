@@ -233,7 +233,8 @@ class LC_Page_Admin_Basis_ZipInstall extends LC_Page_Admin_Ex
         $begin = microtime(true);
 
         try {
-            $dbh = new PDO('mysql:host=' . DB_SERVER . ';dbname=' . DB_NAME . ';port=' . DB_PORT . ';charset=utf8', DB_USER, DB_PASSWORD);
+            $dbh = new PDO('sqlsrv:server=tcp:' . DB_SERVER . ',' . DB_PORT . ';dbname=' . DB_NAME . ';charset=utf8', DB_USER, DB_PASSWORD);
+            $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $dbh->beginTransaction();
             $dbh->exec('DELETE FROM mtb_zip');
 
