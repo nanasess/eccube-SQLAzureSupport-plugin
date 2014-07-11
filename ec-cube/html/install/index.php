@@ -697,7 +697,7 @@ function lfInitWebParam($objWebParam)
     if (defined('MAIL_BACKEND')) {
         $mail_backend = MAIL_BACKEND;
     } else {
-        $mail_backend = 'mail';
+        $mail_backend = 'smtp';
     }
     if (defined('SMTP_HOST')) {
         $smtp_host = SMTP_HOST;
@@ -734,10 +734,47 @@ function lfInitWebParam($objWebParam)
 // DBパラメーター情報の初期化
 function lfInitDBParam($objDBParam)
 {
+    // EC-CUBEデフォルト値設定
+    $default_server = '127.0.0.1';
+    $default_dbname = 'eccube_db';
+    $default_user   = 'eccube_db_user';
+    $default_pass   = '';
+
+    // WebMatrixの設定ファイルから接続情報を取得
+    $webpi_filename = HTML_REALDIR . HTML2DATA_DIR . 'config/webmatrix.php';
+    if(file_exists($webpi_filename) && $fp = @fopen($webpi_filename, 'r')) {
+        while (!feof($fp)) {
+            $connect_str = fgets($fp);
+            if(preg_match('/mysql/', $connect_str)) {
+                break;
+            }
+        }
+        
+        // MySQLの文字列から分割して接続情報を取得する
+        if(!empty($connect_str)) {
+            // /* mysql://[ユーザー名]:[パスワード]@[ホスト名]/[データベース名];*/
+            // @で分解
+            $split_connect = explode('@', $connect_str);
+
+            // ユーザー名, パスワードを取得
+            $split_userpass_wk = explode('//', $split_connect[0]);
+            $split_userpass    = explode(':', $split_userpass_wk[1]);
+            $default_user      = $split_userpass[0];
+            $default_pass      = $split_userpass[1];
+            
+            // ホスト名, データベース名を取得
+            $split_serverdb_wk = explode(';', $split_connect[1]);
+            $split_serverdb    = explode('/', $split_serverdb_wk[0]);
+            $default_server    = $split_serverdb[0];
+            $default_dbname    = $split_serverdb[1];
+        }
+        fclose($fp);
+    }
+
     if (defined('DB_SERVER')) {
         $db_server = DB_SERVER;
     } else {
-        $db_server = '127.0.0.1';
+        $db_server = $default_server;
     }
 
     if (defined('DB_TYPE')) {
@@ -755,13 +792,19 @@ function lfInitDBParam($objDBParam)
     if (defined('DB_NAME')) {
         $db_name = DB_NAME;
     } else {
-        $db_name = 'eccube_db';
+        $db_name = $default_dbname;
     }
 
     if (defined('DB_USER')) {
         $db_user = DB_USER;
     } else {
-        $db_user = 'eccube_db_user';
+        $db_user = $default_user;
+    }
+
+    if (defined('DB_PASSWORD')) {
+        $db_password = DB_PASSWORD;
+    } else {
+        $db_password = $default_pass;
     }
 
     $objDBParam->addParam('DBの種類', 'db_type', INT_LEN, '', array('EXIST_CHECK', 'MAX_LENGTH_CHECK'), $db_type);
@@ -769,7 +812,7 @@ function lfInitDBParam($objDBParam)
     $objDBParam->addParam('DBポート', 'db_port', INT_LEN, '', array('MAX_LENGTH_CHECK'), $db_port);
     $objDBParam->addParam('DB名', 'db_name', MTEXT_LEN, '', array('EXIST_CHECK', 'MAX_LENGTH_CHECK'), $db_name);
     $objDBParam->addParam('DBユーザ', 'db_user', MTEXT_LEN, '', array('EXIST_CHECK', 'MAX_LENGTH_CHECK'), $db_user);
-    $objDBParam->addParam('DBパスワード', 'db_password', MTEXT_LEN, '', array('EXIST_CHECK', 'MAX_LENGTH_CHECK'));
+    $objDBParam->addParam('DBパスワード', 'db_password', MTEXT_LEN, '', array('EXIST_CHECK', 'MAX_LENGTH_CHECK'), $default_pass);
 
     return $objDBParam;
 }
@@ -1047,16 +1090,6 @@ function lfMakeConfigFile()
     // FIXME 変数出力はエスケープすべき
     $config_data = "<?php\n"
                  . "define('ECCUBE_INSTALL', 'ON');\n"
-                 . "define('HTTP_URL', '"              . $normal_url . "');\n"
-                 . "define('HTTPS_URL', '"             . $secure_url . "');\n"
-                 . "define('ROOT_URLPATH', '"          . $url_dir . "');\n"
-                 . "define('DOMAIN_NAME', '"           . $objWebParam->getValue('domain') . "');\n"
-                 . "define('DB_TYPE', '"               . $objDBParam->getValue('db_type') . "');\n"
-                 . "define('DB_USER', '"               . $objDBParam->getValue('db_user') . "');\n"
-                 . "define('DB_PASSWORD', '"           . $objDBParam->getValue('db_password') . "');\n"
-                 . "define('DB_SERVER', '"             . $objDBParam->getValue('db_server') . "');\n"
-                 . "define('DB_NAME', '"               . $objDBParam->getValue('db_name') . "');\n"
-                 . "define('DB_PORT', '"               . $objDBParam->getValue('db_port') . "');\n"
                  . "define('ADMIN_DIR', '"             . $objWebParam->getValue('admin_dir') . "/');\n"
                  . "define('ADMIN_FORCE_SSL', "        . $force_ssl . ");\n"
                  . "define('ADMIN_ALLOW_HOSTS', '"     . serialize($allow_hosts) . "');\n"
@@ -1068,7 +1101,10 @@ function lfMakeConfigFile()
                  . "define('SMTP_USER', '"             . $objWebParam->getValue('smtp_user') . "');\n"
                  . "define('SMTP_PASSWORD', '"         . $objWebParam->getValue('smtp_password') . "');\n";
 
-    if ($fp = fopen(CONFIG_REALFILE, 'w')) {
+    if (!defined('DEFINE_REALFILE')) {
+        define('DEFINE_REALFILE', HTML_REALDIR . HTML2DATA_DIR . 'config/define.php');
+    }
+    if ($fp = fopen(DEFINE_REALFILE, 'w')) {
         fwrite($fp, $config_data);
         fclose($fp);
     }
