@@ -1,6 +1,6 @@
 <?php
 $realpath = dirname(__FILE__);
-define('ROOT_URLPATH', '/');
+define('ROOT_URLPATH', '/ec-cube/html/');
 
 // for Azure
 if (strpos($_SERVER['SERVER_NAME'], 'localhost') === false) {
