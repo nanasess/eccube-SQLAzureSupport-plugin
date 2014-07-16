@@ -161,7 +161,10 @@ class LC_Page_Admin_Basis_ZipInstall extends LC_Page_Admin_Ex
         $objQuery =& SC_Query_Ex::getSingletonInstance();
 
         // DB更新
+        $objQuery->begin();
+        $this->lfDeleteZip();
         $this->insertMtbZip();
+        $objQuery->commit();
     }
 
     /**
@@ -229,44 +232,34 @@ class LC_Page_Admin_Basis_ZipInstall extends LC_Page_Admin_Ex
         $cntInsert = 0;
         $img_cnt = 0;
 
-        /* 標準実装が非常に遅いので Azure/WebMatrix 向けにチューニング */
-        $begin = microtime(true);
-
-        try {
-            $dbh = new PDO('sqlsrv:server=tcp:' . DB_SERVER . ',' . DB_PORT . ';dbname=' . DB_NAME . ';charset=utf8', DB_USER, DB_PASSWORD);
-            $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            $dbh->beginTransaction();
-            $dbh->exec('DELETE FROM mtb_zip');
-
-            $sql = 'INSERT INTO mtb_zip (zip_id, zipcode, state, city, town) VALUES (?, ?, ?, ?, ?)';
-            $stmt = $dbh->prepare($sql);
-            $line = file(ZIP_CSV_UTF8_REALFILE);
-            for($i = 0; $line[$i] != ''; $i ++){
-                if (!($array = explode(",", $line[$i]))) {
-                    continue;
-                }
-                $stmt->bindParam(1, ++$cntCurrentLine, PDO::PARAM_INT);
-                $stmt->bindParam(2, trim($array[2], '"'), PDO::PARAM_STR, strlen($array[2]));
-                $stmt->bindParam(3, trim($array[6], '"'), PDO::PARAM_STR, strlen($array[6]));
-                $stmt->bindParam(4, trim($array[7], '"'), PDO::PARAM_STR, strlen($array[7]));
-                $stmt->bindParam(5, trim($array[8], '"'), PDO::PARAM_STR, strlen($array[8]));
-                $stmt->execute();
+        $fp = $this->openZipCsv();
+        while (!feof($fp)) {
+            $arrCSV = fgetcsv($fp, ZIP_CSV_LINE_MAX);
+            if (empty($arrCSV)) continue;
+            $cntCurrentLine++;
+            if ($cntCurrentLine >= $start) {
+                $sqlval = array();
+                $sqlval['zip_id'] = $cntCurrentLine;
+                $sqlval['zipcode'] = $arrCSV[2];
+                $sqlval['state'] = $arrCSV[6];
+                $sqlval['city'] = $arrCSV[7];
+                $sqlval['town'] = $arrCSV[8];
+                $objQuery->insert('mtb_zip', $sqlval);
                 $cntInsert++;
-
-                // $disp_line件ごとに進捗表示する
-                if ($i % $disp_line == 0 && $img_cnt < IMAGE_MAX) {
-                    echo '<img src="' . $img_path . 'graph_1_w.gif">';
-                    SC_Utils_Ex::sfFlush();
-                    $img_cnt++;
-                }
-                SC_Utils_Ex::extendTimeOut();
             }
-            $end = microtime(true);
 
-            echo '<img src="' . $img_path . 'space_w.gif">';
-        } catch (PDOException $e) {
-            trigger_error($e->getMessage(), E_USER_ERROR);
+            // $disp_line件ごとに進捗表示する
+            if ($cntCurrentLine % $disp_line == 0 && $img_cnt < IMAGE_MAX) {
+                echo '<img src="' . $img_path . 'graph_1_w.gif">';
+                SC_Utils_Ex::sfFlush();
+                $img_cnt++;
+            }
+            SC_Utils_Ex::extendTimeOut();
         }
+        fclose($fp);
+
+        echo '<img src="' . $img_path . 'space_w.gif">';
+
         ?>
         </div>
         <script type='text/javascript' language='javascript'>
@@ -277,7 +270,7 @@ class LC_Page_Admin_Basis_ZipInstall extends LC_Page_Admin_Ex
                     document.open('text/html','replace');
                     document.clear();
                     document.write('<p>完了しました。<br />');
-                    document.write("<?php echo $cntInsert ?> 件を追加しました。<?php echo ($end-$begin); ?> 秒かかりました</p>");
+                    document.write("<?php echo $cntInsert ?> 件を追加しました。</p>");
                     document.write("<p><a href='?' target='_top'>戻る</a></p>");
                     document.close();
                 }
@@ -288,7 +281,6 @@ class LC_Page_Admin_Basis_ZipInstall extends LC_Page_Admin_Ex
         </body>
         </html>
         <?php
-        $dbh->commit();
     }
 
     public function openZipCsv()
