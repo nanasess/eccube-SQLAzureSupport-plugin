@@ -28,7 +28,7 @@
  * よって、このファイルで構文エラーが発生すると、EC-CUBE はエラーを捕捉できない。
  * @package Util
  * @author LOCKON CO.,LTD.
- * @version $Id: GC_Utils.php 23124 2013-08-24 14:33:52Z kimoto $
+ * @version $Id$
  */
 class GC_Utils
 {
@@ -187,10 +187,6 @@ class GC_Utils
 
         if (strlen($path) === 0) {
             $path = GC_Utils_Ex::isAdminFunction() ? ADMIN_LOG_REALFILE : LOG_REALFILE;
-        }
-
-        if (isset($_SERVER['COMPUTERNAME'])) {
-            $path = str_replace('.log', '.' . $_SERVER['COMPUTERNAME'] . '.log', $path);
         }
 
         $msg = "$today [{$_SERVER['SCRIPT_NAME']}] $msg from {$_SERVER['REMOTE_ADDR']}\n";

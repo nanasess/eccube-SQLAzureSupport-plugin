@@ -30,7 +30,7 @@
  *
  * @package SC_SessionFactory
  * @author LOCKON CO.,LTD.
- * @version $Id: SC_SessionFactory_UseRequest.php 23256 2013-10-28 00:17:34Z Seasoft $
+ * @version $Id$
  */
 class SC_SessionFactory_UseRequest extends SC_SessionFactory_Ex
 {

@@ -30,7 +30,7 @@ require_once CLASS_REALDIR . 'helper/SC_Helper_Purchase.php';
  *
  * @package Helper
  * @author Kentaro Ohkouchi
- * @version $Id: SC_Helper_Purchase_Ex.php 22856 2013-06-08 07:35:27Z Seasoft $
+ * @version $Id$
  */
 class SC_Helper_Purchase_Ex extends SC_Helper_Purchase
 {

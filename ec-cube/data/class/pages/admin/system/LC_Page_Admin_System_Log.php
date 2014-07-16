@@ -28,7 +28,7 @@ require_once CLASS_EX_REALDIR . 'page_extends/admin/LC_Page_Admin_Ex.php';
  *
  * @package Page
  * @author Seasoft 塚田将久
- * @version $Id: LC_Page_Admin_System_Log.php 23124 2013-08-24 14:33:52Z kimoto $
+ * @version $Id$
  */
 class LC_Page_Admin_System_Log extends LC_Page_Admin_Ex
 {
@@ -109,8 +109,11 @@ class LC_Page_Admin_System_Log extends LC_Page_Admin_Ex
     {
         $index = 0;
         $arrLogs = array();
-        $arrPaths = glob(str_replace('.log', '', $log_path_base) . '*.log*');
-        foreach ($arrPaths as $path) {
+        for ($gen = 0 ; $gen <= MAX_LOG_QUANTITY; $gen++) {
+            $path = $log_path_base;
+            if ($gen != 0) {
+                $path .= ".$gen";
+            }
 
             // ファイルが存在しない場合、前世代のログへ
             if (!file_exists($path)) continue;
@@ -142,11 +145,6 @@ class LC_Page_Admin_System_Log extends LC_Page_Admin_Ex
             }
         }
 
-        $arrDate = array();
-        foreach ($arrLogs as $key => $val) {
-            $arrDate[$key] = $val['date'];
-        }
-        array_multisort($arrDate, SORT_DESC, SORT_STRING, $arrLogs);
         return $arrLogs;
     }
 

@@ -30,7 +30,7 @@ require_once CLASS_REALDIR . 'pages/guide/LC_Page_Guide_Privacy.php';
  *
  * @package Page
  * @author LOCKON CO.,LTD.
- * @version $Id: LC_Page_Guide_Privacy_Ex.php 22926 2013-06-29 16:24:23Z Seasoft $
+ * @version $Id$
  */
 class LC_Page_Guide_Privacy_Ex extends LC_Page_Guide_Privacy
 {

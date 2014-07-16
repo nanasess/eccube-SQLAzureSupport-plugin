@@ -30,7 +30,7 @@ require_once CLASS_REALDIR . 'pages/admin/basis/LC_Page_Admin_Basis_DeliveryInpu
  *
  * @package Page
  * @author LOCKON CO.,LTD.
- * @version $Id: LC_Page_Admin_Basis_DeliveryInput_Ex.php 22926 2013-06-29 16:24:23Z Seasoft $
+ * @version $Id$
  */
 class LC_Page_Admin_Basis_DeliveryInput_Ex extends LC_Page_Admin_Basis_DeliveryInput
 {

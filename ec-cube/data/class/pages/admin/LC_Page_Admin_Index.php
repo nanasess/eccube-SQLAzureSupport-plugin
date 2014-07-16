@@ -28,7 +28,7 @@ require_once CLASS_EX_REALDIR . 'page_extends/admin/LC_Page_Admin_Ex.php';
  *
  * @package Page
  * @author LOCKON CO.,LTD.
- * @version $Id: LC_Page_Admin_Index.php 23124 2013-08-24 14:33:52Z kimoto $
+ * @version $Id$
  */
 class LC_Page_Admin_Index extends LC_Page_Admin_Ex
 {
@@ -185,6 +185,9 @@ class LC_Page_Admin_Index extends LC_Page_Admin_Ex
      */
     public function lfSetLoginSession($member_id, $login_id, $authority, $login_name, $last_login)
     {
+        // Session Fixation対策
+        SC_Session_Ex::regenerateSID();
+
         $objSess = new SC_Session_Ex();
         // 認証済みの設定
         $objSess->SetSession('cert', CERT_STRING);

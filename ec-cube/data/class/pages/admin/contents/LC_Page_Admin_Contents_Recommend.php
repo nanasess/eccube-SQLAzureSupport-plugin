@@ -28,7 +28,7 @@ require_once CLASS_EX_REALDIR . 'page_extends/admin/LC_Page_Admin_Ex.php';
  *
  * @package Page
  * @author LOCKON CO.,LTD.
- * @version $Id: LC_Page_Admin_Contents_Recommend.php 23243 2013-10-11 06:37:44Z kimoto $
+ * @version $Id$
  */
 class LC_Page_Admin_Contents_Recommend extends LC_Page_Admin_Ex
 {
@@ -88,23 +88,29 @@ class LC_Page_Admin_Contents_Recommend extends LC_Page_Admin_Ex
 
             case 'regist': // 商品を登録する。
                 $this->arrErr = $this->lfCheckError($objFormParam);
+                $this->arrErr[$arrPost['rank']] = $this->lfCheckError($objFormParam);
                 // 登録処理にエラーがあった場合は商品選択の時と同じ処理を行う。
                 if (SC_Utils_Ex::isBlank($this->arrErr)) {
                     $member_id = $_SESSION['member_id'];
                     $this->insertRecommendProduct($arrPost,$member_id,$objRecommend);
                     $arrItems = $this->getRecommendProducts($objRecommend);
+                    $this->tpl_onload = "window.alert('編集が完了しました');";
                 } else {
-                    $arrItems = $this->setProducts($arrPost, $arrItems);
-                    $this->checkRank = $arrPost['rank'];
+                    $arrItems = $this->getRecommendProducts($objRecommend);
+                    $rank = $arrPost['rank'];
+                    $arrItems[$rank]['comment'] = $arrPost['comment'];;
+                    if ($arrPost['best_id']) {
+                    } else {
+                        $arrItems = $this->setProducts($arrPost, $arrItems);
+                        $this->checkRank = $arrPost['rank'];
+                    }
                 }
-                $this->tpl_onload = "window.alert('編集が完了しました');";
                 break;
             case 'delete': // 商品を削除する。
-                $this->arrErr = $this->lfCheckError($objFormParam);
-                if (SC_Utils_Ex::isBlank($this->arrErr)) {
+                if ($arrPost['best_id']) {
                     $this->deleteProduct($arrPost, $objRecommend);
-                    $arrItems = $this->getRecommendProducts($objRecommend);
                 }
+                $arrItems = $this->getRecommendProducts($objRecommend);
                 $this->tpl_onload = "window.alert('削除しました');";
                 break;
             case 'set_item': // 商品を選択する。

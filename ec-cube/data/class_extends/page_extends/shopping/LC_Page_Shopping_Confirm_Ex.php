@@ -30,7 +30,7 @@ require_once CLASS_REALDIR . 'pages/shopping/LC_Page_Shopping_Confirm.php';
  *
  * @package Page
  * @author LOCKON CO.,LTD.
- * @version $Id: LC_Page_Shopping_Confirm_Ex.php 22926 2013-06-29 16:24:23Z Seasoft $
+ * @version $Id$
  */
 class LC_Page_Shopping_Confirm_Ex extends LC_Page_Shopping_Confirm
 {

@@ -28,7 +28,7 @@ require_once CLASS_EX_REALDIR . 'page_extends/LC_Page_Ex.php';
  *
  * @package Page
  * @author LOCKON CO.,LTD.
- * @version $Id: LC_Page_Shopping.php 23256 2013-10-28 00:17:34Z Seasoft $
+ * @version $Id$
  */
 class LC_Page_Shopping extends LC_Page_Ex
 {
@@ -125,6 +125,13 @@ class LC_Page_Shopping extends LC_Page_Ex
                 if (SC_Utils_Ex::isBlank($this->arrErr)
                     && $objCustomer->doLogin($objFormParam->getValue('login_email'),
                                              $objFormParam->getValue('login_pass'))) {
+                    // クッキー保存判定
+                    if ($objFormParam->getValue('login_memory') == '1' && strlen($objFormParam->getValue('login_email')) >= 1) {
+                        $objCookie->setCookie('login_email', $objFormParam->getValue('login_email'));
+                    } else {
+                        $objCookie->setCookie('login_email', '');
+                    }
+
                     // モバイルサイトで携帯アドレスの登録が無い場合、携帯アドレス登録ページへ遷移
                     if (SC_Display_Ex::detectDevice() == DEVICE_TYPE_MOBILE) {
                         if (!$objCustomer->hasValue('email_mobile')) {
@@ -139,13 +146,6 @@ class LC_Page_Shopping extends LC_Page_Ex
                                                                             $objCustomer, $objPurchase,
                                                                             $objSiteSess)));
                         SC_Response_Ex::actionExit();
-                    }
-
-                    // クッキー保存判定
-                    if ($objFormParam->getValue('login_memory') == '1' && $objFormParam->getValue('login_email') != '') {
-                        $objCookie->setCookie('login_email', $objFormParam->getValue('login_email'));
-                    } else {
-                        $objCookie->setCookie('login_email', '');
                     }
 
                     SC_Response_Ex::sendRedirect(
@@ -373,7 +373,7 @@ class LC_Page_Shopping extends LC_Page_Ex
         $arrValues = $objFormParam->getDbArray();
 
         // 登録データの作成
-        $arrValues['order_birth'] = SC_Utils_Ex::sfGetTimestamp($arrParams['year'], $arrParams['month'], $arrParams['day']);
+        $arrValues['order_birth'] = SC_Utils_Ex::sfGetTimestamp($arrParams['order_year'], $arrParams['order_month'], $arrParams['order_day']);
         $arrValues['update_date'] = 'CURRENT_TIMESTAMP';
         $arrValues['customer_id'] = '0';
         $objPurchase->saveOrderTemp($uniqid, $arrValues, $objCustomer);
@@ -407,7 +407,7 @@ class LC_Page_Shopping extends LC_Page_Ex
         }
 
         // 複数項目チェック
-        $objErr->doFunc(array('生年月日', 'year', 'month', 'day'), array('CHECK_BIRTHDAY'));
+        $objErr->doFunc(array('生年月日', 'order_year', 'order_month', 'order_day'), array('CHECK_BIRTHDAY'));
         $objErr->doFunc(array('メールアドレス', 'メールアドレス（確認）', 'order_email', 'order_email02'), array('EQUAL_CHECK'));
 
         return $objErr->arrErr;
@@ -450,7 +450,7 @@ class LC_Page_Shopping extends LC_Page_Ex
             }
         }
         $objFormParam->setValue('order_email02', $arrOrderTemp['order_email']);
-        $objFormParam->setDBDate($arrOrderTemp['order_birth']);
+        $objFormParam->setDBDate($arrOrderTemp['order_birth'], 'order_year', 'order_month', 'order_day');
     }
 
     /**

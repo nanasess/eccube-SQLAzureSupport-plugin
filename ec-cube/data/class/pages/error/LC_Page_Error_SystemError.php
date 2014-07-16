@@ -29,7 +29,7 @@ require_once CLASS_REALDIR . 'pages/error/LC_Page_Error.php';
  *
  * @package Page
  * @author LOCKON CO.,LTD.
- * @version $Id: LC_Page_Error_SystemError.php 23124 2013-08-24 14:33:52Z kimoto $
+ * @version $Id$
  */
 class LC_Page_Error_SystemError extends LC_Page_Error
 {

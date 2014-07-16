@@ -31,7 +31,7 @@ require_once CLASS_EX_REALDIR . 'page_extends/LC_Page_Ex.php';
  *
  * @package Page
  * @author Kentaro Ohkouchi
- * @version $Id: LC_Page_Shopping_LoadPaymentModule.php 23124 2013-08-24 14:33:52Z kimoto $
+ * @version $Id$
  */
 class LC_Page_Shopping_LoadPaymentModule extends LC_Page_Ex
 {

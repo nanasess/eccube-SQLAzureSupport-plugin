@@ -30,7 +30,7 @@ require_once CLASS_REALDIR . 'pages/admin/mail/LC_Page_Admin_Mail_Sendmail.php';
  *
  * @package Page
  * @author LOCKON CO.,LTD.
- * @version $Id: LC_Page_Admin_Mail_Sendmail_Ex.php 22926 2013-06-29 16:24:23Z Seasoft $
+ * @version $Id$
  */
 class LC_Page_Admin_Mail_Sendmail_Ex extends LC_Page_Admin_Mail_Sendmail
 {

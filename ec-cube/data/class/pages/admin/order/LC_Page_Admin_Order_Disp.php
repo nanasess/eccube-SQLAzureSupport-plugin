@@ -87,6 +87,8 @@ class LC_Page_Admin_Order_Disp extends LC_Page_Admin_Order_Ex
         $this->arrORDERSTATUS = $masterData->getMasterData('mtb_order_status');
         $this->arrDeviceType = $masterData->getMasterData('mtb_device_type');
         $this->arrCountry = $masterData->getMasterData('mtb_country');
+        $this->arrSex = $masterData->getMasterData('mtb_sex');
+        $this->arrJob = $masterData->getMasterData('mtb_job');
 
         // 支払い方法の取得
         $this->arrPayment = SC_Helper_Payment_Ex::getIDValueList();
@@ -127,6 +129,7 @@ class LC_Page_Admin_Order_Disp extends LC_Page_Admin_Order_Ex
 
         $this->arrForm = $objFormParam->getFormParamList();
         $this->arrAllShipping = $objFormParam->getSwapArray(array_merge($this->arrShippingKeys, $this->arrShipmentItemKeys));
+        $this->tpl_shipping_quantity = count($this->arrAllShipping);
         $this->arrDelivTime = SC_Helper_Delivery_Ex::getDelivTime($objFormParam->getValue('deliv_id'));
         $this->arrInfo = SC_Helper_DB_Ex::sfGetBasisData();
 
@@ -163,6 +166,11 @@ class LC_Page_Admin_Order_Disp extends LC_Page_Admin_Order_Ex
         $objFormParam->addParam('電話番号1', 'order_tel01', TEL_ITEM_LEN, 'n', array('MAX_LENGTH_CHECK' ,'NUM_CHECK'));
         $objFormParam->addParam('電話番号2', 'order_tel02', TEL_ITEM_LEN, 'n', array('MAX_LENGTH_CHECK' ,'NUM_CHECK'));
         $objFormParam->addParam('電話番号3', 'order_tel03', TEL_ITEM_LEN, 'n', array('MAX_LENGTH_CHECK' ,'NUM_CHECK'));
+        $objFormParam->addParam('性別', 'order_sex', TEL_ITEM_LEN, 'n', array('MAX_LENGTH_CHECK' ,'NUM_CHECK'));
+        $objFormParam->addParam('職業', 'order_job', TEL_ITEM_LEN, 'n', array('MAX_LENGTH_CHECK' ,'NUM_CHECK'));
+        $objFormParam->addParam('生年月日(年)', 'order_birth_year', INT_LEN, 'n', array('MAX_LENGTH_CHECK', 'NUM_CHECK'));
+        $objFormParam->addParam('生年月日(月)', 'order_birth_month', INT_LEN, 'n', array('MAX_LENGTH_CHECK', 'NUM_CHECK'));
+        $objFormParam->addParam('生年月日(日)', 'order_birth_day', INT_LEN, 'n', array('MAX_LENGTH_CHECK', 'NUM_CHECK'));
 
         // 受注商品情報
         $objFormParam->addParam('値引き', 'discount', INT_LEN, 'n', array('EXIST_CHECK', 'MAX_LENGTH_CHECK', 'NUM_CHECK'), '0');
@@ -215,7 +223,6 @@ class LC_Page_Admin_Order_Disp extends LC_Page_Admin_Order_Ex
         $objFormParam->addParam('端末種別', 'device_type_id');
 
         // 複数情報
-        $objFormParam->addParam('配送数', 'shipping_quantity', INT_LEN, 'n', array('MAX_LENGTH_CHECK', 'NUM_CHECK'), 1);
         $objFormParam->addParam('配送ID', 'shipping_id', INT_LEN, 'n', array('MAX_LENGTH_CHECK', 'NUM_CHECK'), 0);
         $objFormParam->addParam('お名前1', 'shipping_name01', STEXT_LEN, 'KVa', array('SPTAB_CHECK', 'MAX_LENGTH_CHECK'));
         $objFormParam->addParam('お名前2', 'shipping_name02', STEXT_LEN, 'KVa', array('SPTAB_CHECK', 'MAX_LENGTH_CHECK'));
@@ -282,7 +289,6 @@ class LC_Page_Admin_Order_Disp extends LC_Page_Admin_Order_Ex
             }
             $arrShippings[$row['shipping_id']] = $row;
         }
-        $objFormParam->setValue('shipping_quantity', count($arrShippings));
         $objFormParam->setParam(SC_Utils_Ex::sfSwapArray($arrShippings));
 
         /*
@@ -310,6 +316,16 @@ class LC_Page_Admin_Order_Disp extends LC_Page_Admin_Order_Ex
          * が渡ってくるため, $arrOrder で上書きする.
          */
         $arrOrder = $objPurchase->getOrder($order_id);
+
+        // 生年月日の処理
+        if (!SC_Utils_Ex::isBlank($arrOrder['order_birth'])) {
+            $order_birth = substr($arrOrder['order_birth'], 0, 10);
+            $arrOrderBirth = explode("-", $order_birth);
+            $arrOrder['order_birth_year'] = intval($arrOrderBirth[0]);
+            $arrOrder['order_birth_month'] = intval($arrOrderBirth[1]);
+            $arrOrder['order_birth_day'] = intval($arrOrderBirth[2]);
+        }
+
         $objFormParam->setParam($arrOrder);
 
         // ポイントを設定

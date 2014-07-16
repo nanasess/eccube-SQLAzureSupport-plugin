@@ -25,7 +25,7 @@
  * HttpResponse を扱うクラス.
  *
  * @author Ryuichi Tokugami
- * @version $Id: SC_Response.php 23124 2013-08-24 14:33:52Z kimoto $
+ * @version $Id$
  */
 class SC_Response
 {
@@ -334,5 +334,17 @@ class SC_Response
             header("HTTP/{$httpVersion} {$statusCode} {$messages[$statusCode]}");
             header("Status: {$statusCode} {$messages[$statusCode]}", true, $statusCode);
         }
+    }
+
+    /**
+     * ダウンロード用の HTTP ヘッダを出力する
+     *
+     * @return void
+     */
+    public static function headerForDownload($file_name) {
+        header("Content-disposition: attachment; filename={$file_name}");
+        header("Content-type: application/octet-stream; name={$file_name}");
+        header('Cache-Control: ');
+        header('Pragma: ');
     }
 }

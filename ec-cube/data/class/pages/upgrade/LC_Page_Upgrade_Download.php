@@ -30,7 +30,7 @@ require_once CLASS_REALDIR . 'pages/upgrade/LC_Page_Upgrade_Base.php';
  *
  * @package Page
  * @author LOCKON CO.,LTD.
- * @version $Id: LC_Page_Upgrade_Download.php 23141 2013-08-28 04:26:44Z m_uehara $
+ * @version $Id$
  */
 class LC_Page_Upgrade_Download extends LC_Page_Upgrade_Base
 {

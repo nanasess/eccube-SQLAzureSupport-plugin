@@ -28,7 +28,7 @@ require_once CLASS_EX_REALDIR . 'page_extends/mypage/LC_Page_AbstractMypage_Ex.p
  *
  * @package Page
  * @author LOCKON CO.,LTD.
- * @version $Id: LC_Page_Mypage_Refusal.php 23277 2013-11-18 04:07:02Z m_uehara $
+ * @version $Id$
  */
 class LC_Page_Mypage_Refusal extends LC_Page_AbstractMypage_Ex
 {
@@ -83,6 +83,7 @@ class LC_Page_Mypage_Refusal extends LC_Page_AbstractMypage_Ex
                 $objCustomer->EndSession();
 
                 SC_Response_Ex::sendRedirect('refusal_complete.php');
+                break;
 
             default:
                 if (SC_Display_Ex::detectDevice() == DEVICE_TYPE_MOBILE) {

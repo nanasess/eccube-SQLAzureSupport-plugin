@@ -28,7 +28,7 @@ require_once CLASS_EX_REALDIR . 'page_extends/admin/LC_Page_Admin_Ex.php';
  *
  * @package Page
  * @author LOCKON CO.,LTD.
- * @version $Id: LC_Page_Admin_Order_ProductSelect.php 23129 2013-08-26 14:43:24Z pineray $
+ * @version $Id$
  */
 class LC_Page_Admin_Order_ProductSelect extends LC_Page_Admin_Ex
 {
@@ -305,6 +305,6 @@ class LC_Page_Admin_Order_ProductSelect extends LC_Page_Admin_Ex
         $objFormParam->addParam('カテゴリID', 'search_category_id', STEXT_LEN, 'KVa',  array('MAX_LENGTH_CHECK', 'SPTAB_CHECK'));
         $objFormParam->addParam('商品コード', 'search_product_code', LTEXT_LEN, 'KVa', array('MAX_LENGTH_CHECK', 'SPTAB_CHECK'));
         $objFormParam->addParam('フッター', 'footer', LTEXT_LEN, 'KVa', array('MAX_LENGTH_CHECK', 'SPTAB_CHECK'));
-        $objFormParam->addParam('届け先ID', 'shipping_id', LTEXT_LEN, 'n', array('MAX_LENGTH_CHECK', 'NUM_CHECK'));
+        $objFormParam->addParam('届け先ID', 'shipping_id', INT_LEN, 'n', array('MAX_LENGTH_CHECK', 'NUM_CHECK'));
     }
 }

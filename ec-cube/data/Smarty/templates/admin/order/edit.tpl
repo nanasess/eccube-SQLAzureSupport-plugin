@@ -88,8 +88,8 @@
     }
 
     $(document).ready(function() {
-        var shipping_quantity = escape('<!--{$arrForm.shipping_quantity.value|h}-->');
-        if(shipping_quantity > 1){
+        var shipping_quantity = '<!--{$tpl_shipping_quantity|escape:javascript}-->';
+        if (shipping_quantity > 1){
             $("input[name^='quantity[']").attr("disabled","disabled");
         }
     });
@@ -97,7 +97,7 @@
     function quantityCopyForSingleShipping(product_index){
         var product_index = parseInt(product_index);
         var input_quantity = $('input[name^="quantity[' + product_index + ']"]').val();
-        $('input[name^="shipment_quantity[0][' + product_index + ']"]').val(input_quantity);
+        $('input[name^="shipment_quantity[<!--{$top_shipping_id}-->][' + product_index + ']"]').val(input_quantity);
     }
 
 //-->
@@ -248,28 +248,73 @@
                     <input type="text" name="<!--{$arrForm[$key3].keyname}-->" value="<!--{$arrForm[$key3].value|h}-->" maxlength="<!--{$arrForm[$key3].length}-->" style="<!--{$arrErr[$key3]|sfGetErrorColor}-->" size="6" class="box6" />
                 </td>
             </tr>
+            <tr>
+                <th>性別</th>
+                <td>
+                    <!--{assign var=key1 value="order_sex"}-->
+                    <span class="attention"><!--{$arrErr[$key1]}--></span>
+                    <span style="<!--{$arrErr[$key1]|sfGetErrorColor}-->">
+                    <!--{html_radios name=$key1 options=$arrSex selected=$arrForm[$key1].value}-->
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <th>職業</th>
+                <td>
+                    <!--{assign var=key1 value="order_job"}-->
+                    <span class="attention"><!--{$arrErr[$key1]}--></span>
+                    <span style="<!--{$arrErr[$key1]|sfGetErrorColor}-->">
+                    <select name="<!--{$key1}-->">
+	                    <option value="" selected="selected">選択してください</option>
+	                    <!--{html_options options=$arrJob selected=$arrForm[$key1].value}-->
+                    </select>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <th>生年月日</th>
+                <td>
+                    <!--{assign var=key1 value="order_birth_year"}-->
+                    <!--{assign var=key2 value="order_birth_month"}-->
+                    <!--{assign var=key3 value="order_birth_day"}-->
+                    <!--{assign var=errBirth value="`$arrErr.$key1``$arrErr.$key2``$arrErr.$key3`"}-->
+	                <!--{if $errBirth}-->
+	                    <div class="attention"><!--{$errBirth}--></div>
+	                <!--{/if}-->
+                    <select name="<!--{$key1}-->" style="<!--{$errBirth|sfGetErrorColor}-->">
+                        <!--{html_options options=$arrBirthYear selected=$arrForm[$key1].value|default:""}-->
+                    </select>年
+                    <select name="<!--{$key2}-->" style="<!--{$errBirth|sfGetErrorColor}-->">
+                        <!--{html_options options=$arrBirthMonth selected=$arrForm[$key2].value|default:""}-->
+                    </select>月
+                    <select name="<!--{$key3}-->" style="<!--{$errBirth|sfGetErrorColor}-->">
+                        <!--{html_options options=$arrBirthDay selected=$arrForm[$key3].value|default:""}-->
+                    </select>日
+                </td>
+            </tr>
+
             <!--{assign var=key1 value="order_country_id"}-->
             <!--{assign var=key2 value="order_zipcode"}-->
             <!--{if !$smarty.const.FORM_COUNTRY_ENABLE}-->
             <input type="hidden" name="<!--{$key1}-->" value="<!--{$smarty.const.DEFAULT_COUNTRY_ID}-->" />
             <!--{else}-->
-            <tr>
-                <th>国</th>
-                <td>
-                    <span class="attention"><!--{$arrErr[$key1]}--></span>
-                    <select name="<!--{$key1}-->" style="<!--{$arrErr[$key1]|sfGetErrorColor}-->">
-                            <option value="" selected="selected">国を選択</option>
-                            <!--{html_options options=$arrCountry selected=$arrForm[$key1].value|default:$smarty.const.DEFAULT_COUNTRY_ID}-->
-                    </select>
-                </td>
-            </tr>
-            <tr>
-                <th>ZIP CODE</th>
-                <td>
-                    <span class="attention"><!--{$arrErr[$key2]}--></span>
-                    <input type="text" name="<!--{$key2}-->" value="<!--{$arrForm[$key2].value|h}-->" maxlength="<!--{$arrForm[$key2].length}-->" style="<!--{$arrErr[$key2]|sfGetErrorColor}-->;" size="15" class="box15"/>
-                </td>
-            </tr>
+                <tr>
+                    <th>国</th>
+                    <td>
+                        <span class="attention"><!--{$arrErr[$key1]}--></span>
+                        <select name="<!--{$key1}-->" style="<!--{$arrErr[$key1]|sfGetErrorColor}-->">
+                                <option value="" selected="selected">国を選択</option>
+                                <!--{html_options options=$arrCountry selected=$arrForm[$key1].value|default:$smarty.const.DEFAULT_COUNTRY_ID}-->
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <th>ZIP CODE</th>
+                    <td>
+                        <span class="attention"><!--{$arrErr[$key2]}--></span>
+                        <input type="text" name="<!--{$key2}-->" value="<!--{$arrForm[$key2].value|h}-->" maxlength="<!--{$arrForm[$key2].length}-->" style="<!--{$arrErr[$key2]|sfGetErrorColor}-->;" size="15" class="box15"/>
+                    </td>
+                </tr>
             <!--{/if}-->
 
             <tr>
@@ -325,8 +370,8 @@
         <h2 id="order_products">
             受注商品情報
             <a class="btn-normal" href="javascript:;" name="recalculate" onclick="eccube.setModeAndSubmit('recalculate','anchor_key','order_products');">計算結果の確認</a>
-            <!--{if $arrForm.shipping_quantity.value <= 1}-->
-            <a class="btn-normal" href="javascript:;" name="add_product" onclick="eccube.openWindow('<!--{$smarty.const.ROOT_URLPATH}--><!--{$smarty.const.ADMIN_DIR}-->order/product_select.php?order_id=<!--{$arrForm.order_id.value|h}-->&amp;shipping_id=<!--{$top_shipping_id}-->', 'search', '615', '500', {menubar:'no'}); return false;">商品の追加</a>
+            <!--{if $tpl_shipping_quantity <= 1}-->
+                <a class="btn-normal" href="javascript:;" name="add_product" onclick="eccube.openWindow('<!--{$smarty.const.ROOT_URLPATH}--><!--{$smarty.const.ADMIN_DIR}-->order/product_select.php?order_id=<!--{$arrForm.order_id.value|h}-->&amp;shipping_id=<!--{$top_shipping_id}-->', 'search', '615', '500', {menubar:'no'}); return false;">商品の追加</a>
             <!--{/if}-->
         </h2>
 
@@ -345,56 +390,56 @@
             </tr>
             <!--{section name=cnt loop=$arrForm.quantity.value}-->
             <!--{assign var=product_index value="`$smarty.section.cnt.index`"}-->
-            <tr>
-                <td class="center">
-                    <!--{$arrForm.product_code.value[$product_index]|h}-->
-                    <input type="hidden" name="product_code[<!--{$product_index}-->]" value="<!--{$arrForm.product_code.value[$product_index]|h}-->" id="product_code_<!--{$product_index}-->" />
-                </td>
-                <td class="center">
-                    <!--{$arrForm.product_name.value[$product_index]|h}-->/<!--{$arrForm.classcategory_name1.value[$product_index]|default:"(なし)"|h}-->/<!--{$arrForm.classcategory_name2.value[$product_index]|default:"(なし)"|h}-->
-                    <input type="hidden" name="product_name[<!--{$product_index}-->]" value="<!--{$arrForm.product_name.value[$product_index]|h}-->" id="product_name_<!--{$product_index}-->" />
-                    <input type="hidden" name="classcategory_name1[<!--{$product_index}-->]" value="<!--{$arrForm.classcategory_name1.value[$product_index]|h}-->" id="classcategory_name1_<!--{$product_index}-->" />
-                    <input type="hidden" name="classcategory_name2[<!--{$product_index}-->]" value="<!--{$arrForm.classcategory_name2.value[$product_index]|h}-->" id="classcategory_name2_<!--{$product_index}-->" />
-                    <br />
-                    <!--{if $arrForm.shipping_quantity.value <= 1}-->
-                        <a class="btn-normal" href="javascript:;" name="change" onclick="eccube.openWindow('<!--{$smarty.const.ROOT_URLPATH}--><!--{$smarty.const.ADMIN_DIR}-->order/product_select.php?no=<!--{$product_index}-->&amp;order_id=<!--{$arrForm.order_id.value|h}-->&amp;shipping_id=<!--{$top_shipping_id}-->', 'search', '615', '500', {menubar:'no'}); return false;">変更</a>
-                        <!--{if count($arrForm.quantity.value) > 1}-->
-                            <a class="btn-normal" href="javascript:;" name="delete" onclick="eccube.setValue('delete_no', <!--{$product_index}-->, 'form1'); eccube.setValue('select_shipping_id', '<!--{$top_shipping_id}-->', 'form1'); eccube.setModeAndSubmit('delete_product','anchor_key','order_products'); return false;">削除</a>
+                <tr>
+                    <td class="center">
+                        <!--{$arrForm.product_code.value[$product_index]|h}-->
+                        <input type="hidden" name="product_code[<!--{$product_index}-->]" value="<!--{$arrForm.product_code.value[$product_index]|h}-->" id="product_code_<!--{$product_index}-->" />
+                    </td>
+                    <td class="center">
+                        <!--{$arrForm.product_name.value[$product_index]|h}-->/<!--{$arrForm.classcategory_name1.value[$product_index]|default:"(なし)"|h}-->/<!--{$arrForm.classcategory_name2.value[$product_index]|default:"(なし)"|h}-->
+                        <input type="hidden" name="product_name[<!--{$product_index}-->]" value="<!--{$arrForm.product_name.value[$product_index]|h}-->" id="product_name_<!--{$product_index}-->" />
+                        <input type="hidden" name="classcategory_name1[<!--{$product_index}-->]" value="<!--{$arrForm.classcategory_name1.value[$product_index]|h}-->" id="classcategory_name1_<!--{$product_index}-->" />
+                        <input type="hidden" name="classcategory_name2[<!--{$product_index}-->]" value="<!--{$arrForm.classcategory_name2.value[$product_index]|h}-->" id="classcategory_name2_<!--{$product_index}-->" />
+                        <br />
+                        <!--{if $tpl_shipping_quantity <= 1}-->
+                            <a class="btn-normal" href="javascript:;" name="change" onclick="eccube.openWindow('<!--{$smarty.const.ROOT_URLPATH}--><!--{$smarty.const.ADMIN_DIR}-->order/product_select.php?no=<!--{$product_index}-->&amp;order_id=<!--{$arrForm.order_id.value|h}-->&amp;shipping_id=<!--{$top_shipping_id}-->', 'search', '615', '500', {menubar:'no'}); return false;">変更</a>
+                            <!--{if count($arrForm.quantity.value) > 1}-->
+                                <a class="btn-normal" href="javascript:;" name="delete" onclick="eccube.setValue('delete_no', <!--{$product_index}-->, 'form1'); eccube.setValue('select_shipping_id', '<!--{$top_shipping_id}-->', 'form1'); eccube.setModeAndSubmit('delete_product','anchor_key','order_products'); return false;">削除</a>
+                            <!--{/if}-->
                         <!--{/if}-->
-                    <!--{/if}-->
-                <input type="hidden" name="product_type_id[<!--{$product_index}-->]" value="<!--{$arrForm.product_type_id.value[$product_index]|h}-->" id="product_type_id_<!--{$product_index}-->" />
-                <input type="hidden" name="product_id[<!--{$product_index}-->]" value="<!--{$arrForm.product_id.value[$product_index]|h}-->" id="product_id_<!--{$product_index}-->" />
-                <input type="hidden" name="product_class_id[<!--{$product_index}-->]" value="<!--{$arrForm.product_class_id.value[$product_index]|h}-->" id="product_class_id_<!--{$product_index}-->" />
-                <input type="hidden" name="point_rate[<!--{$product_index}-->]" value="<!--{$arrForm.point_rate.value[$product_index]|h}-->" id="point_rate_<!--{$product_index}-->" />
-                </td>
-                <td class="center">
-                    <!--{assign var=key value="price"}-->
-                    <span class="attention"><!--{$arrErr[$key][$product_index]}--></span>
-                    <input type="text" name="<!--{$key}-->[<!--{$product_index}-->]" value="<!--{$arrForm[$key].value[$product_index]|h}-->" size="6" class="box6" maxlength="<!--{$arrForm[$key].length}-->" style="<!--{$arrErr[$key][$product_index]|sfGetErrorColor}-->" id="<!--{$key}-->_<!--{$product_index}-->" /> 円
-                </td>
-                <td class="center">
-                    <!--{assign var=key value="quantity"}-->
-                    <span class="attention"><!--{$arrErr[$key][$product_index]}--></span>
-                    <input type="text" name="<!--{$key}-->[<!--{$product_index}-->]" value="<!--{$arrForm[$key].value[$product_index]|h}-->" size="3" class="box3" maxlength="<!--{$arrForm[$key].length}-->" style="<!--{$arrErr[$key][$product_index]|sfGetErrorColor}-->" id="<!--{$key}-->_<!--{$product_index}-->"  onChange="quantityCopyForSingleShipping('<!--{$product_index}-->')" />
-                </td>
-                <!--{assign var=price value=`$arrForm.price.value[$product_index]`}-->
-                <!--{assign var=quantity value=`$arrForm.quantity.value[$product_index]`}-->
-                <!--{assign var=tax_rate value=`$arrForm.tax_rate.value[$product_index]`}-->
-                <!--{assign var=tax_rule value=`$arrForm.tax_rule.value[$product_index]`}-->
-                <input type="hidden" name="tax_rule[<!--{$product_index}-->]" value="<!--{$arrForm.tax_rule.value[$product_index]|h}-->" id="tax_rule_<!--{$product_index}-->" />
-
-                <td class="right">
-                    <!--{$price|sfCalcIncTax:$tax_rate:$tax_rule|number_format}--> 円<br />
-                    <!--{assign var=key value="tax_rate"}-->
-                    <span class="attention"><!--{$arrErr[$key][$product_index]}--></span>
-                    税率<input type="text" name="<!--{$key}-->[<!--{$product_index}-->]" value="<!--{$arrForm[$key].value[$product_index]|h}-->" size="3" class="box3" maxlength="<!--{$arrForm[$key].length}-->" style="<!--{$arrErr[$key][$product_index]|sfGetErrorColor}-->" id="<!--{$key}-->_<!--{$product_index}-->" />%
-                </td>
-                <td class="right"><!--{$price|sfCalcIncTax:$tax_rate:$tax_rule|sfMultiply:$quantity|number_format}-->円</td>
-            </tr>
+                    <input type="hidden" name="product_type_id[<!--{$product_index}-->]" value="<!--{$arrForm.product_type_id.value[$product_index]|h}-->" id="product_type_id_<!--{$product_index}-->" />
+                    <input type="hidden" name="product_id[<!--{$product_index}-->]" value="<!--{$arrForm.product_id.value[$product_index]|h}-->" id="product_id_<!--{$product_index}-->" />
+                    <input type="hidden" name="product_class_id[<!--{$product_index}-->]" value="<!--{$arrForm.product_class_id.value[$product_index]|h}-->" id="product_class_id_<!--{$product_index}-->" />
+                    <input type="hidden" name="point_rate[<!--{$product_index}-->]" value="<!--{$arrForm.point_rate.value[$product_index]|h}-->" id="point_rate_<!--{$product_index}-->" />
+                    </td>
+                    <td class="center">
+                        <!--{assign var=key value="price"}-->
+                        <span class="attention"><!--{$arrErr[$key][$product_index]}--></span>
+                        <input type="text" name="<!--{$key}-->[<!--{$product_index}-->]" value="<!--{$arrForm[$key].value[$product_index]|h}-->" size="6" class="box6" maxlength="<!--{$arrForm[$key].length}-->" style="<!--{$arrErr[$key][$product_index]|sfGetErrorColor}-->" id="<!--{$key}-->_<!--{$product_index}-->" /> 円
+                    </td>
+                    <td class="center">
+                        <!--{assign var=key value="quantity"}-->
+                        <span class="attention"><!--{$arrErr[$key][$product_index]}--></span>
+                        <input type="text" name="<!--{$key}-->[<!--{$product_index}-->]" value="<!--{$arrForm[$key].value[$product_index]|h}-->" size="3" class="box3" maxlength="<!--{$arrForm[$key].length}-->" style="<!--{$arrErr[$key][$product_index]|sfGetErrorColor}-->" id="<!--{$key}-->_<!--{$product_index}-->"  onChange="quantityCopyForSingleShipping('<!--{$product_index}-->')" />
+                    </td>
+                    <!--{assign var=price value=`$arrForm.price.value[$product_index]`}-->
+                    <!--{assign var=quantity value=`$arrForm.quantity.value[$product_index]`}-->
+                    <!--{assign var=tax_rate value=`$arrForm.tax_rate.value[$product_index]`}-->
+                    <!--{assign var=tax_rule value=`$arrForm.tax_rule.value[$product_index]`}-->
+                    <input type="hidden" name="tax_rule[<!--{$product_index}-->]" value="<!--{$arrForm.tax_rule.value[$product_index]|h}-->" id="tax_rule_<!--{$product_index}-->" />
+    
+                    <td class="right">
+                        <!--{$price|sfCalcIncTax:$tax_rate:$tax_rule|number_format}--> 円<br />
+                        <!--{assign var=key value="tax_rate"}-->
+                        <span class="attention"><!--{$arrErr[$key][$product_index]}--></span>
+                        税率<input type="text" name="<!--{$key}-->[<!--{$product_index}-->]" value="<!--{$arrForm[$key].value[$product_index]|h}-->" size="3" class="box3" maxlength="<!--{$arrForm[$key].length}-->" style="<!--{$arrErr[$key][$product_index]|sfGetErrorColor}-->" id="<!--{$key}-->_<!--{$product_index}-->" />%
+                    </td>
+                    <td class="right"><!--{$price|sfCalcIncTax:$tax_rate:$tax_rule|sfMultiply:$quantity|number_format}-->円</td>
+                </tr>
             <!--{/section}-->
             <tr>
                 <th colspan="5" class="column right">小計</th>
-                <td class="right"><!--{$arrForm.subtotal.value|number_format}-->円</td>
+                <td class="right"><!--{$arrForm.subtotal.value|default:0|number_format}-->円</td>
             </tr>
             <tr>
                 <th colspan="5" class="column right">値引き</th>
@@ -427,14 +472,14 @@
                 <th colspan="5" class="column right">合計</th>
                 <td class="right">
                     <span class="attention"><!--{$arrErr.total}--></span>
-                    <!--{$arrForm.total.value|number_format}--> 円
+                    <!--{$arrForm.total.value|default:0|number_format}--> 円
                 </td>
             </tr>
             <tr>
                 <th colspan="5" class="column right">お支払い合計</th>
                 <td class="right">
                     <span class="attention"><!--{$arrErr.payment_total}--></span>
-                    <!--{$arrForm.payment_total.value|number_format}-->
+                    <!--{$arrForm.payment_total.value|default:0|number_format}-->
                     円
                 </td>
             </tr>
@@ -449,46 +494,44 @@
                     </td>
                 </tr>
                 <!--{if $arrForm.birth_point.value > 0}-->
-                <tr>
-                    <th colspan="5" class="column right">お誕生日ポイント</th>
-                    <td class="right">
-                        <!--{assign var=key value="birth_point"}-->
-                        <input type="hidden" name="<!--{$key}-->" value="<!--{$arrForm[$key].value|h}-->"/>
-                        <!--{$arrForm.birth_point.value|number_format}-->
-                        pt
-                    </td>
-                </tr>
+                    <tr>
+                        <th colspan="5" class="column right">お誕生日ポイント</th>
+                        <td class="right">
+                            <!--{assign var=key value="birth_point"}-->
+                            <input type="hidden" name="<!--{$key}-->" value="<!--{$arrForm[$key].value|h}-->"/>
+                            <!--{$arrForm.birth_point.value|number_format}-->
+                            pt
+                        </td>
+                    </tr>
                 <!--{/if}-->
                 <tr>
                     <th colspan="5" class="column right">加算ポイント</th>
                     <td class="right">
-                        <!--{$arrForm.add_point.value|number_format|default:0}-->
+                        <!--{$arrForm.add_point.value|default:0|number_format}-->
                         pt
                     </td>
                 </tr>
             <!--{/if}-->
         </table>
-        <!--{assign var=key value="shipping_quantity"}-->
-        <input type="hidden" name="<!--{$key}-->" value="<!--{$arrForm[$key].value|h}-->" />
         <!--▼お届け先情報ここから-->
         <a name="shipping"></a>
         <h2>お届け先情報
-        <!--{if $arrForm.shipping_quantity.value <= 1}-->
-            <a class="btn-normal" href="javascript:;" onclick="fnCopyFromOrderData();">お客様情報へお届けする</a>
-        <!--{/if}-->
-        <!--{if $smarty.const.USE_MULTIPLE_SHIPPING !== false}-->
-            <a class="btn-normal" href="javascript:;"  onclick="fnAppendShipping();">お届け先を新規追加</a>
-            <a class="btn-normal" href="javascript:;" onclick="fnMultiple();">複数のお届け先を指定する</a>
-        <!--{/if}-->
+            <!--{if $tpl_shipping_quantity <= 1}-->
+                <a class="btn-normal" href="javascript:;" onclick="fnCopyFromOrderData();">お客様情報へお届けする</a>
+            <!--{/if}-->
+            <!--{if $smarty.const.USE_MULTIPLE_SHIPPING !== false}-->
+                <a class="btn-normal" href="javascript:;"  onclick="fnAppendShipping();">お届け先を新規追加</a>
+                <a class="btn-normal" href="javascript:;" onclick="fnMultiple();">複数のお届け先を指定する</a>
+            <!--{/if}-->
         </h2>
 
         <!--{foreach name=shipping from=$arrAllShipping item=arrShipping key=shipping_index}-->
-            <!--{if $arrForm.shipping_quantity.value > 1}-->
+            <!--{if $tpl_shipping_quantity > 1}-->
                 <h3>お届け先<!--{$smarty.foreach.shipping.iteration}--></h3>
             <!--{/if}-->
             <!--{assign var=key value="shipping_id"}-->
             <input type="hidden" name="<!--{$key}-->[<!--{$shipping_index}-->]" value="<!--{$arrShipping[$key]|default:"0"|h}-->" id="<!--{$key}-->_<!--{$shipping_index}-->" />
-            <!--{if $arrForm.shipping_quantity.value > 1}-->
+            <!--{if $tpl_shipping_quantity > 1}-->
                 <h2>届け先商品情報&nbsp;<a class="btn-normal" href="javascript:;" name="add_product" onclick="eccube.openWindow('<!--{$smarty.const.ROOT_URLPATH}--><!--{$smarty.const.ADMIN_DIR}-->order/product_select.php?order_id=<!--{$arrForm.order_id.value|h}-->&shipping_id=<!--{$shipping_index}-->', 'search', '615', '500', {menubar:'no'}); return false;">商品の追加</a>
                 </h2>
 
@@ -544,20 +587,20 @@
 
                 <!--{section name=item loop=$arrShipping.shipment_product_class_id|@count}-->
                     <!--{assign var=item_index value="`$smarty.section.item.index`"}-->
-                            <!--{assign var=key value="shipment_product_class_id"}-->
-                            <input type="hidden" name="<!--{$key}-->[<!--{$shipping_index}-->][<!--{$item_index}-->]" value="<!--{$arrShipping[$key][$item_index]|h}-->" />
-                            <!--{assign var=key value="shipment_product_code"}-->
-                            <input type="hidden" name="<!--{$key}-->[<!--{$shipping_index}-->][<!--{$item_index}-->]" value="<!--{$arrShipping[$key][$item_index]|h}-->" />
-                            <!--{assign var=key1 value="shipment_product_name"}-->
-                            <!--{assign var=key2 value="shipment_classcategory_name1"}-->
-                            <!--{assign var=key3 value="shipment_classcategory_name2"}-->
-                            <input type="hidden" name="<!--{$key1}-->[<!--{$shipping_index}-->][<!--{$item_index}-->]" value="<!--{$arrShipping[$key1][$item_index]|h}-->" />
-                            <input type="hidden" name="<!--{$key2}-->[<!--{$shipping_index}-->][<!--{$item_index}-->]" value="<!--{$arrShipping[$key2][$item_index]|h}-->" />
-                            <input type="hidden" name="<!--{$key3}-->[<!--{$shipping_index}-->][<!--{$item_index}-->]" value="<!--{$arrShipping[$key3][$item_index]|h}-->" />
-                            <!--{assign var=key value="shipment_price"}-->
-                            <input type="hidden" name="<!--{$key}-->[<!--{$shipping_index}-->][<!--{$item_index}-->]" value="<!--{$arrShipping[$key][$item_index]|h}-->" />
-                            <!--{assign var=key value="shipment_quantity"}-->
-                            <input type="hidden" name="<!--{$key}-->[<!--{$shipping_index}-->][<!--{$item_index}-->]" value="<!--{$arrShipping[$key][$item_index]|h}-->" />
+                    <!--{assign var=key value="shipment_product_class_id"}-->
+                    <input type="hidden" name="<!--{$key}-->[<!--{$shipping_index}-->][<!--{$item_index}-->]" value="<!--{$arrShipping[$key][$item_index]|h}-->" />
+                    <!--{assign var=key value="shipment_product_code"}-->
+                    <input type="hidden" name="<!--{$key}-->[<!--{$shipping_index}-->][<!--{$item_index}-->]" value="<!--{$arrShipping[$key][$item_index]|h}-->" />
+                    <!--{assign var=key1 value="shipment_product_name"}-->
+                    <!--{assign var=key2 value="shipment_classcategory_name1"}-->
+                    <!--{assign var=key3 value="shipment_classcategory_name2"}-->
+                    <input type="hidden" name="<!--{$key1}-->[<!--{$shipping_index}-->][<!--{$item_index}-->]" value="<!--{$arrShipping[$key1][$item_index]|h}-->" />
+                    <input type="hidden" name="<!--{$key2}-->[<!--{$shipping_index}-->][<!--{$item_index}-->]" value="<!--{$arrShipping[$key2][$item_index]|h}-->" />
+                    <input type="hidden" name="<!--{$key3}-->[<!--{$shipping_index}-->][<!--{$item_index}-->]" value="<!--{$arrShipping[$key3][$item_index]|h}-->" />
+                    <!--{assign var=key value="shipment_price"}-->
+                    <input type="hidden" name="<!--{$key}-->[<!--{$shipping_index}-->][<!--{$item_index}-->]" value="<!--{$arrShipping[$key][$item_index]|h}-->" />
+                    <!--{assign var=key value="shipment_quantity"}-->
+                    <input type="hidden" name="<!--{$key}-->[<!--{$shipping_index}-->][<!--{$item_index}-->]" value="<!--{$arrShipping[$key][$item_index]|h}-->" />
                 <!--{/section}-->
             <!--{/if}-->
 

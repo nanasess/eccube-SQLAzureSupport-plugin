@@ -30,7 +30,7 @@ require_once CLASS_REALDIR . 'pages/admin/LC_Page_Admin_Home.php';
  *
  * @package Page
  * @author LOCKON CO.,LTD.
- * @version $Id: LC_Page_Admin_Home_Ex.php 22926 2013-06-29 16:24:23Z Seasoft $
+ * @version $Id$
  */
 class LC_Page_Admin_Home_Ex extends LC_Page_Admin_Home
 {
@@ -52,48 +52,5 @@ class LC_Page_Admin_Home_Ex extends LC_Page_Admin_Home
     function process()
     {
         parent::process();
-    }
-
-    // 2.13.2 向けにコミットの予定
-    /**
-     * 新規受付一覧の取得
-     *
-     * @return array 新規受付一覧配列
-     */
-    public function lfGetNewOrder()
-    {
-        $objQuery =& SC_Query_Ex::getSingletonInstance();
-
-        $objQuery->setOrder('order_detail_id');
-        $objQuery->setLimit(1);
-        $sql_product_name = $objQuery->getSqlWithLimit('product_name', 'dtb_order_detail', 'order_id = dtb_order.order_id');
-
-        $cols = <<< __EOS__
-            dtb_order.order_id,
-            dtb_order.customer_id,
-            dtb_order.order_name01 AS name01,
-            dtb_order.order_name02 AS name02,
-            dtb_order.total,
-            dtb_order.create_date,
-            ($sql_product_name) AS product_name,
-            (SELECT
-                pay.payment_method
-            FROM
-                dtb_payment AS pay
-            WHERE
-                dtb_order.payment_id = pay.payment_id
-            ) AS payment_method
-__EOS__;
-        $from = 'dtb_order';
-        $where = 'del_flg = 0 AND status <> ?';
-        $objQuery->setOrder('create_date DESC');
-        $objQuery->setLimit(10);
-        $arrNewOrder = $objQuery->select($cols, $from, $where, ORDER_CANCEL);
-
-        foreach ($arrNewOrder as $key => $val) {
-            $arrNewOrder[$key]['create_date'] = str_replace('-', '/', substr($val['create_date'], 0,19));
-        }
-
-        return $arrNewOrder;
     }
 }

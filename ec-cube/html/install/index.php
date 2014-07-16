@@ -22,7 +22,10 @@
  */
 // ▼require.php 相当
 // rtrim は PHP バージョン依存対策
-define('HTML_REALDIR', str_replace('\\','/',rtrim(realpath(rtrim(realpath(dirname(__FILE__)), '/\\') . '/../'), '/\\')) . '/');
+$GLOBALS['_realdir'] = rtrim(realpath(rtrim(realpath(dirname(__FILE__)), '/\\') . '/../'), '/\\') . '/';
+$GLOBALS['_realdir'] = str_replace('\\', '/', $GLOBALS['_realdir']);
+$GLOBALS['_realdir'] = str_replace('//', '/', $GLOBALS['_realdir']);
+define('HTML_REALDIR', $GLOBALS['_realdir']);
 
 require_once HTML_REALDIR . 'define.php';
 define('INSTALL_FUNCTION', true);
@@ -160,7 +163,6 @@ switch ($mode) {
             if (count($objPage->arrErr) == 0) {
                 $objPage->tpl_message .= '○：シーケンスの作成に成功しました。<br />';
             } else {
-            var_dump($objPage->arrErr);
                 $objPage->tpl_message .= '×：シーケンスの作成に失敗しました。<br />';
             }
         }
@@ -730,7 +732,7 @@ function lfInitWebParam($objWebParam)
 // DBパラメーター情報の初期化
 function lfInitDBParam($objDBParam)
 {
-    // EC-CUBEデフォルト値設定
+   // EC-CUBEデフォルト値設定
     $default_server = '127.0.0.1';
     $default_dbname = 'eccube_db';
     $default_user   = 'eccube_db_user';
@@ -745,7 +747,7 @@ function lfInitDBParam($objDBParam)
                 break;
             }
         }
-        
+
         // MySQLの文字列から分割して接続情報を取得する
         if(!empty($connect_str)) {
             // /* mysql://[ユーザー名]:[パスワード]@[ホスト名]/[データベース名];*/
@@ -757,7 +759,7 @@ function lfInitDBParam($objDBParam)
             $split_userpass    = explode(':', $split_userpass_wk[1]);
             $default_user      = $split_userpass[0];
             $default_pass      = $split_userpass[1];
-            
+
             // ホスト名, データベース名を取得
             $split_serverdb_wk = explode(';', $split_connect[1]);
             $split_serverdb    = explode('/', $split_serverdb_wk[0]);
@@ -918,7 +920,7 @@ function lfExecuteSQL($filepath, $arrDsn, $disp_err = true)
                         // エラー文を取得する
                         preg_match('/\[(.*)\]/', $ret->userinfo, $arrKey);
                         $arrErr['all'] .= $arrKey[0] . '<br />';
-                        $arrErr['all'] .= '>> テーブル構成の変更に失敗しました。<br />' ;
+                        $arrErr['all'] .= '>> テーブル構成の変更に失敗しました。<br />';
                         GC_Utils_Ex::gfPrintLog($ret->userinfo, INSTALL_LOG);
                         break;
                     } else {
@@ -947,16 +949,19 @@ function lfDropSequence($arrSequences, $arrDsn)
 
     // Debugモード指定
     $options['debug'] = PEAR_DB_DEBUG;
-    $objDB = MDB2::connect($arrDsn, $options);
-    $objManager =& $objDB->loadModule('Manager');
 
     // 接続エラー
     if (!PEAR::isError($objDB)) {
+        $objDB = MDB2::connect($arrDsn, $options);
+        $objManager =& $objDB->loadModule('Manager');
         $exists = $objManager->listSequences();
+        $objDB->disconnect();
         foreach ($arrSequences as $seq) {
             SC_Utils::sfFlush(true);
             $seq_name = $seq[0] . '_' . $seq[1];
             if (in_array($seq_name, $exists)) {
+                $objDB = MDB2::connect($arrDsn, $options);
+                $objManager =& $objDB->loadModule('Manager');
                 $result = $objManager->dropSequence($seq_name);
                 if (PEAR::isError($result)) {
                     $arrErr['all'] = '>> ' . $result->message . '<br />';
@@ -964,6 +969,7 @@ function lfDropSequence($arrSequences, $arrDsn)
                 } else {
                     GC_Utils_Ex::gfPrintLog('OK:' . $seq_name, INSTALL_LOG);
                 }
+                $objDB->disconnect();
             }
         }
     } else {
@@ -986,20 +992,14 @@ function lfCreateSequence($arrSequences, $arrDsn)
 
     // Debugモード指定
     $options['debug'] = PEAR_DB_DEBUG;
+    $objDB = MDB2::connect($arrDsn, $options);
+    $objManager =& $objDB->loadModule('Manager');
 
     // 接続エラー
     if (!PEAR::isError($objDB)) {
-
-        $objDB = MDB2::connect($arrDsn, $options);
-        $objManager =& $objDB->loadModule('Manager');
         $exists = $objManager->listSequences();
-        $objDB->disconnect();
-
         foreach ($arrSequences as $seq) {
             SC_Utils::sfFlush(true);
-            $objDB = MDB2::connect($arrDsn, $options);
-            $objManager =& $objDB->loadModule('Manager');
-
             $res = $objDB->query('SELECT max(' . $seq[1] . ') FROM ' . $seq[0]);
             if (PEAR::isError($res)) {
                 $arrErr['all'] = '>> ' . $res->userinfo . '<br />';
@@ -1016,7 +1016,6 @@ function lfCreateSequence($arrSequences, $arrDsn)
             } else {
                 GC_Utils_Ex::gfPrintLog('OK:' . $seq_name, INSTALL_LOG);
             }
-            $objDB->disconnect();
         }
     } else {
         $arrErr['all'] = '>> ' . $objDB->message;
@@ -1085,7 +1084,6 @@ function lfMakeConfigFile()
 
     // FIXME 変数出力はエスケープすべき
     $config_data = "<?php\n"
-                 . "define('ECCUBE_INSTALL', 'ON');\n"
                  . "define('ADMIN_DIR', '"             . $objWebParam->getValue('admin_dir') . "/');\n"
                  . "define('ADMIN_FORCE_SSL', "        . $force_ssl . ");\n"
                  . "define('ADMIN_ALLOW_HOSTS', '"     . serialize($allow_hosts) . "');\n"

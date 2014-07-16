@@ -25,7 +25,7 @@
  * Http コンテンツ出力を制御するクラス.
  *
  * @author Ryuichi Tokugami
- * @version $Id: SC_Display.php 23124 2013-08-24 14:33:52Z kimoto $
+ * @version $Id$
  */
 class SC_Display
 {

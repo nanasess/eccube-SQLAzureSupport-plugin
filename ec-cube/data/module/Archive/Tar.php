@@ -35,7 +35,7 @@
  * @author    Vincent Blavet <vincent@phpconcept.net>
  * @copyright 1997-2010 The Authors
  * @license   http://www.opensource.org/licenses/bsd-license.php New BSD License
- * @version   CVS: $Id: Tar.php 22964 2013-07-17 02:56:08Z kimoto $
+ * @version   CVS: $Id$
  * @link      http://pear.php.net/package/Archive_Tar
  */
 

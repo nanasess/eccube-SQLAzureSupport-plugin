@@ -26,7 +26,7 @@
  *
  * @package Helper
  * @author LOCKON CO.,LTD.
- * @version $Id: SC_Helper_Mobile.php 23124 2013-08-24 14:33:52Z kimoto $
+ * @version $Id$
  */
 class SC_Helper_Mobile
 {

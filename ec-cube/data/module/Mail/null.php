@@ -39,7 +39,7 @@
  * @author      Phil Kernick <philk@rotfl.com.au>
  * @copyright   2010 Phil Kernick
  * @license     http://opensource.org/licenses/bsd-license.php New BSD License
- * @version     CVS: $Id: null.php 23141 2013-08-28 04:26:44Z m_uehara $
+ * @version     CVS: $Id$
  * @link        http://pear.php.net/package/Mail/
  */
 
@@ -47,7 +47,7 @@
  * Null implementation of the PEAR Mail:: interface.
  * @access public
  * @package Mail
- * @version $Revision: 23141 $
+ * @version $Revision$
  */
 class Mail_null extends Mail {
 

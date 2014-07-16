@@ -25,7 +25,7 @@
  * アプリケーションの初期設定クラス.
  *
  * @author LOCKON CO.,LTD.
- * @version $Id: SC_Initial.php 23284 2013-11-18 08:03:10Z m_uehara $
+ * @version $Id$
  */
 class SC_Initial
 {
@@ -35,7 +35,7 @@ class SC_Initial
     public function __construct()
     {
         /** EC-CUBEのバージョン */
-        define('ECCUBE_VERSION', '2.13.1');
+        define('ECCUBE_VERSION', '2.13.2');
     }
 
     /**
@@ -154,9 +154,7 @@ class SC_Initial
     public function defineDirectoryIndex()
     {
         // DirectoryIndex の実ファイル名
-        if (!defined('DIR_INDEX_FILE')) {
-            define('DIR_INDEX_FILE', 'index.php');
-        }
+        SC_Initial_Ex::defineIfNotDefined('DIR_INDEX_FILE', 'index.php');
 
         $useFilenameDirIndex = is_bool(USE_FILENAME_DIR_INDEX)
             ? USE_FILENAME_DIR_INDEX

@@ -27,8 +27,8 @@
 
 ■ご請求金額
 ご注文番号：<!--{$arrOrder.order_id}-->
-お支払合計：￥<!--{$arrOrder.payment_total|number_format|default:0}-->
-ご決済方法：<!--{$arrOrder.payment_method}-->
+お支払い合計：￥<!--{$arrOrder.payment_total|number_format|default:0}-->
+お支払い方法：<!--{$arrOrder.payment_method}-->
 メッセージ：<!--{$Message_tmp}-->
 
 <!--{if $arrOther.title.value}-->
@@ -100,8 +100,7 @@
 <!--{foreach item=item name=item from=$shipping.shipment_item}-->
 商品コード：<!--{$item.product_code}-->
 商品名：<!--{$item.product_name}--> <!--{$item.classcategory_name1}--> <!--{$item.classcategory_name2}-->
-<!--{assign var=shipping_product value=$item.productsClass}-->
-単価：￥<!--{$shipping_product.price02_inctax|number_format}-->
+単価：￥<!--{$item.price|sfCalcIncTax:$item.tax_rate:$item.tax_rule|number_format}-->
 数量：<!--{$item.quantity|number_format}-->
 
 <!--{/foreach}-->

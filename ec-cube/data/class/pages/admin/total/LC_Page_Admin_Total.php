@@ -27,7 +27,7 @@ require_once CLASS_EX_REALDIR . 'page_extends/admin/LC_Page_Admin_Ex.php';
  *
  * @package Page
  * @author LOCKON CO.,LTD.
- * @version $Id: LC_Page_Admin_Total.php 23124 2013-08-24 14:33:52Z kimoto $
+ * @version $Id$
  */
 class LC_Page_Admin_Total extends LC_Page_Admin_Ex
 {
@@ -554,14 +554,8 @@ __EOS__;
 
         $from = 'dtb_order_detail JOIN dtb_order ON dtb_order_detail.order_id = dtb_order.order_id';
 
-        /*
-        if ($mode != 'csv') {
-            $sql.= 'LIMIT ' . PRODUCTS_TOTAL_MAX;
-        }*/
-
-        // 要index
+        // FIXME グループを副問い合わせにして無駄な処理を減らす
         $objQuery->setGroupBy('product_id, product_name, product_code, price');
-        //$objQuery->setGroupBy('product_id');
         $objQuery->setOrder('total DESC');
         $arrTotalResults = $objQuery->select($col, $from, $where, $arrWhereVal);
 
@@ -658,7 +652,7 @@ __EOS__;
             case 'month':
                 $xtitle = '(月別)';
                 $ytitle = '(売上合計)';
-                $format = '%m';
+                $format = '%Y-%m';
                 break;
             case 'year':
                 $xtitle = '(年別)';
@@ -731,7 +725,7 @@ __EOS__;
     {
         switch ($type) {
             case 'month':
-                $format        = 'm';
+                $format        = 'Y-m';
                 break;
             case 'year':
                 $format        = 'Y';

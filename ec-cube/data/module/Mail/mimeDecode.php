@@ -52,7 +52,7 @@
  * @author     Sean Coates <sean@php.net>
  * @copyright  2003-2006 PEAR <pear-group@php.net>
  * @license    http://www.opensource.org/licenses/bsd-license.php BSD License
- * @version    CVS: $Id: mimeDecode.php 20116 2011-02-09 01:36:01Z nanasess $
+ * @version    CVS: $Id$
  * @link       http://pear.php.net/package/Mail_mime
  */
 

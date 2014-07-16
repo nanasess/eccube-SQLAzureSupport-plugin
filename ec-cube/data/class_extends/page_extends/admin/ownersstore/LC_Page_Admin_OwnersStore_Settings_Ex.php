@@ -30,7 +30,7 @@ require_once CLASS_REALDIR . 'pages/admin/ownersstore/LC_Page_Admin_OwnersStore_
  *
  * @package Page
  * @author LOCKON CO.,LTD.
- * @version $Id: LC_Page_Admin_OwnersStore_Settings_Ex.php 22926 2013-06-29 16:24:23Z Seasoft $
+ * @version $Id$
  */
 class LC_Page_Admin_OwnersStore_Settings_Ex extends LC_Page_Admin_OwnersStore_Settings
 {

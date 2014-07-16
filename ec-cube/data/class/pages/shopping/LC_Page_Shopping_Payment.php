@@ -28,16 +28,10 @@ require_once CLASS_EX_REALDIR . 'page_extends/LC_Page_Ex.php';
  *
  * @package Page
  * @author LOCKON CO.,LTD.
- * @version $Id: LC_Page_Shopping_Payment.php 23256 2013-10-28 00:17:34Z Seasoft $
+ * @version $Id$
  */
 class LC_Page_Shopping_Payment extends LC_Page_Ex
 {
-    /** フォームパラメーターの配列 */
-    public $objFormParam;
-
-    /** 会員情報のインスタンス */
-    public $objCustomer;
-
     /**
      * Page を初期化する.
      *
@@ -94,6 +88,7 @@ class LC_Page_Shopping_Payment extends LC_Page_Ex
         // 配送業者を取得
         $this->arrDeliv = $objDelivery->getList($cart_key);
         $this->is_single_deliv = $this->isSingleDeliv($this->arrDeliv);
+        $this->is_download = ($this->cartKey == PRODUCT_TYPE_DOWNLOAD);
 
         // 会員情報の取得
         if ($objCustomer->isLoginSuccess(true)) {
@@ -160,7 +155,7 @@ class LC_Page_Shopping_Payment extends LC_Page_Ex
             // 登録処理
             case 'confirm':
                 // パラメーター情報の初期化
-                $this->setFormParams($objFormParam, $_POST, false, $this->arrShipping);
+                $this->setFormParams($objFormParam, $_POST, $this->is_download, $this->arrShipping);
 
                 $deliv_id = $objFormParam->getValue('deliv_id');
                 $arrSelectedDeliv = $this->getSelectedDeliv($objCartSess, $deliv_id);
@@ -209,7 +204,7 @@ class LC_Page_Shopping_Payment extends LC_Page_Ex
 
             default:
                 // FIXME 前のページから戻ってきた場合は別パラメーター(mode)で処理分岐する必要があるのかもしれない
-                $this->setFormParams($objFormParam, $arrOrderTemp, false, $this->arrShipping);
+                $this->setFormParams($objFormParam, $arrOrderTemp, $this->is_download, $this->arrShipping);
 
                 if (!$this->is_single_deliv) {
                     $deliv_id = $objFormParam->getValue('deliv_id');
@@ -313,11 +308,11 @@ class LC_Page_Shopping_Payment extends LC_Page_Ex
             if (($arrForm['use_point'] * POINT_VALUE) > $subtotal) {
                 $objErr->arrErr['use_point'] = '※ ご利用ポイントがご購入金額を超えています。<br>';
             }
-            // ポイント差し引き後の決済方法チェック
+            // ポイント差し引き後のお支払い方法チェック
             $objPayment = new SC_Helper_Payment_Ex();
             $arrPayments = $objPayment->get($arrForm['payment_id']);
             if ($arrPayments['rule_max'] > $subtotal - $arrForm['use_point'] * POINT_VALUE) {
-                $objErr->arrErr['use_point'] = '※ 選択した支払方法では、ポイントは'.($subtotal - $arrPayments['rule_max']).'ポイントまでご利用いただけます。<br>';
+                $objErr->arrErr['use_point'] = '※ 選択したお支払い方法では、ポイントは'.($subtotal - $arrPayments['rule_max']).'ポイントまでご利用いただけます。<br>';
             }
         }
 
@@ -332,8 +327,10 @@ class LC_Page_Shopping_Payment extends LC_Page_Ex
      */
     public function saveShippings(&$objFormParam, $arrDelivTime)
     {
-        $deliv_id = $objFormParam->getValue('deliv_id');
+        // ダウンロード商品の場合は配送先が存在しない
+        if ($this->is_download) return;
 
+        $deliv_id = $objFormParam->getValue('deliv_id');
         /* TODO
          * SC_Purchase::getShippingTemp() で取得して,
          * リファレンスで代入すると, セッションに添字を追加できない？

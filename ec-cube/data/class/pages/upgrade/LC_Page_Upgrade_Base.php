@@ -8,7 +8,7 @@ require_once CLASS_REALDIR . 'pages/upgrade/helper/LC_Upgrade_Helper_Json.php';
  *
  * @package Page
  * @author LOCKON CO.,LTD.
- * @version $Id: LC_Page_Upgrade_Base.php 23141 2013-08-28 04:26:44Z m_uehara $
+ * @version $Id$
  */
 class LC_Page_Upgrade_Base extends LC_Page_Ex
 {

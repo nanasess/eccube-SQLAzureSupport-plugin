@@ -28,7 +28,7 @@ require_once CLASS_EX_REALDIR . 'page_extends/admin/LC_Page_Admin_Ex.php';
  *
  * @package Page
  * @author LOCKON CO.,LTD.
- * @version $Id: LC_Page_Admin_Basis_PaymentInput.php 23124 2013-08-24 14:33:52Z kimoto $
+ * @version $Id$
  */
 class LC_Page_Admin_Basis_PaymentInput extends LC_Page_Admin_Ex
 {
@@ -74,7 +74,7 @@ class LC_Page_Admin_Basis_PaymentInput extends LC_Page_Admin_Ex
         $this->lfInitParam($mode, $objFormParam);
 
         // ファイル管理クラス
-        $this->objUpFile = new SC_UploadFile(IMAGE_TEMP_REALDIR, IMAGE_SAVE_REALDIR);
+        $this->objUpFile = new SC_UploadFile_Ex(IMAGE_TEMP_REALDIR, IMAGE_SAVE_REALDIR);
         // ファイル情報の初期化
         $this->objUpFile = $this->lfInitFile();
         // Hiddenからのデータを引き継ぐ

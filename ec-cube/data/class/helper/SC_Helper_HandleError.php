@@ -27,7 +27,7 @@
  * 依存するクラスに構文エラーがあると、捕捉できない。よって、依存は最小に留めること。
  * 現状 GC_Utils_Ex(GC_Utils) に依存しているため、その中で構文エラーは捕捉できない。
  * @package Helper
- * @version $Id: SC_Helper_HandleError.php 23124 2013-08-24 14:33:52Z kimoto $
+ * @version $Id$
  */
 class SC_Helper_HandleError
 {

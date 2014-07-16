@@ -33,7 +33,7 @@
  * @author     KUBO Atsuhiro <kubo@iteman.jp>
  * @copyright  2003-2009 KUBO Atsuhiro <kubo@iteman.jp>
  * @license    http://www.opensource.org/licenses/bsd-license.php  New BSD License
- * @version    CVS: $Id: DoCoMo.php 20116 2011-02-09 01:36:01Z nanasess $
+ * @version    CVS: $Id$
  * @link       http://www.nttdocomo.co.jp/service/imode/make/content/spec/useragent/index.html
  * @link       http://www.nttdocomo.co.jp/service/imode/make/content/browser/browser2/useragent/index.html
  * @since      File available since Release 0.1

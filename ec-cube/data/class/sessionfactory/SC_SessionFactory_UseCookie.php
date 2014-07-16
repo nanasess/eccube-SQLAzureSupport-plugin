@@ -30,7 +30,7 @@
  *
  * @package SC_SessionFactory
  * @author LOCKON CO.,LTD.
- * @version $Id: SC_SessionFactory_UseCookie.php 23124 2013-08-24 14:33:52Z kimoto $
+ * @version $Id$
  */
 class SC_SessionFactory_UseCookie extends SC_SessionFactory_Ex
 {

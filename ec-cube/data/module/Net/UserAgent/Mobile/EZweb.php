@@ -33,7 +33,7 @@
  * @author     KUBO Atsuhiro <kubo@iteman.jp>
  * @copyright  2003-2009 KUBO Atsuhiro <kubo@iteman.jp>
  * @license    http://www.opensource.org/licenses/bsd-license.php  New BSD License
- * @version    CVS: $Id: EZweb.php 20116 2011-02-09 01:36:01Z nanasess $
+ * @version    CVS: $Id$
  * @link       http://www.au.kddi.com/ezfactory/tec/spec/4_4.html
  * @link       http://www.au.kddi.com/ezfactory/tec/spec/new_win/ezkishu.html
  * @since      File available since Release 0.1.0

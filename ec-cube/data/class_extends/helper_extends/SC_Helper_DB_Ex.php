@@ -30,24 +30,8 @@ require_once CLASS_REALDIR . 'helper/SC_Helper_DB.php';
  *
  * @package Helper
  * @author LOCKON CO.,LTD.
- * @version $Id: SC_Helper_DB_Ex.php 22856 2013-06-08 07:35:27Z Seasoft $
+ * @version $Id$
  */
 class SC_Helper_DB_Ex extends SC_Helper_DB
 {
-    /**
-     * メーカー商品数数の登録を行う.
-     *
-     * @param SC_Query $objQuery SC_Query インスタンス
-     * @return void
-     */
-    function sfCountMaker($objQuery) {
-        if (DB_TYPE != 'sqlsrv') {
-            parent::sfCountMaker($objQuery);
-        }
-
-        /* TODO SQL Azure で INSERT INTO  SELECT をサポートしていないため未対応 */
-        /* メソッド自体がいらないけど、歴史上のながれでのこしておく */
-        parent::sfCountMaker($objQuery);
-
-    }
 }

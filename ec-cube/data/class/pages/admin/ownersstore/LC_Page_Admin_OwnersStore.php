@@ -28,7 +28,7 @@ require_once CLASS_EX_REALDIR . 'page_extends/admin/LC_Page_Admin_Ex.php';
  *
  * @package Page
  * @author LOCKON CO.,LTD.
- * @version $Id: LC_Page_Admin_OwnersStore.php 23124 2013-08-24 14:33:52Z kimoto $
+ * @version $Id$
  */
 class LC_Page_Admin_OwnersStore extends LC_Page_Admin_Ex
 {
@@ -555,7 +555,7 @@ class LC_Page_Admin_OwnersStore extends LC_Page_Admin_Ex
         $objErr->doFunc(array('PLUGIN_NAME', 'PLUGIN_NAME', STEXT_LEN), array('MAX_LENGTH_CHECK'));
         $objErr->doFunc(array('CLASS_NAME', 'CLASS_NAME', STEXT_LEN), array('MAX_LENGTH_CHECK','GRAPH_CHECK'));
         $objErr->doFunc(array('PLUGIN_VERSION', 'PLUGIN_VERSION', STEXT_LEN), array('MAX_LENGTH_CHECK'));
-        $objErr->doFunc(array('COMPLIANT_VERSION', 'COMPLIANT_VERSION', STEXT_LEN), array('MAX_LENGTH_CHECK'));
+        $objErr->doFunc(array('COMPLIANT_VERSION', 'COMPLIANT_VERSION', LTEXT_LEN), array('MAX_LENGTH_CHECK'));
         $objErr->doFunc(array('AUTHOR', 'AUTHOR', STEXT_LEN), array('MAX_LENGTH_CHECK'));
         $objErr->doFunc(array('DESCRIPTION', 'DESCRIPTION', MTEXT_LEN), array('MAX_LENGTH_CHECK'));
         if (isset($arrPluginInfo['PLUGIN_SITE_URL'])) {
@@ -932,12 +932,9 @@ class LC_Page_Admin_OwnersStore extends LC_Page_Admin_Ex
         $dir = dirname($path);
         $file_name = basename($path);
 
-        // 拡張子を切り取る
-        $unpacking_name = preg_replace("/(\.tar|\.tar\.gz)$/", '', $file_name);
-
         // 指定されたフォルダ内に解凍する
-        $result = $tar->extractModify($dir. '/', $unpacking_name);
-        GC_Utils_Ex::gfPrintLog('解凍：' . $dir.'/'.$file_name.'->'.$dir.'/'.$unpacking_name);
+        $result = $tar->extractModify($dir. '/');
+        GC_Utils_Ex::gfPrintLog("解凍: $path -> $dir");
         // 解凍元のファイルを削除する.
         unlink($path);
 

@@ -28,7 +28,7 @@ require_once CLASS_EX_REALDIR . 'page_extends/LC_Page_Ex.php';
  *
  * @package Page
  * @author LOCKON CO.,LTD.
- * @version $Id: LC_Page_Shopping_Multiple.php 23230 2013-09-19 02:49:03Z m_uehara $
+ * @version $Id$
  */
 class LC_Page_Shopping_Multiple extends LC_Page_Ex
 {
@@ -301,7 +301,13 @@ class LC_Page_Shopping_Multiple extends LC_Page_Ex
 
             if ($objCustomer->isLoginSuccess(true)) {
                 if ($other_deliv_id != 0) {
-                    $otherDeliv = $objAddress->getAddress($other_deliv_id);
+                    $otherDeliv = $objAddress->getAddress($other_deliv_id, $objCustomer->getValue('customer_id'));
+
+                    if (!$otherDeliv) {
+                        SC_Utils_Ex::sfDispSiteError(FREE_ERROR_MSG, '', false, "入力値が不正です。<br />正しい値を入力してください。");
+                        SC_Response_Ex::actionExit();
+                    }
+
                     foreach ($otherDeliv as $key => $val) {
                         $arrValues[$other_deliv_id]['shipping_' . $key] = $val;
                     }

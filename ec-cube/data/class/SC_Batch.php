@@ -26,7 +26,7 @@
  *
  * @package Page
  * @author LOCKON CO.,LTD.
- * @version $Id: SC_Batch.php 23124 2013-08-24 14:33:52Z kimoto $
+ * @version $Id$
  */
 class SC_Batch
 {

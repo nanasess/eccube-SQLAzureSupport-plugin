@@ -25,7 +25,7 @@
  * カートセッション管理クラス
  *
  * @author LOCKON CO.,LTD.
- * @version $Id: SC_CartSession.php 23170 2013-08-30 09:47:51Z m_uehara $
+ * @version $Id$
  */
 class SC_CartSession
 {

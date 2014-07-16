@@ -26,7 +26,7 @@
  *
  * @package Page
  * @author LOCKON CO.,LTD.
- * @version $Id: SC_Helper_FileManager.php 23124 2013-08-24 14:33:52Z kimoto $
+ * @version $Id$
  */
 class SC_Helper_FileManager
 {
@@ -263,10 +263,11 @@ class SC_Helper_FileManager
     public function sfDownloadFile($file)
     {
         // ファイルの場合はダウンロードさせる
-        Header('Content-disposition: attachment; filename='.basename($file));
-        Header('Content-type: application/octet-stream; name='.basename($file));
-        Header('Cache-Control: ');
-        Header('Pragma: ');
+        $file_name = basename($file);
+        header('Content-disposition: attachment; filename=' . $file_name);
+        header('Content-type: application/octet-stream; name=' . $file_name);
+        header('Cache-Control: ');
+        header('Pragma: ');
         echo ($this->sfReadFile($file));
     }
 

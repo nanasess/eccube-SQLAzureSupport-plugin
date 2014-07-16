@@ -28,7 +28,7 @@ require_once CLASS_EX_REALDIR . 'page_extends/admin/LC_Page_Admin_Ex.php';
  *
  * @package Page
  * @author LOCKON CO.,LTD.
- * @version $Id: LC_Page_Admin_Products_Maker.php 23124 2013-08-24 14:33:52Z kimoto $
+ * @version $Id$
  */
 class LC_Page_Admin_Products_Maker extends LC_Page_Admin_Ex
 {
@@ -99,12 +99,12 @@ class LC_Page_Admin_Products_Maker extends LC_Page_Admin_Ex
                     $res_maker_id = $this->doRegist($maker_id, $arrParam, $objMaker);
                     if ($res_maker_id !== FALSE) {
                         // 完了メッセージ
-                        $maker_id = $res_maker_id;
                         $this->tpl_onload = "alert('登録が完了しました。');";
+                        SC_Response_Ex::reload();
+                    } else {
+                        $this->arrErr['maker_id'] = '登録に失敗しました。';
                     }
                 }
-                // POSTデータを引き継ぐ
-                $this->tpl_maker_id = $maker_id;
                 break;
 
             // 編集前処理

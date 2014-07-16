@@ -28,7 +28,7 @@ require_once CLASS_EX_REALDIR . 'page_extends/admin/products/LC_Page_Admin_Produ
  *
  * @package Page
  * @author LOCKON CO.,LTD.
- * @version $Id: LC_Page_Admin_Products_Product.php 23272 2013-11-18 02:19:16Z michael_nelson $
+ * @version $Id$
  */
 class LC_Page_Admin_Products_Product extends LC_Page_Admin_Products_Ex
 {
@@ -1123,7 +1123,7 @@ __EOF__;
                 $this->lfUpdateProductClass($arrList);
             } else {
                 // 規格なし商品（商品規格テーブルの更新）
-                $this->lfInsertDummyProductClass($arrList);
+                $arrList['product_class_id'] = $this->lfInsertDummyProductClass($arrList);
             }
         }
 
@@ -1174,6 +1174,7 @@ __EOF__;
             // UPDATEの実行
             $objQuery->update('dtb_products_class', $sqlval, 'product_class_id = ?', array($sqlval['product_class_id']));
         }
+        return $sqlval['product_class_id'];
     }
 
     /**

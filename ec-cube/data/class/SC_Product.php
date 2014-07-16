@@ -26,7 +26,7 @@
  *
  * @author LOCKON CO.,LTD.
  * @author Kentaro Ohkouchi
- * @version $Id: SC_Product.php 23230 2013-09-19 02:49:03Z m_uehara $
+ * @version $Id$
  */
 class SC_Product
 {
@@ -81,17 +81,11 @@ class SC_Product
             $o_col = $this->arrOrderData['col'];
             $o_table = $this->arrOrderData['table'];
             $o_order = $this->arrOrderData['order'];
-            $order = <<< __EOS__
-                    (
-                        SELECT $o_col
-                        FROM
-                            $o_table as T2
-                        WHERE T2.product_id = alldtl.product_id
-                        ORDER BY T2.$o_col $o_order
-                        LIMIT 1
-                    ) $o_order, product_id
-__EOS__;
-            $objQuery->setOrder($order);
+            $objQuery->setOrder("T2.$o_col $o_order");
+            $sub_sql = $objQuery->getSql($o_col, "$o_table AS T2", 'T2.product_id = alldtl.product_id');
+            $sub_sql = $objQuery->dbFactory->addLimitOffset($sub_sql, 1);
+
+            $objQuery->setOrder("($sub_sql) $o_order, product_id");
         }
         $arrReturn = $objQuery->getCol('alldtl.product_id', $table, '', $arrVal);
 

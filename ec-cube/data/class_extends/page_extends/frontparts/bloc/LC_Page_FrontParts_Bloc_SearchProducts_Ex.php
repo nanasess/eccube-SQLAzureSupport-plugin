@@ -30,7 +30,7 @@ require_once CLASS_REALDIR . 'pages/frontparts/bloc/LC_Page_FrontParts_Bloc_Sear
  *
  * @package Page
  * @author LOCKON CO.,LTD.
- * @version $Id: LC_Page_FrontParts_Bloc_SearchProducts_Ex.php 22926 2013-06-29 16:24:23Z Seasoft $
+ * @version $Id$
  */
 class LC_Page_FrontParts_Bloc_SearchProducts_Ex extends LC_Page_FrontParts_Bloc_SearchProducts
 {

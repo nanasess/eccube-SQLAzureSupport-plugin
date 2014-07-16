@@ -30,7 +30,7 @@ require_once CLASS_REALDIR . 'helper/SC_Helper_Plugin.php';
  *
  * @package Page
  * @author LOCKON CO.,LTD.
- * @version $Id: SC_Helper_Plugin_Ex.php 22856 2013-06-08 07:35:27Z Seasoft $
+ * @version $Id$
  */
 class SC_Helper_Plugin_Ex extends SC_Helper_Plugin
 {

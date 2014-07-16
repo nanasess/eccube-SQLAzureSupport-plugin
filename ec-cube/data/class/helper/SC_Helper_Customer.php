@@ -27,7 +27,7 @@
  *
  * @package Helper
  * @author Hirokazu Fukuda
- * @version $Id: SC_Helper_Customer.php 23230 2013-09-19 02:49:03Z m_uehara $
+ * @version $Id$
  */
 class SC_Helper_Customer
 {
@@ -376,7 +376,7 @@ class SC_Helper_Customer
     }
 
     /**
-     * 会員/顧客共通
+     * 会員・顧客・お届け先共通
      *
      * @param SC_FormParam $objFormParam SC_FormParam インスタンス
      * @param string       $prefix       キー名にprefixを付ける場合に指定
@@ -430,10 +430,9 @@ class SC_Helper_Customer
         $objFormParam->addParam('パスワード確認用の質問', $prefix . 'reminder', STEXT_LEN, 'n', array('EXIST_CHECK', 'NUM_CHECK', 'MAX_LENGTH_CHECK'));
         $objFormParam->addParam('性別', $prefix . 'sex', INT_LEN, 'n', array('EXIST_CHECK', 'NUM_CHECK', 'MAX_LENGTH_CHECK'));
         $objFormParam->addParam('職業', $prefix . 'job', INT_LEN, 'n', array('NUM_CHECK', 'MAX_LENGTH_CHECK'));
-        // XXX: year,month,dayはprefix付けないのが今のところ共通
-        $objFormParam->addParam('年', 'year', 4, 'n', array('NUM_CHECK', 'MAX_LENGTH_CHECK'), '', false);
-        $objFormParam->addParam('月', 'month', 2, 'n', array('NUM_CHECK', 'MAX_LENGTH_CHECK'), '', false);
-        $objFormParam->addParam('日', 'day', 2, 'n', array('NUM_CHECK', 'MAX_LENGTH_CHECK'), '', false);
+        $objFormParam->addParam('年', $prefix . 'year', 4, 'n', array('NUM_CHECK', 'MAX_LENGTH_CHECK'), '', false);
+        $objFormParam->addParam('月', $prefix . 'month', 2, 'n', array('NUM_CHECK', 'MAX_LENGTH_CHECK'), '', false);
+        $objFormParam->addParam('日', $prefix . 'day', 2, 'n', array('NUM_CHECK', 'MAX_LENGTH_CHECK'), '', false);
 
         $objFormParam->addParam('メールマガジン', $prefix . 'mailmaga_flg', INT_LEN, 'n', array('EXIST_CHECK', 'NUM_CHECK', 'MAX_LENGTH_CHECK'));
 
