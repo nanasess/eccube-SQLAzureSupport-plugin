@@ -743,14 +743,14 @@ function lfInitDBParam($objDBParam)
     if(file_exists($webpi_filename) && $fp = @fopen($webpi_filename, 'r')) {
         while (!feof($fp)) {
             $connect_str = fgets($fp);
-            if(preg_match('/mysql/', $connect_str)) {
+            if(preg_match('/sqlsrv/', $connect_str)) {
                 break;
             }
         }
 
-        // MySQLの文字列から分割して接続情報を取得する
+        // DB接続文字列から分割して接続情報を取得する
         if(!empty($connect_str)) {
-            // /* mysql://[ユーザー名]:[パスワード]@[ホスト名]/[データベース名];*/
+            // /* sqlsrv://[ユーザー名]:[パスワード]@[ホスト名]/[データベース名];*/
             // @で分解
             $split_connect = explode('@', $connect_str);
 
@@ -1084,6 +1084,7 @@ function lfMakeConfigFile()
 
     // FIXME 変数出力はエスケープすべき
     $config_data = "<?php\n"
+                 . "define('ECCUBE_INSTALL', 'ON');\n"
                  . "define('ADMIN_DIR', '"             . $objWebParam->getValue('admin_dir') . "/');\n"
                  . "define('ADMIN_FORCE_SSL', "        . $force_ssl . ");\n"
                  . "define('ADMIN_ALLOW_HOSTS', '"     . serialize($allow_hosts) . "');\n"
