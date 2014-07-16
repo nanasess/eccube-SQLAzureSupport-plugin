@@ -25,14 +25,14 @@ if (file_exists($define_php)) {
 
     if (file_exists($webmatrix_php)) {
         $subject = file_get_contents($webmatrix_php);
-        preg_match("|/\\*\\s*mysql://([^:]*):([^@]*)@([^/]*)/([^;]*);\\*/|", $subject, $matches);
+        preg_match("|/\\*\\s*sqlsrv://([^:]*):([^@]*)@([^/]*)/([^;]*);\\*/|", $subject, $matches);
         list($all, $db_user, $db_password, $db_server, $db_name) = $matches;
 
-        define('DB_TYPE', 'mysql');
+        define('DB_TYPE', 'sqlsrv');
         define('DB_USER', $db_user);
         define('DB_PASSWORD', $db_password);
         define('DB_SERVER', $db_server);
         define('DB_NAME', $db_name);
-        define('DB_PORT', '');
+        define('DB_PORT', '1433');
     }
 }
