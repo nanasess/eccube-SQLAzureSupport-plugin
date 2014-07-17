@@ -1039,7 +1039,7 @@ __EOS__;
         $arrResults = array();
         $objQuery->setOrder('order_detail_id');
         $arrItems = $objQuery->select('dtb_shipment_item.*', 'dtb_shipment_item join dtb_order_detail ON dtb_shipment_item.product_class_id = dtb_order_detail.product_class_id AND dtb_shipment_item.order_id = dtb_order_detail.order_id',
-                                      'order_id = ? AND shipping_id = ?',
+                                      'dtb_order_detail.order_id = ? AND shipping_id = ?',
                                       array($order_id, $shipping_id));
 
         foreach ($arrItems as $key => $arrItem) {
