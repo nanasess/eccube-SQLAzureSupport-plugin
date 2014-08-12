@@ -27,6 +27,10 @@ class SC_CustomerList_Ex extends SC_CustomerList
 {
     public function __construct($array, $mode = '')
     {
+        if (is_array($array)) {
+            $this->arrSql = $array;
+        }
+
         $objDb = new SC_Helper_DB_Ex();
         $dbFactory = SC_DB_DBFactory_Ex::getInstance();
 
