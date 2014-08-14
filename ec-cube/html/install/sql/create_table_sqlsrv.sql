@@ -711,6 +711,9 @@ CREATE TABLE dtb_other_deliv (
     tel01 nvarchar(max),
     tel02 nvarchar(max),
     tel03 nvarchar(max),
+    fax01 nvarchar(max),
+    fax02 nvarchar(max),
+    fax03 nvarchar(max)
     PRIMARY KEY (other_deliv_id)
 );
 
