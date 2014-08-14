@@ -34,5 +34,53 @@ require_once CLASS_REALDIR . 'helper/SC_Helper_News.php';
  */
 class SC_Helper_News_Ex extends SC_Helper_News
 {
-    //put your code here
+     /**
+     * ニュースの情報を取得.
+     *
+     * @param  integer $news_id     ニュースID
+     * @param  boolean $has_deleted 削除されたニュースも含む場合 true; 初期値 false
+     * @return array
+     */
+    public static function getNews($news_id, $has_deleted = false)
+    {
+        $objQuery =& SC_Query_Ex::getSingletonInstance();
+        $col = '*, format(news_date, \'yyyy-MM-dd\') as cast_news_date';
+        $where = 'news_id = ?';
+        if (!$has_deleted) {
+            $where .= ' AND del_flg = 0';
+        }
+        $arrRet = $objQuery->select($col, 'dtb_news', $where, array($news_id));
+
+        return $arrRet[0];
+    }
+
+    /**
+     * ニュース一覧の取得.
+     *
+     * @param  integer $dispNumber  表示件数
+     * @param  integer $pageNumber  ページ番号
+     * @param  boolean $has_deleted 削除されたニュースも含む場合 true; 初期値 false
+     * @return array
+     */
+    public function getList($dispNumber = 0, $pageNumber = 0, $has_deleted = false)
+    {
+        $objQuery =& SC_Query_Ex::getSingletonInstance();
+        $col = '*, format(news_date, \'yyyy-MM-dd\') as cast_news_date';
+        $where = '';
+        if (!$has_deleted) {
+            $where .= 'del_flg = 0';
+        }
+        $table = 'dtb_news';
+        $objQuery->setOrder('rank DESC');
+        if ($dispNumber > 0) {
+            if ($pageNumber > 0) {
+                $objQuery->setLimitOffset($dispNumber, (($pageNumber - 1) * $dispNumber));
+            } else {
+                $objQuery->setLimit($dispNumber);
+            }
+        }
+        $arrRet = $objQuery->select($col, $table, $where);
+
+        return $arrRet;
+    }
 }
