@@ -252,7 +252,7 @@ class LC_Page_Admin_Total_Ex extends LC_Page_Admin_Total
 __EOS__;
 
         $from       = '(
-    SELECT order_id,total,order_sex,create_date,del_flg,status,
+    SELECT order_id,total,order_sex,create_date,del_flg,status,customer_id,
     CASE
         WHEN customer_id <> 0 THEN 1
     ELSE 0

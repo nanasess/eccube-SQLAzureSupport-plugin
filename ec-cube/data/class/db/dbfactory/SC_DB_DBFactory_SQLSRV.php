@@ -206,7 +206,7 @@ class SC_DB_DBFactory_SQLSRV extends SC_DB_DBFactory
      */
     function getOrderTotalAgeColSql()
     {
-        return 'SELECT order_id,total,create_date ,del_flg ,status,CASE 
+        return 'SELECT order_id,total,create_date ,del_flg ,status,customer_id,CASE 
       WHEN RIGHT(CONVERT(CHAR(8) , order_birth, 112), 4) > RIGHT(CONVERT(CHAR(8) , create_date, 112), 4) THEN ROUND(YEAR(create_date) - YEAR(order_birth) - 1,-1,1) 
       ELSE ROUND(YEAR(create_date) - YEAR(order_birth),-1,1)
    END as age FROM dtb_order';
