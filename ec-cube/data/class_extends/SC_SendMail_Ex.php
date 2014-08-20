@@ -30,7 +30,7 @@ require_once CLASS_REALDIR . 'SC_SendMail.php';
  *
  * @package
  * @author LOCKON CO.,LTD.
- * @version $Id: SC_SendMail_Ex.php 22856 2013-06-08 07:35:27Z Seasoft $
+ * @version $Id$
  */
 class SC_SendMail_Ex extends SC_SendMail
 {

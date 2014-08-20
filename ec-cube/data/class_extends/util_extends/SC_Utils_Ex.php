@@ -30,7 +30,7 @@ require_once CLASS_REALDIR . 'util/SC_Utils.php';
  *
  * @package Util
  * @author LOCKON CO.,LTD.
- * @version $Id: SC_Utils_Ex.php 22856 2013-06-08 07:35:27Z Seasoft $
+ * @version $Id$
  */
 class SC_Utils_Ex extends SC_Utils
 {

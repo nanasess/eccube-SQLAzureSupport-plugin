@@ -29,7 +29,7 @@ require_once CLASS_REALDIR . 'SC_Initial.php';
  * SC_Initial をカスタマイズする場合はこのクラスを編集する.
  *
  * @author LOCKON CO.,LTD.
- * @version $Id: SC_Initial_Ex.php 22856 2013-06-08 07:35:27Z Seasoft $
+ * @version $Id$
  */
 class SC_Initial_Ex extends SC_Initial
 {

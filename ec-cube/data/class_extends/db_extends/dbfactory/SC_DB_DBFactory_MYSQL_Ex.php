@@ -30,7 +30,7 @@ require_once CLASS_REALDIR . 'db/dbfactory/SC_DB_DBFactory_MYSQL.php';
  *
  * @package DB
  * @author LOCKON CO.,LTD.
- * @version $Id: SC_DB_DBFactory_MYSQL_Ex.php 22856 2013-06-08 07:35:27Z Seasoft $
+ * @version $Id$
  */
 class SC_DB_DBFactory_MYSQL_Ex extends SC_DB_DBFactory_MYSQL
 {

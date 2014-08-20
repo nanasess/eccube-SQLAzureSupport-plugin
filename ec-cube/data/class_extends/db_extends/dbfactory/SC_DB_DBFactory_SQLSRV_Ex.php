@@ -31,7 +31,7 @@ require_once CLASS_REALDIR . 'db/dbfactory/SC_DB_DBFactory_SQLSRV.php';
  *
  * @package DB
  * @author LOCKON CO.,LTD.
- * @version $Id: SC_DB_DBFactory_PGSQL_Ex.php 20764 2011-03-22 06:26:40Z nanasess $
+ * @version $Id$
  */
 class SC_DB_DBFactory_SQLSRV_Ex extends SC_DB_DBFactory_SQLSRV {
 }
