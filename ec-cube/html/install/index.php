@@ -743,7 +743,7 @@ function lfInitDBParam($objDBParam)
     if(file_exists($webpi_filename) && $fp = @fopen($webpi_filename, 'r')) {
         while (!feof($fp)) {
             $connect_str = fgets($fp);
-            if(preg_match('/sqlsrv/', $connect_str)) {
+            if(preg_match('/mysql/', $connect_str)) {
                 break;
             }
         }

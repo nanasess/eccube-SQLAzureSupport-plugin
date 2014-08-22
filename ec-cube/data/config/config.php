@@ -25,7 +25,7 @@ if (file_exists($define_php)) {
 
     if (file_exists($webmatrix_php)) {
         $subject = file_get_contents($webmatrix_php);
-        preg_match("|/\\*\\s*sqlsrv://([^:]*):([^@]*)@([^/]*)/([^;]*);\\*/|", $subject, $matches);
+        preg_match("|/\\*\\s*mysql://([^:]*):([^@]*)@([^/]*)/([^;]*);\\*/|", $subject, $matches);
         list($all, $db_user, $db_password, $db_server, $db_name) = $matches;
 
         define('DB_TYPE', 'sqlsrv');

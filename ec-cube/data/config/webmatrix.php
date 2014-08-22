@@ -1,4 +1,4 @@
 <?php
 /* WebMatrix Connection String */
-/* sqlsrv://PlaceHolderForUser:PlaceHolderForPassword@PlaceHolderForServer/PlaceHolderForDb;*/
+/* mysql://PlaceHolderForUser:PlaceHolderForPassword@PlaceHolderForServer/PlaceHolderForDb;*/
 ?>
