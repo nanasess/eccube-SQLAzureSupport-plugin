@@ -56,17 +56,30 @@ class SQLAzureSupport extends SC_Plugin_Base {
 
         $suffix = date('Ymd');
         $http_url = HTTP_URL;
+        // ファイルが存在する場合はバックアップ取得し, ファイルコピー
         foreach ($arrDataFiles as $file) {
-            if (copy(DATA_REALDIR . substr($file, 5), DATA_REALDIR . substr($file, 5) . '.' . $suffix)) {
+            if (file_exists(DATA_REALDIR . substr($file, 5))) {
+
+                if (copy(DATA_REALDIR . substr($file, 5), DATA_REALDIR . substr($file, 5) . '.' . $suffix)) {
+                    if (copy(PLUGIN_UPLOAD_REALDIR . AZURE_PLUGIN_NAME . '/files/' . $file, DATA_REALDIR . substr($file, 5)) === false);
+                }
+            } else {
                 if (copy(PLUGIN_UPLOAD_REALDIR . AZURE_PLUGIN_NAME . '/files/' . $file, DATA_REALDIR . substr($file, 5)) === false);
             }
         }
         foreach ($arrHtmlFiles as $file) {
-            if (copy(HTML_REALDIR . substr($file, 5), HTML_REALDIR . substr($file, 5) . '.' . $suffix)) {
+            if (file_exists(HTML_REALDIR . substr($file, 5))) {
+                if (copy(HTML_REALDIR . substr($file, 5), HTML_REALDIR . substr($file, 5) . '.' . $suffix)) {
+                    if (copy(PLUGIN_UPLOAD_REALDIR . AZURE_PLUGIN_NAME . '/files/' . $file, HTML_REALDIR . substr($file, 5)) === false);
+                }
+            } else {
                 if (copy(PLUGIN_UPLOAD_REALDIR . AZURE_PLUGIN_NAME . '/files/' . $file, HTML_REALDIR . substr($file, 5)) === false);
             }
         }
 
+        // インストーラファイルを削除
+        copy(DATA_REALDIR . 'config/define.php', DATA_REALDIR . 'config/define.php' . '.' . $suffix);
+        unlink(DATA_REALDIR . 'config/define.php');
         // config.php が上書きされているので強制リダイレクト
         header('Location: ' . $http_url . 'install/index.php');
     }

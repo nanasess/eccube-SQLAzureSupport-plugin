@@ -45,4 +45,7 @@ cd $WRK_DIR/files
 tar xvf tmp.tar
 rm tmp.tar
 cd $WRK_DIR
+echo "$WRK_DIR/files/data/config/config.php"
+sed -i.bak -e 's/\/ec-cube\/html\//\//' $WRK_DIR/files/data/config/config.php
+find . -name '*.bak' -delete
 tar vcfz ../SQLAzureSupport.tar.gz *

@@ -340,6 +340,7 @@ function lfDispStep0($objPage)
 
     $mess = '';
     $hasErr = false;
+    /* web.config により自動設定されるため, パーミッションのチェックはしない
     foreach ($arrWriteFile as $val) {
         // listdirsの保持データを初期化
         initdirs();
@@ -376,6 +377,7 @@ function lfDispStep0($objPage)
             }
         }
     }
+    */
 
     if (ini_get('safe_mode')) {
         $mess .= ">> ×：PHPのセーフモードが有効になっています。\n";
@@ -733,41 +735,12 @@ function lfInitWebParam($objWebParam)
 function lfInitDBParam($objDBParam)
 {
    // EC-CUBEデフォルト値設定
-    $default_server = '127.0.0.1';
+    $default_server = '<server_name>.database.windows.net';
     $default_dbname = 'eccube_db';
     $default_user   = 'eccube_db_user';
+    $default_port   = '1433';
     $default_pass   = '';
 
-    // WebMatrixの設定ファイルから接続情報を取得
-    $webpi_filename = HTML_REALDIR . HTML2DATA_DIR . 'config/webmatrix.php';
-    if(file_exists($webpi_filename) && $fp = @fopen($webpi_filename, 'r')) {
-        while (!feof($fp)) {
-            $connect_str = fgets($fp);
-            if(preg_match('/mysql/', $connect_str)) {
-                break;
-            }
-        }
-
-        // DB接続文字列から分割して接続情報を取得する
-        if(!empty($connect_str)) {
-            // /* sqlsrv://[ユーザー名]:[パスワード]@[ホスト名]/[データベース名];*/
-            // @で分解
-            $split_connect = explode('@', $connect_str);
-
-            // ユーザー名, パスワードを取得
-            $split_userpass_wk = explode('//', $split_connect[0]);
-            $split_userpass    = explode(':', $split_userpass_wk[1]);
-            $default_user      = $split_userpass[0];
-            $default_pass      = $split_userpass[1];
-
-            // ホスト名, データベース名を取得
-            $split_serverdb_wk = explode(';', $split_connect[1]);
-            $split_serverdb    = explode('/', $split_serverdb_wk[0]);
-            $default_server    = $split_serverdb[0];
-            $default_dbname    = $split_serverdb[1];
-        }
-        fclose($fp);
-    }
 
     if (defined('DB_SERVER')) {
         $db_server = DB_SERVER;
@@ -784,7 +757,7 @@ function lfInitDBParam($objDBParam)
     if (defined('DB_PORT')) {
         $db_port = DB_PORT;
     } else {
-        $db_port = '';
+        $db_port = $default_port;
     }
 
     if (defined('DB_NAME')) {
@@ -1099,6 +1072,20 @@ function lfMakeConfigFile()
     }
     if ($fp = fopen(DEFINE_REALFILE, 'w')) {
         fwrite($fp, $config_data);
+        fclose($fp);
+    }
+
+    $webpi_data = "<?php\n"
+        . "/* WebMatrix Connection String */\n"
+        . sprintf("/* mysql://%s:%s@%s/%s;*/\n",
+            $objDBParam->getValue('db_user'),
+            $objDBParam->getValue('db_password'),
+            $objDBParam->getValue('db_server'),
+            $objDBParam->getValue('db_name'))
+        . "?>\n";
+    $webpi_filename = HTML_REALDIR . HTML2DATA_DIR . 'config/webmatrix.php';
+    if ($fp = fopen($webpi_filename, 'w')) {
+        fwrite($fp, $webpi_data);
         fclose($fp);
     }
 }
