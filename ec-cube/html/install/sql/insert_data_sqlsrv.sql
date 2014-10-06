@@ -1517,7 +1517,7 @@ INSERT INTO mtb_country (id, name, rank) VALUES (638, N'レユニオン',248);
 INSERT INTO mtb_country (id, name, rank) VALUES (643, N'ロシア|ロシア連邦',249);
 
 
-INSERT INTO dtb_plugin (plugin_id, plugin_name, class_name, plugin_code, author, author_site_url, plugin_site_url, plugin_version, compliant_version, plugin_description, priority, enable, create_date, update_date) VALUES (1, N'Microsoft Windows Azure プラグイン', 'SQLAzureSupport', 'SQLAzureSupport', 'Kentaro Ohkouchi (Loop AZ)', 'http://www.loop-az.co.jp/', null, '1.0.1', '2.12.1', N'Microsoft Windows Azure 対応プラグインです。インストーラのデータベースに SQL Azure が追加されます。PHP 5.3.0 以降対応。sqlsrv ドライバが必要です。', 1, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO dtb_plugin (plugin_id, plugin_name, class_name, plugin_code, author, author_site_url, plugin_site_url, plugin_version, compliant_version, plugin_description, priority, enable, create_date, update_date) VALUES (1, N'Microsoft Windows Azure プラグイン', 'SQLAzureSupport', 'SQLAzureSupport', 'Kentaro Ohkouchi (Loop AZ)', 'http://www.loop-az.co.jp/', null, '2.0.1', '2.13.2', N'Microsoft SQL Database 対応プラグインです。インストーラのデータベースに SQL Database が追加されます。PHP 5.3.0 以降対応、PHP5.4.x 推奨です。sqlsrv ドライバが必要です。', 1, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
 CREATE NONCLUSTERED INDEX product_category_category_id_idx ON [dbo].[dtb_product_categories] ([category_id]) INCLUDE ([product_id]);
 CREATE NONCLUSTERED INDEX product_code_idx ON dtb_products_class (product_code) INCLUDE (product_id);

@@ -12,7 +12,7 @@ class plugin_info{
     /** プラグイン名(必須)：EC-CUBE上で表示されるプラグイン名. */
     static $PLUGIN_NAME       = "Microsoft SQL Database プラグイン";
     /** プラグインバージョン(必須)：プラグインのバージョン. */
-    static $PLUGIN_VERSION    = "2.0";
+    static $PLUGIN_VERSION    = "2.0.1";
     /** 対応バージョン(必須)：対応するEC-CUBEバージョン. */
     static $COMPLIANT_VERSION = "2.13.2";
     /** 作者(必須)：プラグイン作者. */
