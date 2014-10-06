@@ -37,7 +37,7 @@ data/module/MDB2/Driver/Reverse/sqlsrv.php
 data/module/MDB2/Driver/sqlsrv.php
 html/install/index.php
 html/install/sql/create_table_sqlsrv.sql
-html/install/sql/insert_data.sql
+html/install/sql/insert_data_sqlsrv.sql
 EOF
 
 mv tmp.tar $WRK_DIR/files

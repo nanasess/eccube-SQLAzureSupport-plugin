@@ -1255,6 +1255,14 @@ INSERT INTO mtb_constants (id, name, rank, remarks) VALUES ('PLUGIN_ACTIVATE_FLA
 INSERT INTO mtb_constants (id, name, rank, remarks) VALUES ('SMARTY_FORCE_COMPILE_MODE', 'false', 1401, N'SMARTYコンパイルモード');
 INSERT INTO mtb_constants (id, name, rank, remarks) VALUES ('LOGIN_RETRY_INTERVAL', '0', 1411, N'ログイン失敗時の遅延時間(秒)(ブルートフォースアタック対策)');
 INSERT INTO mtb_constants (id, name, rank, remarks) VALUES ('MYPAGE_ORDER_STATUS_DISP_FLAG', 'true', 1412, N'MYページ：ご注文状況表示フラグ');
+INSERT INTO mtb_constants (id, name, rank, remarks) VALUES ('DEFAULT_COUNTRY_ID', 392, 1413, N'デフォルト国コード ISO_3166-1に準拠');
+INSERT INTO mtb_constants (id, name, rank, remarks) VALUES ('USE_NORMALIZE_HOSTNAME', 'true', 1414, N'ホスト名を正規化するか (true:する false:しない)');
+INSERT INTO mtb_constants (id, name, rank, remarks) VALUES ('FORM_COUNTRY_ENABLE', 'false', 1415, N'各種フォームで国の指定を有効にする(true:有効 false:無効)');
+INSERT INTO mtb_constants (id, name, rank, remarks) VALUES ('OPTION_PRODUCT_TAX_RULE', '0', 1416, N'商品ごとの税率設定(軽減税率対応 有効:1 無効:0) ');
+INSERT INTO mtb_constants (id, name, rank, remarks) VALUES ('TAX_RULE_PRIORITY', '"product_id,product_class_id,pref_id,country_id"', 1417, N'複数箇所の税率設定時における優先度設定。カンマ区切りスペース不可で記述。後に書いてあるキーに一致するほど優先される。デフォルト：''product_id,product_class_id,pref_id,country_id''（国＞地域（県）＞規格単位＞商品単位）');
+INSERT INTO mtb_constants (id, name, rank, remarks) VALUES ('PENDING_ORDER_CANCEL_TIME', '900', 1418, N'決済処理中ステータスのロールバックを行う時間の設定(秒) ');
+INSERT INTO mtb_constants (id, name, rank, remarks) VALUES ('PENDING_ORDER_CANCEL_FLAG', 'true', 1419, N'決済処理中ステータスのロールバックをするか(true:する false:しない)');
+INSERT INTO mtb_constants (id, name, rank, remarks) VALUES ('API_ENABLE_FLAG', 'false', 1420, N'API機能を有効にする(true:する false:しない)');
 
 INSERT INTO dtb_tax_rule (tax_rule_id, apply_date, member_id, del_flg, create_date, update_date) VALUES (0, CURRENT_TIMESTAMP, 1, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
