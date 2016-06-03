@@ -206,8 +206,8 @@ class SC_DB_DBFactory_SQLSRV extends SC_DB_DBFactory
      */
     function getOrderTotalAgeColSql()
     {
-        return 'SELECT order_id,total,create_date ,del_flg ,status,customer_id,CASE 
-      WHEN RIGHT(CONVERT(CHAR(8) , order_birth, 112), 4) > RIGHT(CONVERT(CHAR(8) , create_date, 112), 4) THEN ROUND(YEAR(create_date) - YEAR(order_birth) - 1,-1,1) 
+        return 'SELECT order_id,total,create_date ,del_flg ,status,customer_id,CASE
+      WHEN RIGHT(CONVERT(CHAR(8) , order_birth, 112), 4) > RIGHT(CONVERT(CHAR(8) , create_date, 112), 4) THEN ROUND(YEAR(create_date) - YEAR(order_birth) - 1,-1,1)
       ELSE ROUND(YEAR(create_date) - YEAR(order_birth),-1,1)
    END as age FROM dtb_order';
     }
@@ -307,6 +307,50 @@ class SC_DB_DBFactory_SQLSRV extends SC_DB_DBFactory
         if ($limit != 0) {
             $sql .= " FETCH NEXT $limit ROWS ONLY";
         }
+
+        return $sql;
+    }
+
+    /**
+     * 商品詳細の SQL を取得する.
+     *
+     * PostgreSQL 用にチューニング。
+     * @param  string $where_products_class 商品規格情報の WHERE 句
+     * @return string 商品詳細の SQL
+     */
+    public function alldtlSQL($where_products_class = '')
+    {
+        if (!SC_Utils_Ex::isBlank($where_products_class)) {
+            $where_products_class = 'AND (' . $where_products_class . ')';
+        }
+        /*
+         * point_rate, deliv_fee は商品規格(dtb_products_class)ごとに保持しているが,
+         * 商品(dtb_products)ごとの設定なので MAX のみを取得する.
+         */
+        $sub_base = "FROM dtb_products_class WHERE del_flg = 0 AND product_id = dtb_products.product_id $where_products_class";
+        $sql = <<< __EOS__
+            (
+                SELECT
+                     dtb_products.*
+                    ,dtb_maker.name AS maker_name
+                    ,(SELECT MIN(product_code) $sub_base) AS product_code_min
+                    ,(SELECT MAX(product_code) $sub_base) AS product_code_max
+                    ,(SELECT MIN(price01) $sub_base) AS price01_min
+                    ,(SELECT MAX(price01) $sub_base) AS price01_max
+                    ,(SELECT MIN(price02) $sub_base) AS price02_min
+                    ,(SELECT MAX(price02) $sub_base) AS price02_max
+                    ,(SELECT MIN(stock) $sub_base) AS stock_min
+                    ,(SELECT MAX(stock) $sub_base) AS stock_max
+                    ,(SELECT MIN(stock_unlimited) $sub_base) AS stock_unlimited_min
+                    ,(SELECT MAX(stock_unlimited) $sub_base) AS stock_unlimited_max
+                    ,(SELECT MAX(point_rate) $sub_base) AS point_rate
+                    ,(SELECT MAX(deliv_fee) $sub_base) AS deliv_fee
+                FROM dtb_products
+                    LEFT JOIN dtb_maker
+                        ON dtb_products.maker_id = dtb_maker.maker_id
+                WHERE EXISTS(SELECT * $sub_base)
+            ) AS alldtl
+__EOS__;
 
         return $sql;
     }
