@@ -1368,7 +1368,7 @@ __EOS__;
      */
     public function checkDbAllPendingOrder()
     {
-        $term = PENDING_ORDER_CANCEL_TIME;
+        $term = PENDING_ORDER_CANCEL_TIME + (60 * 60 * 12); // XXX +12 hours;
         if (!SC_Utils_Ex::isBlank($term) && preg_match("/^[0-9]+$/", $term)) {
             $target_time = strtotime('-' . $term . ' sec');
             $objQuery =& SC_Query_Ex::getSingletonInstance();
@@ -1402,7 +1402,7 @@ __EOS__;
                     if ($key == 0) {
                         $objCartSess = new SC_CartSession_Ex();
                         $cartKeys = $objCartSess->getKeys();
-                        $term = PENDING_ORDER_CANCEL_TIME;
+                        $term = PENDING_ORDER_CANCEL_TIME + (60 * 60 * 12); // XXX +12 hours;
                         if (preg_match("/^[0-9]+$/", $term)) {
                             $target_time = strtotime('-' . $term . ' sec');
                             $create_time = strtotime($arrOrder['create_date']);
